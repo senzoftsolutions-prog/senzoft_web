@@ -1,7 +1,7 @@
-import { Menu, Search, X, ArrowUpRight } from "lucide-react";
-import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import logo from "../../assets/senzoft-logo.png";
+import { ArrowUpRight, Menu, Search, X } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import symbol from "../../assets/senzoft-symbol.png";
 
 const links = [
   ["Services", "/services"],
@@ -10,84 +10,130 @@ const links = [
   ["About", "/about"],
   ["Careers", "/careers"],
 ];
+const featured = [
+  ["Digital Engineering", "/services/digital-engineering"],
+  ["Data & AI", "/services/data-ai"],
+  ["Cloud & Platforms", "/services/cloud-platforms"],
+  ["Cybersecurity", "/services/cybersecurity"],
+];
+
 export function Header() {
   const [open, setOpen] = useState(false);
+  const location = useLocation();
+  useEffect(() => setOpen(false), [location.pathname]);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-black/8 bg-white/94 backdrop-blur-xl">
-      <a className="skip-link" href="#main">
+    <header className="pointer-events-none fixed inset-x-0 top-0 z-50 bg-transparent">
+      <a className="skip-link pointer-events-auto" href="#main">
         Skip to content
       </a>
-      <div className="container-shell flex h-20 items-center justify-between gap-4">
-        <Link to="/" aria-label="SENZOFT home" className="shrink-0">
-          <img
-            src={logo}
-            alt="SENZOFT"
-            className="h-14 w-auto max-w-38 object-contain object-left"
-          />
-        </Link>
-        <nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">
-          {links.map(([label, path]) => (
-            <NavLink
-              key={path}
-              to={path}
-              className={({ isActive }) =>
-                `text-sm font-bold transition hover:text-brand-orange ${isActive ? "text-brand-orange" : "text-brand-ink"}`
-              }
-            >
-              {label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="hidden items-center gap-3 lg:flex">
-          <Link aria-label="Search" to="/search" className="p-3">
-            <Search size={20} />
+      <div className="container-shell relative pt-3 md:pt-4">
+        <div className="pointer-events-auto flex min-h-18 items-center gap-3 rounded-[1.4rem] border border-black/8 bg-white/92 px-3 shadow-[0_16px_45px_rgba(21,27,33,.14)] backdrop-blur-xl md:rounded-full md:px-4">
+          <button
+            className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-cream transition hover:bg-brand-orange hover:text-white"
+            aria-label={open ? "Close navigation" : "Open navigation"}
+            aria-expanded={open}
+            aria-controls="site-menu"
+            onClick={() => setOpen(!open)}
+          >
+            {open ? <X size={21} /> : <Menu size={21} />}
+          </button>
+          <Link
+            to="/"
+            aria-label="SENZOFT home"
+            className="flex shrink-0 items-center gap-2"
+          >
+            <img src={symbol} alt="" className="size-11 object-contain" />
+            <span className="hidden font-display text-xl font-black tracking-[-.06em] text-brand-ink sm:block">
+              SEN<span className="text-brand-orange">ZOFT</span>
+            </span>
           </Link>
-          <Link to="/contact" className="btn btn-primary">
-            Talk to an expert <ArrowUpRight size={17} />
-          </Link>
-        </div>
-        <button
-          className="p-2 lg:hidden"
-          aria-label={open ? "Close menu" : "Open menu"}
-          aria-expanded={open}
-          onClick={() => setOpen(!open)}
-        >
-          {open ? <X /> : <Menu />}
-        </button>
-      </div>
-      {open && (
-        <nav
-          className="border-t border-black/8 bg-white px-4 py-5 lg:hidden"
-          aria-label="Mobile"
-        >
-          {links.map(([label, path]) => (
-            <NavLink
-              onClick={() => setOpen(false)}
-              key={path}
-              to={path}
-              className="block border-b border-black/8 py-3 font-bold"
-            >
-              {label}
-            </NavLink>
-          ))}
-          <div className="mt-5 flex gap-3">
+          <nav
+            className="mx-auto hidden items-center rounded-full bg-brand-cream px-2 py-1.5 lg:flex"
+            aria-label="Primary"
+          >
+            {links.map(([label, path]) => (
+              <NavLink
+                key={path}
+                to={path}
+                className={({ isActive }) =>
+                  `rounded-full px-4 py-2 text-sm font-bold transition ${isActive ? "bg-white text-brand-orange shadow-sm" : "text-brand-ink hover:text-brand-orange"}`
+                }
+              >
+                {label}
+              </NavLink>
+            ))}
+          </nav>
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
             <Link
-              onClick={() => setOpen(false)}
+              aria-label="Search SENZOFT"
               to="/search"
-              className="btn btn-outline"
+              className="grid size-11 place-items-center rounded-full border border-black/10 transition hover:border-brand-orange hover:text-brand-orange"
             >
-              <Search size={17} /> Search
+              <Search size={19} />
             </Link>
-            <Link
-              onClick={() => setOpen(false)}
-              to="/contact"
-              className="btn btn-primary"
-            >
-              Contact
+            <Link to="/contact" className="btn btn-dark hidden sm:inline-flex">
+              Talk to us <ArrowUpRight size={17} />
             </Link>
           </div>
-        </nav>
-      )}
+        </div>
+        {open && (
+          <div
+            id="site-menu"
+            className="pointer-events-auto absolute left-0 right-0 top-[5.8rem] overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-5 shadow-[0_22px_60px_rgba(21,27,33,.18)] md:p-7"
+          >
+            <div className="grid gap-7 lg:grid-cols-[.7fr_1.3fr]">
+              <div>
+                <p className="text-xs font-extrabold uppercase tracking-[.2em] text-brand-orange">
+                  Explore SENZOFT
+                </p>
+                <nav
+                  className="mt-4 grid sm:grid-cols-2 lg:grid-cols-1"
+                  aria-label="Expanded navigation"
+                >
+                  {links.map(([label, path]) => (
+                    <NavLink
+                      key={path}
+                      to={path}
+                      className="border-b border-black/8 py-3 text-xl font-bold transition hover:pl-2 hover:text-brand-orange"
+                    >
+                      {label}
+                    </NavLink>
+                  ))}
+                </nav>
+              </div>
+              <div className="rounded-2xl bg-brand-ink p-6 text-white">
+                <p className="text-xs font-extrabold uppercase tracking-[.2em] text-brand-amber">
+                  Featured capabilities
+                </p>
+                <div className="mt-4 grid gap-px overflow-hidden rounded-xl bg-white/15 sm:grid-cols-2">
+                  {featured.map(([label, path]) => (
+                    <Link
+                      className="flex items-center justify-between bg-brand-ink p-4 font-bold transition hover:bg-white/8 hover:text-brand-amber"
+                      key={path}
+                      to={path}
+                    >
+                      {label}
+                      <ArrowUpRight size={16} />
+                    </Link>
+                  ))}
+                </div>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link to="/contact" className="btn btn-primary">
+                    Start a conversation
+                  </Link>
+                  <Link
+                    to="/search"
+                    className="btn border border-white/20 text-white"
+                  >
+                    <Search size={17} /> Search
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
