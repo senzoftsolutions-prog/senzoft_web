@@ -9,7 +9,7 @@ export function PageHero({
   description: string;
 }) {
   return (
-    <section className="bg-brand-ink grid-lines text-white pt-36 pb-20 md:pt-44 md:pb-28">
+    <section className="bg-brand-plum grid-lines text-white pt-36 pb-20 md:pt-44 md:pb-28">
       <div className="container-shell">
         <Reveal>
           <span className="eyebrow text-brand-amber!">{eyebrow}</span>

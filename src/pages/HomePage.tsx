@@ -26,7 +26,7 @@ export default function HomePage() {
         title="SENZOFT | Software & IT Services"
         description="Software engineering, cloud, data, AI, cybersecurity and managed IT services for ambitious enterprises."
       />
-      <section className="grid-lines relative min-h-[760px] overflow-hidden bg-brand-ink pt-32 text-white">
+      <section className="grid-lines relative min-h-[760px] overflow-hidden bg-brand-plum pt-32 text-white">
         <div className="absolute -right-32 top-10 size-150 rounded-full bg-brand-orange/12 blur-3xl" />
         <div className="container-shell relative grid min-h-[620px] items-center gap-12 py-14 lg:grid-cols-[1.2fr_.8fr]">
           <Reveal>
@@ -117,7 +117,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="section overflow-hidden bg-brand-ink text-white">
+      <section className="section overflow-hidden bg-brand-wine text-white">
         <div className="container-shell grid items-stretch gap-6 lg:grid-cols-[1.15fr_.85fr]">
           <Reveal className="rounded-[2rem] border border-white/10 bg-white/4 p-8 md:p-12">
             <span className="eyebrow text-brand-amber!">
@@ -274,7 +274,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="section bg-brand-ink text-white">
+      <section className="section bg-brand-plum text-white">
         <div className="container-shell">
           <span className="eyebrow text-brand-amber!">Technology insights</span>
           <div className="mt-6 flex items-end justify-between">
@@ -320,7 +320,7 @@ export default function HomePage() {
               Explore careers <ArrowRight size={18} />
             </Link>
           </div>
-          <div className="grid-lines grid min-h-72 place-items-center rounded-[1.5rem] bg-brand-ink p-8 text-center text-white">
+          <div className="grid-lines grid min-h-72 place-items-center rounded-[1.5rem] bg-brand-wine p-8 text-center text-white">
             <div>
               <p className="display text-6xl gradient-text">Ideas</p>
               <p className="mt-3 text-sm font-extrabold uppercase tracking-[.25em] text-white/55">

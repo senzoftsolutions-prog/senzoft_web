@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 export function CTA() {
   return (
     <section className="section">
-      <div className="container-shell grid-lines overflow-hidden rounded-[2rem] bg-brand-ink px-6 py-14 text-white md:px-14 md:py-18">
+      <div className="container-shell grid-lines overflow-hidden rounded-[2rem] bg-brand-wine px-6 py-14 text-white md:px-14 md:py-18">
         <span className="eyebrow text-brand-amber!">Start a conversation</span>
         <div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <h2 className="display max-w-3xl text-4xl md:text-6xl">

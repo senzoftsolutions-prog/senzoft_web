@@ -4,7 +4,7 @@ import logo from "../../assets/senzoft-logo.png";
 
 export function Footer() {
   return (
-    <footer className="bg-brand-ink text-white">
+    <footer className="bg-brand-plum text-white">
       <div className="container-shell grid gap-12 py-16 md:grid-cols-[1.4fr_2fr]">
         <div>
           <img

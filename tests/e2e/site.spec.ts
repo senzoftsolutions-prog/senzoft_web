@@ -35,3 +35,15 @@ test("direct routes and 404 render", async ({ page }) => {
   await page.goto("/not-a-route");
   await expect(page.getByText("404")).toBeVisible();
 });
+
+test("expanded navigation connects every service", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open navigation" }).click();
+  const menu = page.locator("#site-menu");
+  await expect(menu).toBeVisible();
+  await expect(menu.getByRole("link", { name: "Managed IT Services" })).toBeVisible();
+  await menu.getByRole("link", { name: "Application Modernization" }).click();
+  await expect(page).toHaveURL(/\/services\/application-modernization$/);
+  await expect(page.getByRole("heading", { name: "Capabilities spanning strategy, build and scale." })).toBeVisible();
+  await expect(page.getByText("Common questions")).toBeVisible();
+});

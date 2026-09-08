@@ -2,6 +2,7 @@ import { ArrowUpRight, Menu, Search, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import symbol from "../../assets/senzoft-symbol.png";
+import { contentRepository } from "../../content/repository";
 
 const links = [
   ["Services", "/services"],
@@ -10,12 +11,9 @@ const links = [
   ["About", "/about"],
   ["Careers", "/careers"],
 ];
-const featured = [
-  ["Digital Engineering", "/services/digital-engineering"],
-  ["Data & AI", "/services/data-ai"],
-  ["Cloud & Platforms", "/services/cloud-platforms"],
-  ["Cybersecurity", "/services/cybersecurity"],
-];
+const serviceLinks = contentRepository
+  .getServices()
+  .map((service) => [service.title, `/services/${service.slug}`]);
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -102,14 +100,14 @@ export function Header() {
                   ))}
                 </nav>
               </div>
-              <div className="rounded-2xl bg-brand-ink p-6 text-white">
+              <div className="rounded-2xl bg-brand-peach p-6 text-brand-ink">
                 <p className="text-xs font-extrabold uppercase tracking-[.2em] text-brand-amber">
                   Featured capabilities
                 </p>
-                <div className="mt-4 grid gap-px overflow-hidden rounded-xl bg-white/15 sm:grid-cols-2">
-                  {featured.map(([label, path]) => (
+                <div className="mt-4 grid gap-px overflow-hidden rounded-xl bg-brand-orange/15 sm:grid-cols-2 lg:grid-cols-3">
+                  {serviceLinks.map(([label, path]) => (
                     <Link
-                      className="flex items-center justify-between bg-brand-ink p-4 font-bold transition hover:bg-white/8 hover:text-brand-amber"
+                      className="flex items-center justify-between bg-white p-4 text-sm font-bold transition hover:bg-brand-orange hover:text-white"
                       key={path}
                       to={path}
                     >
@@ -124,7 +122,7 @@ export function Header() {
                   </Link>
                   <Link
                     to="/search"
-                    className="btn border border-white/20 text-white"
+                    className="btn border border-brand-ink/20 text-brand-ink"
                   >
                     <Search size={17} /> Search
                   </Link>
