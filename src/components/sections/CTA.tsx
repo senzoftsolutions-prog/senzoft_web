@@ -1,0 +1,3 @@
+import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
+export function CTA(){return <section className="section"><div className="container-shell overflow-hidden rounded-[2rem] bg-brand-ink px-6 py-14 text-white grid-lines md:px-14 md:py-18"><span className="eyebrow text-brand-amber!">Start a conversation</span><div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between"><h2 className="display max-w-3xl text-4xl md:text-6xl">Bring us the idea.<br/><span className="gradient-text">We’ll help create the impact.</span></h2><Link to="/contact" className="btn bg-white text-brand-ink">Talk to our team <ArrowRight size={18}/></Link></div></div></section>}

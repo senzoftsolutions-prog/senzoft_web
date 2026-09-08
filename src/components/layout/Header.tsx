@@ -1,0 +1,10 @@
+import { Menu, Search, X, ArrowUpRight } from 'lucide-react'
+import { useState } from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import logo from '../../assets/senzoft-logo.png'
+
+const links = [['Services','/services'],['Products','/products'],['Industries','/industries'],['Insights','/insights'],['About','/about'],['Careers','/careers']]
+export function Header() {
+  const [open,setOpen] = useState(false)
+  return <header className="fixed inset-x-0 top-0 z-50 border-b border-black/8 bg-white/94 backdrop-blur-xl"><a className="skip-link" href="#main">Skip to content</a><div className="container-shell flex h-20 items-center justify-between gap-4"><Link to="/" aria-label="SENZOFT home" className="shrink-0"><img src={logo} alt="SENZOFT" className="h-14 w-auto max-w-38 object-contain object-left" /></Link><nav className="hidden items-center gap-7 lg:flex" aria-label="Primary">{links.map(([label,path])=><NavLink key={path} to={path} className={({isActive})=>`text-sm font-bold transition hover:text-brand-orange ${isActive?'text-brand-orange':'text-brand-ink'}`}>{label}</NavLink>)}</nav><div className="hidden items-center gap-3 lg:flex"><Link aria-label="Search" to="/search" className="p-3"><Search size={20}/></Link><Link to="/contact" className="btn btn-primary">Talk to an expert <ArrowUpRight size={17}/></Link></div><button className="p-2 lg:hidden" aria-label={open?'Close menu':'Open menu'} aria-expanded={open} onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button></div>{open&&<nav className="border-t border-black/8 bg-white px-4 py-5 lg:hidden" aria-label="Mobile">{links.map(([label,path])=><NavLink onClick={()=>setOpen(false)} key={path} to={path} className="block border-b border-black/8 py-3 font-bold">{label}</NavLink>)}<div className="mt-5 flex gap-3"><Link onClick={()=>setOpen(false)} to="/search" className="btn btn-outline"><Search size={17}/> Search</Link><Link onClick={()=>setOpen(false)} to="/contact" className="btn btn-primary">Contact</Link></div></nav>}</header>
+}
