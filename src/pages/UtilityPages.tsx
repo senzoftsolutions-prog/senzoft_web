@@ -1,11 +1,177 @@
-import { FormEvent, useState } from 'react'
-import { Search as SearchIcon } from 'lucide-react'
-import { Link } from 'react-router-dom'
-import { PageHero } from '../components/ui/PageHero'
-import { Seo } from '../components/ui/Seo'
-import { contentRepository } from '../content/repository'
+import { FormEvent, useState } from "react";
+import { Search as SearchIcon } from "lucide-react";
+import { Link } from "react-router-dom";
+import { PageHero } from "../components/ui/PageHero";
+import { Seo } from "../components/ui/Seo";
+import { contentRepository } from "../content/repository";
 
-export function SearchPage(){const [query,setQuery]=useState('');const [term,setTerm]=useState('');const results=term?contentRepository.search(term):[];function submit(e:FormEvent){e.preventDefault();setTerm(query.trim())}return <><Seo title="Search | SENZOFT" description="Search SENZOFT services, products, industries and insights."/><PageHero eyebrow="Search" title="Find the right starting point." description="Search across our capabilities, products, industries and thinking."/><section className="section"><div className="container-shell"><form onSubmit={submit} className="flex max-w-2xl gap-3"><input aria-label="Search site" autoFocus className="field" value={query} onChange={e=>setQuery(e.target.value)} placeholder="What are you looking for?"/><button className="btn btn-primary"><SearchIcon size={18}/> Search</button></form>{term&&<p className="mt-8 text-sm font-bold text-brand-muted">{results.length} result{results.length===1?'':'s'} for “{term}”</p>}<div className="mt-5 divide-y divide-black/10">{results.map(item=><Link className="block py-6" key={item.id} to={`/${'capabilities'in item?'services':'features'in item?'products':'challenges'in item?'industries':'insights'}/${item.slug}`}><h2 className="text-2xl font-bold hover:text-brand-orange">{item.title}</h2><p className="mt-2 text-brand-muted">{item.summary}</p></Link>)}</div></div></section></>}
-const legal:Record<string,{title:string;description:string;sections:Array<[string,string]>}>={privacy:{title:'Privacy policy',description:'How SENZOFT handles information submitted through this website.',sections:[['Information we collect','We collect information you choose to provide through enquiry and recruitment forms. During this frontend phase, submissions are simulated and are not stored by a SENZOFT backend.'],['How information will be used','When backend services are connected, submitted details will be used to respond to enquiries, evaluate expressions of career interest and protect the website.'],['Your choices','You may contact SENZOFT to ask about your personal information. Final legal contact details and retention periods will be added before production launch.']]},terms:{title:'Terms of use',description:'Conditions for using the SENZOFT website.',sections:[['Website content','This website provides general information. Draft product, role and insight content is clearly identified and should not be treated as a commercial commitment.'],['Intellectual property','SENZOFT names, marks and original website materials may not be reused without permission.'],['External links','External resources may have their own terms and privacy practices.']]},accessibility:{title:'Accessibility',description:'Our commitment to inclusive digital experiences.',sections:[['Our approach','We aim to meet WCAG 2.2 AA fundamentals through semantic structure, keyboard access, visible focus, sufficient contrast and reduced-motion support.'],['Feedback','If you encounter an accessibility barrier, contact our team and describe the page and issue.'],['Ongoing improvement','Accessibility is tested throughout design, engineering and content review.']]}}
-export function LegalPage({type}:{type:keyof typeof legal}){const page=legal[type];return <><Seo title={`${page.title} | SENZOFT`} description={page.description}/><PageHero eyebrow="Legal & trust" title={page.title} description={page.description}/><article className="section"><div className="container-shell max-w-3xl"><p className="mb-10 rounded-xl bg-brand-cream p-4 text-sm text-brand-muted">Draft for review. This page must receive legal approval before production publication.</p>{page.sections.map(([heading,text])=><section className="mb-10" key={heading}><h2 className="text-2xl font-bold">{heading}</h2><p className="mt-3 leading-8 text-brand-muted">{text}</p></section>)}</div></article></>}
-export function NotFoundPage(){return <><Seo title="Page not found | SENZOFT" description="The requested page could not be found."/><section className="grid min-h-[75vh] place-items-center bg-brand-ink px-4 pt-20 text-center text-white grid-lines"><div><span className="text-8xl font-black gradient-text">404</span><h1 className="display mt-5 text-5xl">This idea took a wrong turn.</h1><p className="mt-5 text-white/60">The page may have moved or the address may be incomplete.</p><Link to="/" className="btn btn-primary mt-8">Return home</Link></div></section></>}
+export function SearchPage() {
+  const [query, setQuery] = useState("");
+  const [term, setTerm] = useState("");
+  const results = term ? contentRepository.search(term) : [];
+  function submit(e: FormEvent) {
+    e.preventDefault();
+    setTerm(query.trim());
+  }
+  return (
+    <>
+      <Seo
+        title="Search | SENZOFT"
+        description="Search SENZOFT services, industries and insights."
+      />
+      <PageHero
+        eyebrow="Search"
+        title="Find the right starting point."
+        description="Search across our technology services, industries and thinking."
+      />
+      <section className="section">
+        <div className="container-shell">
+          <form onSubmit={submit} className="flex max-w-2xl gap-3">
+            <input
+              aria-label="Search site"
+              autoFocus
+              className="field"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="What are you looking for?"
+            />
+            <button className="btn btn-primary">
+              <SearchIcon size={18} /> Search
+            </button>
+          </form>
+          {term && (
+            <p className="mt-8 text-sm font-bold text-brand-muted">
+              {results.length} result{results.length === 1 ? "" : "s"} for “
+              {term}”
+            </p>
+          )}
+          <div className="mt-5 divide-y divide-black/10">
+            {results.map((item) => (
+              <Link
+                className="block py-6"
+                key={item.id}
+                to={`/${"capabilities" in item ? "services" : "challenges" in item ? "industries" : "insights"}/${item.slug}`}
+              >
+                <h2 className="text-2xl font-bold hover:text-brand-orange">
+                  {item.title}
+                </h2>
+                <p className="mt-2 text-brand-muted">{item.summary}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
+const legal: Record<
+  string,
+  { title: string; description: string; sections: Array<[string, string]> }
+> = {
+  privacy: {
+    title: "Privacy policy",
+    description:
+      "How SENZOFT handles information submitted through this website.",
+    sections: [
+      [
+        "Information we collect",
+        "We collect information you choose to provide through enquiry and recruitment forms. During this frontend phase, submissions are simulated and are not stored by a SENZOFT backend.",
+      ],
+      [
+        "How information will be used",
+        "When backend services are connected, submitted details will be used to respond to enquiries, evaluate expressions of career interest and protect the website.",
+      ],
+      [
+        "Your choices",
+        "You may contact SENZOFT to ask about your personal information. Final legal contact details and retention periods will be added before production launch.",
+      ],
+    ],
+  },
+  terms: {
+    title: "Terms of use",
+    description: "Conditions for using the SENZOFT website.",
+    sections: [
+      [
+        "Website content",
+        "This website provides general information. Draft role and insight content is clearly identified and should not be treated as a commercial commitment.",
+      ],
+      [
+        "Intellectual property",
+        "SENZOFT names, marks and original website materials may not be reused without permission.",
+      ],
+      [
+        "External links",
+        "External resources may have their own terms and privacy practices.",
+      ],
+    ],
+  },
+  accessibility: {
+    title: "Accessibility",
+    description: "Our commitment to inclusive digital experiences.",
+    sections: [
+      [
+        "Our approach",
+        "We aim to meet WCAG 2.2 AA fundamentals through semantic structure, keyboard access, visible focus, sufficient contrast and reduced-motion support.",
+      ],
+      [
+        "Feedback",
+        "If you encounter an accessibility barrier, contact our team and describe the page and issue.",
+      ],
+      [
+        "Ongoing improvement",
+        "Accessibility is tested throughout design, engineering and content review.",
+      ],
+    ],
+  },
+};
+export function LegalPage({ type }: { type: keyof typeof legal }) {
+  const page = legal[type];
+  return (
+    <>
+      <Seo title={`${page.title} | SENZOFT`} description={page.description} />
+      <PageHero
+        eyebrow="Legal & trust"
+        title={page.title}
+        description={page.description}
+      />
+      <article className="section">
+        <div className="container-shell max-w-3xl">
+          <p className="mb-10 rounded-xl bg-brand-cream p-4 text-sm text-brand-muted">
+            Draft for review. This page must receive legal approval before
+            production publication.
+          </p>
+          {page.sections.map(([heading, text]) => (
+            <section className="mb-10" key={heading}>
+              <h2 className="text-2xl font-bold">{heading}</h2>
+              <p className="mt-3 leading-8 text-brand-muted">{text}</p>
+            </section>
+          ))}
+        </div>
+      </article>
+    </>
+  );
+}
+export function NotFoundPage() {
+  return (
+    <>
+      <Seo
+        title="Page not found | SENZOFT"
+        description="The requested page could not be found."
+      />
+      <section className="grid min-h-[75vh] place-items-center bg-brand-ink px-4 pt-20 text-center text-white grid-lines">
+        <div>
+          <span className="text-8xl font-black gradient-text">404</span>
+          <h1 className="display mt-5 text-5xl">
+            This idea took a wrong turn.
+          </h1>
+          <p className="mt-5 text-white/60">
+            The page may have moved or the address may be incomplete.
+          </p>
+          <Link to="/" className="btn btn-primary mt-8">
+            Return home
+          </Link>
+        </div>
+      </section>
+    </>
+  );
+}
