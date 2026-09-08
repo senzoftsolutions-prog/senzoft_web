@@ -12,6 +12,7 @@ import {
 import { Link } from "react-router-dom";
 import { ContentGrid } from "../components/sections/ContentGrid";
 import { CTA } from "../components/sections/CTA";
+import { VideoStory } from "../components/sections/VideoStory";
 import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
 import { contentRepository } from "../content/repository";
@@ -27,7 +28,7 @@ export default function HomePage() {
         description="Software engineering, cloud, data, AI, cybersecurity and managed IT services for ambitious enterprises."
       />
       <section className="grid-lines relative min-h-[760px] overflow-hidden bg-brand-plum pt-32 text-white">
-        <div className="absolute -right-32 top-10 size-150 rounded-full bg-brand-orange/12 blur-3xl" />
+        <div className="tech-orb absolute -right-32 top-10 size-150 rounded-full bg-brand-orange/18 blur-3xl" />
         <div className="container-shell relative grid min-h-[620px] items-center gap-12 py-14 lg:grid-cols-[1.2fr_.8fr]">
           <Reveal>
             <span className="eyebrow text-brand-amber!">
@@ -54,7 +55,7 @@ export default function HomePage() {
             </div>
           </Reveal>
           <Reveal delay={0.15}>
-            <div className="relative mx-auto aspect-square max-w-md">
+            <div className="float-slow relative mx-auto aspect-square max-w-md">
               <div className="absolute inset-4 rotate-6 rounded-[3rem] border border-brand-orange/30 bg-white/4" />
               <div className="absolute inset-12 -rotate-3 rounded-[2.5rem] border border-white/15 bg-white/6 backdrop-blur">
                 <Sparkles
@@ -78,6 +79,7 @@ export default function HomePage() {
           </Reveal>
         </div>
       </section>
+      <VideoStory />
       <section className="border-b border-black/10 bg-brand-cream py-8">
         <div className="container-shell grid gap-5 text-sm font-extrabold uppercase tracking-wider text-brand-muted sm:grid-cols-2 lg:grid-cols-4">
           {[

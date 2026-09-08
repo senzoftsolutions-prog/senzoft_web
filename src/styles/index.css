@@ -148,6 +148,29 @@ a {
     linear-gradient(90deg, #ffffff10 1px, transparent 1px);
   background-size: 46px 46px;
 }
+.tech-orb {
+  animation: tech-orbit 11s ease-in-out infinite alternate;
+}
+.float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+@keyframes tech-orbit {
+  from {
+    transform: translate3d(0, -2%, 0) scale(0.95);
+  }
+  to {
+    transform: translate3d(-10%, 8%, 0) scale(1.08);
+  }
+}
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0) rotate(3deg);
+  }
+  50% {
+    transform: translateY(-14px) rotate(-2deg);
+  }
+}
 .card {
   border: 1px solid #e5e2dc;
   border-radius: 1.35rem;
@@ -215,5 +238,8 @@ a {
     scroll-behavior: auto !important;
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+  video {
+    display: none;
   }
 }
