@@ -274,14 +274,14 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-      <section className="section bg-brand-plum text-white">
+      <section className="section bg-brand-peach text-brand-ink">
         <div className="container-shell">
-          <span className="eyebrow text-brand-amber!">Technology insights</span>
+          <span className="eyebrow">Technology insights</span>
           <div className="mt-6 flex items-end justify-between">
             <h2 className="display text-5xl">Ideas for the work ahead.</h2>
             <Link
               to="/insights"
-              className="hidden font-bold text-brand-amber sm:block"
+              className="hidden font-bold text-brand-orange sm:block"
             >
               View all insights →
             </Link>
@@ -291,15 +291,17 @@ export default function HomePage() {
               <Link
                 key={item.slug}
                 to={`/insights/${item.slug}`}
-                className="group border-t border-white/20 py-7"
+                className="group border-t border-brand-ink/15 py-7"
               >
-                <span className="text-xs font-bold text-brand-amber">
+                <span className="text-xs font-bold text-brand-orange">
                   {item.type} · {item.readTime}
                 </span>
-                <h3 className="mt-5 text-2xl font-bold group-hover:text-brand-amber">
+                <h3 className="mt-5 text-2xl font-bold group-hover:text-brand-orange">
                   {item.title}
                 </h3>
-                <p className="mt-4 leading-7 text-white/55">{item.summary}</p>
+                <p className="mt-4 leading-7 text-brand-muted">
+                  {item.summary}
+                </p>
               </Link>
             ))}
           </div>

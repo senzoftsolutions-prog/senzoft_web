@@ -151,6 +151,62 @@ export default function ContactPage() {
           </form>
         </div>
       </section>
+      <section className="section bg-brand-peach">
+        <div className="container-shell">
+          <span className="eyebrow">What happens next</span>
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {[
+              [
+                "01",
+                "We understand",
+                "We review your goals, context and the kind of expertise required.",
+              ],
+              [
+                "02",
+                "We connect",
+                "The right SENZOFT specialist joins a focused introductory conversation.",
+              ],
+              [
+                "03",
+                "We shape a path",
+                "If there is a fit, we outline practical next steps, scope and delivery options.",
+              ],
+            ].map(([number, title, copy]) => (
+              <article className="rounded-2xl bg-white p-8" key={title}>
+                <span className="font-black text-brand-orange">{number}</span>
+                <h2 className="display mt-10 text-3xl">{title}</h2>
+                <p className="mt-4 leading-7 text-brand-muted">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container-shell grid gap-10 lg:grid-cols-2">
+          <div>
+            <span className="eyebrow">Ways we can help</span>
+            <h2 className="display mt-6 text-5xl">
+              Start with the challenge—not a predefined solution.
+            </h2>
+          </div>
+          <div className="grid gap-4">
+            {[
+              "Explore a new website, application or digital service",
+              "Modernize an existing application or cloud environment",
+              "Create a data, analytics or AI roadmap",
+              "Strengthen security, quality or technology operations",
+              "Discuss a consulting or delivery partnership",
+            ].map((item) => (
+              <div
+                className="rounded-xl border border-black/10 p-5 font-bold"
+                key={item}
+              >
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
     </>
   );
 }

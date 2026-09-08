@@ -61,6 +61,57 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <section className="section">
+        <div className="container-shell">
+          <span className="eyebrow">How we create impact</span>
+          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
+            Small enough to stay close. Structured to deliver well.
+          </h2>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {[
+              [
+                "Business-led",
+                "Every technology decision connects to a user, operational or growth outcome.",
+              ],
+              [
+                "Engineering-minded",
+                "Architecture, quality, security and maintainability are part of the work from day one.",
+              ],
+              [
+                "Built together",
+                "Open collaboration and knowledge transfer help change last beyond delivery.",
+              ],
+            ].map(([title, copy]) => (
+              <article className="rounded-2xl bg-brand-peach p-8" key={title}>
+                <h3 className="display text-3xl">{title}</h3>
+                <p className="mt-5 leading-7 text-brand-muted">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section bg-brand-sage">
+        <div className="container-shell grid gap-10 lg:grid-cols-2">
+          <div>
+            <span className="eyebrow">Our commitment</span>
+            <h2 className="display mt-6 text-5xl">
+              Responsible progress by design.
+            </h2>
+          </div>
+          <div className="grid gap-4">
+            {[
+              "Accessible and inclusive digital experiences",
+              "Responsible use of data and artificial intelligence",
+              "Security and privacy built into delivery",
+              "Sustainable, maintainable technology choices",
+            ].map((item) => (
+              <div className="rounded-xl bg-white p-5 font-bold" key={item}>
+                {item}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <CTA />
     </>
   );

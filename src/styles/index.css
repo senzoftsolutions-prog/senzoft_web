@@ -3,13 +3,13 @@
 @theme {
   --color-brand-orange: #f04a16;
   --color-brand-amber: #ff9d00;
-  --color-brand-ink: #28251f;
-  --color-brand-muted: #625f57;
-  --color-brand-cream: #faf6ec;
-  --color-brand-plum: #23483b;
-  --color-brand-wine: #b34824;
-  --color-brand-sage: #e5eddf;
-  --color-brand-peach: #fff1df;
+  --color-brand-ink: #3b302a;
+  --color-brand-muted: #70645d;
+  --color-brand-cream: #fffaf3;
+  --color-brand-plum: #8f3a20;
+  --color-brand-wine: #e65320;
+  --color-brand-sage: #f4eadf;
+  --color-brand-peach: #fff0e4;
   --font-sans: "Manrope", "Aptos", "Segoe UI", sans-serif;
   --font-display: "Outfit", "Aptos Display", "Segoe UI", sans-serif;
 }

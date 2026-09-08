@@ -312,6 +312,75 @@ export const industries: Industry[] = [
       "SENZOFT solutions for manufacturing and logistics.",
     ),
   },
+  {
+    id: "ind-5",
+    slug: "technology-software",
+    title: "Technology & Software",
+    summary:
+      "Accelerate platform engineering, product delivery and intelligent operations for technology businesses.",
+    status: "published",
+    icon: "Cpu",
+    challenges: [
+      "Release velocity",
+      "Platform scalability",
+      "Experience consistency",
+    ],
+    solutions: [
+      "Product engineering",
+      "Cloud-native platforms",
+      "Quality automation",
+    ],
+    seo: seo(
+      "Technology & Software",
+      "SENZOFT services for technology and software businesses.",
+    ),
+  },
+  {
+    id: "ind-6",
+    slug: "communications-media",
+    title: "Communications & Media",
+    summary:
+      "Create connected customer experiences and data-led operations across fast-moving digital ecosystems.",
+    status: "published",
+    icon: "RadioTower",
+    challenges: ["Network complexity", "Customer churn", "Content operations"],
+    solutions: ["Digital experience", "Data and AI", "Intelligent operations"],
+    seo: seo(
+      "Communications & Media",
+      "SENZOFT services for communications and media.",
+    ),
+  },
+  {
+    id: "ind-7",
+    slug: "education",
+    title: "Education",
+    summary:
+      "Build accessible learning and administration platforms that connect students, educators and institutions.",
+    status: "published",
+    icon: "GraduationCap",
+    challenges: [
+      "Fragmented journeys",
+      "Access and inclusion",
+      "Administrative load",
+    ],
+    solutions: ["Learning platforms", "Process automation", "Analytics"],
+    seo: seo("Education", "SENZOFT digital services for education."),
+  },
+  {
+    id: "ind-8",
+    slug: "public-sector",
+    title: "Public Sector",
+    summary:
+      "Modernize citizen and employee services with secure, inclusive and resilient digital foundations.",
+    status: "published",
+    icon: "Building2",
+    challenges: ["Legacy estates", "Service accessibility", "Data governance"],
+    solutions: ["Citizen platforms", "Cloud modernization", "Cybersecurity"],
+    seo: seo(
+      "Public Sector",
+      "SENZOFT technology services for the public sector.",
+    ),
+  },
 ];
 
 export const insights: Insight[] = [
@@ -358,6 +427,51 @@ export const insights: Insight[] = [
     seo: seo(
       "Designing trusted digital services",
       "Principles for trusted digital experiences.",
+    ),
+  },
+  {
+    id: "ins-4",
+    slug: "cloud-cost-to-cloud-value",
+    title: "From cloud cost to cloud value",
+    summary:
+      "Connect architecture, engineering practices and FinOps signals to improve cloud economics.",
+    status: "draft",
+    type: "Perspective",
+    readTime: "7 min",
+    publishedAt: "2026-05-20",
+    seo: seo(
+      "From cloud cost to cloud value",
+      "A practical perspective on sustainable cloud value.",
+    ),
+  },
+  {
+    id: "ins-5",
+    slug: "quality-engineering-in-ai-era",
+    title: "Quality engineering in the AI era",
+    summary:
+      "How continuous assurance evolves when software teams add AI-assisted delivery and intelligent features.",
+    status: "draft",
+    type: "Article",
+    readTime: "6 min",
+    publishedAt: "2026-04-16",
+    seo: seo(
+      "Quality engineering in the AI era",
+      "Quality practices for AI-enabled software delivery.",
+    ),
+  },
+  {
+    id: "ins-6",
+    slug: "secure-modernization-roadmap",
+    title: "A secure modernization roadmap",
+    summary:
+      "Sequence legacy renewal around business value, operational continuity and security by design.",
+    status: "draft",
+    type: "Report",
+    readTime: "9 min",
+    publishedAt: "2026-03-08",
+    seo: seo(
+      "A secure modernization roadmap",
+      "A structured approach to secure application modernization.",
     ),
   },
 ];

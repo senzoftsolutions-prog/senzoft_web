@@ -30,9 +30,75 @@ function Listing({
     <>
       <Seo title={`${title} | SENZOFT`} description={description} />
       <PageHero eyebrow={kind} title={title} description={description} />
+      <section className="section bg-brand-peach">
+        <div className="container-shell grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
+          <div>
+            <span className="eyebrow">Built for meaningful change</span>
+            <h2 className="display mt-6 text-5xl">
+              Business context first. Technology with purpose.
+            </h2>
+          </div>
+          <div className="grid gap-5 sm:grid-cols-3">
+            {[
+              [
+                "Understand",
+                "Begin with users, operations, systems and the outcome that matters.",
+              ],
+              [
+                "Connect",
+                "Bring experience, data, applications, cloud and security into one roadmap.",
+              ],
+              [
+                "Deliver",
+                "Build in focused increments and improve continuously through measurable signals.",
+              ],
+            ].map(([heading, copy], index) => (
+              <article
+                key={heading}
+                className="border-t-2 border-brand-orange pt-5"
+              >
+                <span className="text-xs font-black text-brand-orange">
+                  0{index + 1}
+                </span>
+                <h3 className="mt-5 text-xl font-bold">{heading}</h3>
+                <p className="mt-3 text-sm leading-7 text-brand-muted">
+                  {copy}
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
       <section className="section">
         <div className="container-shell">
           <ContentGrid items={items} basePath={basePath} />
+        </div>
+      </section>
+      <section className="section bg-brand-sage">
+        <div className="container-shell">
+          <span className="eyebrow">Connected capability</span>
+          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
+            Change works when the pieces work together.
+          </h2>
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              "Strategy & consulting",
+              "Experience & engineering",
+              "Data, AI & cloud",
+              "Security & operations",
+            ].map((item, index) => (
+              <div key={item} className="rounded-2xl bg-white p-7">
+                <span className="text-sm font-black text-brand-orange">
+                  0{index + 1}
+                </span>
+                <h3 className="display mt-12 text-3xl">{item}</h3>
+                <p className="mt-4 text-sm leading-7 text-brand-muted">
+                  Integrated into delivery around your priorities, teams and
+                  technology landscape.
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
       <CTA />
@@ -71,6 +137,32 @@ export function InsightsPage() {
         title="Useful thinking for consequential change."
         description="Perspectives designed to make emerging technology and transformation decisions clearer."
       />
+      <section className="section bg-brand-peach">
+        <div className="container-shell grid items-center gap-8 lg:grid-cols-[1.2fr_.8fr]">
+          <div>
+            <span className="eyebrow">Featured theme</span>
+            <h2 className="display mt-6 text-5xl md:text-6xl">
+              What separates AI activity from AI value?
+            </h2>
+            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
+              Explore the roles of trusted data, modern architecture,
+              responsible governance and workflow adoption in moving
+              intelligence into the enterprise.
+            </p>
+          </div>
+          <div className="rounded-[2rem] bg-brand-orange p-8 text-white md:p-10">
+            <p className="text-xs font-extrabold uppercase tracking-[.2em] text-white/70">
+              Research agenda
+            </p>
+            <ul className="mt-8 space-y-5 text-xl font-bold">
+              <li>Responsible enterprise AI</li>
+              <li>Cloud economics</li>
+              <li>Modern software delivery</li>
+              <li>Digital trust</li>
+            </ul>
+          </div>
+        </div>
+      </section>
       <section className="section">
         <div className="container-shell">
           <label className="relative mb-10 block max-w-2xl">
@@ -101,6 +193,27 @@ export function InsightsPage() {
           )}
         </div>
       </section>
+      <section className="section bg-brand-sage">
+        <div className="container-shell grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
+          <div>
+            <span className="eyebrow">Stay informed</span>
+            <h2 className="display mt-6 text-5xl">
+              Technology perspectives, without the noise.
+            </h2>
+            <p className="mt-5 max-w-2xl text-brand-muted">
+              Newsletter delivery will be connected when the backend service is
+              available.
+            </p>
+          </div>
+          <a
+            href="mailto:hello@senzoft.com?subject=SENZOFT insights"
+            className="btn btn-primary"
+          >
+            Register your interest
+          </a>
+        </div>
+      </section>
+      <CTA />
     </>
   );
 }

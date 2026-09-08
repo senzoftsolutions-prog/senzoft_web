@@ -41,9 +41,15 @@ test("expanded navigation connects every service", async ({ page }) => {
   await page.getByRole("button", { name: "Open navigation" }).click();
   const menu = page.locator("#site-menu");
   await expect(menu).toBeVisible();
-  await expect(menu.getByRole("link", { name: "Managed IT Services" })).toBeVisible();
+  await expect(
+    menu.getByRole("link", { name: "Managed IT Services" }),
+  ).toBeVisible();
   await menu.getByRole("link", { name: "Application Modernization" }).click();
   await expect(page).toHaveURL(/\/services\/application-modernization$/);
-  await expect(page.getByRole("heading", { name: "Capabilities spanning strategy, build and scale." })).toBeVisible();
+  await expect(
+    page.getByRole("heading", {
+      name: "Capabilities spanning strategy, build and scale.",
+    }),
+  ).toBeVisible();
   await expect(page.getByText("Common questions")).toBeVisible();
 });

@@ -230,6 +230,70 @@ function ServiceDetail({ service }: { service: Service }) {
           </div>
         </div>
       </section>
+      <section className="section bg-brand-peach">
+        <div className="container-shell">
+          <span className="eyebrow">Transformation priorities</span>
+          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
+            Connect experience, intelligence and resilient technology.
+          </h2>
+          <div className="mt-12 grid gap-5 md:grid-cols-3">
+            {[
+              [
+                "Experience",
+                "Design inclusive journeys around the needs of customers, employees and partners.",
+              ],
+              [
+                "Intelligence",
+                "Create trusted data foundations and place practical insight inside everyday decisions.",
+              ],
+              [
+                "Resilience",
+                "Modernize architecture, security and operations to support dependable change.",
+              ],
+            ].map(([title, text], index) => (
+              <article className="rounded-2xl bg-white p-8" key={title}>
+                <span className="font-black text-brand-orange">
+                  0{index + 1}
+                </span>
+                <h3 className="display mt-10 text-3xl">{title}</h3>
+                <p className="mt-4 leading-7 text-brand-muted">{text}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container-shell grid gap-12 lg:grid-cols-[.75fr_1.25fr]">
+          <div>
+            <span className="eyebrow">A practical path</span>
+            <h2 className="display mt-6 text-5xl">
+              Transform without losing sight of today.
+            </h2>
+            <p className="mt-6 leading-8 text-brand-muted">
+              Sequence change around value, readiness and operational
+              continuity.
+            </p>
+          </div>
+          <div className="border-t border-black/15">
+            {[
+              "Discover the priority and establish a measurable baseline",
+              "Design the target experience, architecture and operating model",
+              "Deliver in focused increments with quality and security built in",
+              "Adopt, measure and continuously improve",
+            ].map((step, index) => (
+              <div
+                className="grid grid-cols-[3rem_1fr] gap-4 border-b border-black/15 py-6"
+                key={step}
+              >
+                <span className="font-black text-brand-orange">
+                  0{index + 1}
+                </span>
+                <p className="text-lg font-bold">{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <section className="section bg-brand-cream">
         <div className="container-shell">
           <span className="eyebrow">Connected expertise</span>

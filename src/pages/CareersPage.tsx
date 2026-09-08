@@ -73,6 +73,67 @@ export default function CareersPage() {
           </div>
         </div>
       </section>
+      <section className="section bg-brand-peach">
+        <div className="container-shell">
+          <span className="eyebrow">Life at SENZOFT</span>
+          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
+            A place to deepen your craft and widen your perspective.
+          </h2>
+          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+            {[
+              [
+                "Meaningful work",
+                "Solve practical technology and business challenges.",
+              ],
+              [
+                "Learning culture",
+                "Build skills through delivery, feedback and shared practice.",
+              ],
+              [
+                "Inclusive teams",
+                "Work with respect across experiences and disciplines.",
+              ],
+              [
+                "Room to own",
+                "Take responsibility and see how your work creates value.",
+              ],
+            ].map(([title, copy]) => (
+              <article className="rounded-2xl bg-white p-7" key={title}>
+                <h3 className="text-2xl font-bold">{title}</h3>
+                <p className="mt-4 leading-7 text-brand-muted">{copy}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container-shell grid gap-10 lg:grid-cols-[.7fr_1.3fr]">
+          <div>
+            <span className="eyebrow">Hiring journey</span>
+            <h2 className="display mt-6 text-5xl">
+              Clear steps. Human conversations.
+            </h2>
+          </div>
+          <div className="border-t border-black/15">
+            {[
+              "Application and profile review",
+              "Introductory conversation",
+              "Role-relevant discussion or practical exercise",
+              "Final conversation and decision",
+            ].map((step, index) => (
+              <div
+                className="grid grid-cols-[3rem_1fr] border-b border-black/15 py-6"
+                key={step}
+              >
+                <span className="font-black text-brand-orange">
+                  0{index + 1}
+                </span>
+                <p className="text-lg font-bold">{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <CTA />
     </>
   );
