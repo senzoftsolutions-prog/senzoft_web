@@ -38,7 +38,10 @@ export interface Job extends BaseContent {
   location: string;
   department: string;
   employmentType: string;
+  workMode: string;
+  experience: string;
   responsibilities: string[];
+  requirements: string[];
 }
 export interface LeadershipProfile extends BaseContent {
   role: string;

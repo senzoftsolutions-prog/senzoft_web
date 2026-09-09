@@ -5,11 +5,11 @@ import symbol from "../../assets/senzoft-symbol.png";
 import { contentRepository } from "../../content/repository";
 
 const links = [
+  ["About Us", "/about"],
   ["Services", "/services"],
   ["Industries", "/industries"],
-  ["Insights", "/insights"],
-  ["About", "/about"],
   ["Careers", "/careers"],
+  ["Contact Us", "/contact"],
 ];
 const serviceLinks = contentRepository
   .getServices()
@@ -26,9 +26,9 @@ export function Header() {
         Skip to content
       </a>
       <div className="container-shell relative pt-3 md:pt-4">
-        <div className="pointer-events-auto flex min-h-18 items-center gap-3 rounded-[1.4rem] border border-black/8 bg-white/92 px-3 shadow-[0_16px_45px_rgba(21,27,33,.14)] backdrop-blur-xl md:rounded-full md:px-4">
+        <div className="responsive-header pointer-events-auto flex min-h-15 items-center gap-3 rounded-[1.4rem] border border-black/8 bg-white/92 px-3 shadow-[0_16px_45px_rgba(21,27,33,.14)] backdrop-blur-xl md:rounded-full md:px-4">
           <button
-            className="grid size-11 shrink-0 place-items-center rounded-full bg-brand-cream transition hover:bg-brand-orange hover:text-white"
+            className="header-menu grid size-11 shrink-0 place-items-center rounded-full bg-brand-cream transition hover:bg-brand-orange hover:text-white"
             aria-label={open ? "Close navigation" : "Open navigation"}
             aria-expanded={open}
             aria-controls="site-menu"
@@ -39,15 +39,15 @@ export function Header() {
           <Link
             to="/"
             aria-label="SENZOFT home"
-            className="flex shrink-0 items-center gap-2"
+            className="header-brand flex shrink-0 items-center gap-2"
           >
-            <img src={symbol} alt="" className="size-11 object-contain" />
-            <span className="hidden font-display text-xl font-black tracking-[-.06em] text-brand-ink sm:block">
+            <img src={symbol} alt="" className="size-8 object-contain" />
+            <span className="header-wordmark font-display text-base font-black tracking-[-.06em] text-brand-ink">
               SEN<span className="text-brand-orange">ZOFT</span>
             </span>
           </Link>
           <nav
-            className="mx-auto hidden items-center rounded-full bg-brand-cream px-2 py-1.5 lg:flex"
+            className="header-primary mx-auto flex items-center rounded-full bg-brand-cream px-2 py-1.5"
             aria-label="Primary"
           >
             {links.map(([label, path]) => (
@@ -62,7 +62,7 @@ export function Header() {
               </NavLink>
             ))}
           </nav>
-          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <div className="header-search ml-auto flex items-center gap-2 lg:ml-0">
             <Link
               aria-label="Search SENZOFT"
               to="/search"
@@ -70,15 +70,12 @@ export function Header() {
             >
               <Search size={19} />
             </Link>
-            <Link to="/contact" className="btn btn-dark hidden sm:inline-flex">
-              Talk to us <ArrowUpRight size={17} />
-            </Link>
           </div>
         </div>
         {open && (
           <div
             id="site-menu"
-            className="pointer-events-auto absolute left-0 right-0 top-[5.8rem] overflow-hidden rounded-[1.5rem] border border-black/8 bg-white p-5 shadow-[0_22px_60px_rgba(21,27,33,.18)] md:p-7"
+            className="pointer-events-auto absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[calc(100dvh-10rem)] overflow-y-auto rounded-[1.5rem] border border-black/8 bg-white p-5 shadow-[0_22px_60px_rgba(21,27,33,.18)] md:p-7"
           >
             <div className="grid gap-7 lg:grid-cols-[.7fr_1.3fr]">
               <div>

@@ -392,7 +392,7 @@ export const insights: Insight[] = [
       "A pragmatic framework for connecting AI investment to workflows, governance and business outcomes.",
     status: "draft",
     type: "Perspective",
-    readTime: "6 min",
+    readTime: "2 min",
     publishedAt: "2026-08-18",
     seo: seo(
       "From AI pilot to practical value",
@@ -407,7 +407,7 @@ export const insights: Insight[] = [
       "How teams can sequence platform renewal while protecting business continuity.",
     status: "draft",
     type: "Article",
-    readTime: "5 min",
+    readTime: "2 min",
     publishedAt: "2026-07-24",
     seo: seo(
       "Modernization without disruption",
@@ -422,7 +422,7 @@ export const insights: Insight[] = [
       "Why reliability, clarity and accessibility should be designed into every customer journey.",
     status: "draft",
     type: "Report",
-    readTime: "8 min",
+    readTime: "2 min",
     publishedAt: "2026-06-10",
     seo: seo(
       "Designing trusted digital services",
@@ -437,7 +437,7 @@ export const insights: Insight[] = [
       "Connect architecture, engineering practices and FinOps signals to improve cloud economics.",
     status: "draft",
     type: "Perspective",
-    readTime: "7 min",
+    readTime: "2 min",
     publishedAt: "2026-05-20",
     seo: seo(
       "From cloud cost to cloud value",
@@ -452,7 +452,7 @@ export const insights: Insight[] = [
       "How continuous assurance evolves when software teams add AI-assisted delivery and intelligent features.",
     status: "draft",
     type: "Article",
-    readTime: "6 min",
+    readTime: "2 min",
     publishedAt: "2026-04-16",
     seo: seo(
       "Quality engineering in the AI era",
@@ -467,7 +467,7 @@ export const insights: Insight[] = [
       "Sequence legacy renewal around business value, operational continuity and security by design.",
     status: "draft",
     type: "Report",
-    readTime: "9 min",
+    readTime: "2 min",
     publishedAt: "2026-03-08",
     seo: seo(
       "A secure modernization roadmap",
@@ -487,10 +487,17 @@ export const jobs: Job[] = [
     location: "India · Hybrid",
     department: "Engineering",
     employmentType: "Full time",
+    workMode: "Hybrid",
+    experience: "Experience based on role fit",
     responsibilities: [
       "Create reusable UI systems",
       "Partner with design and engineering",
       "Improve quality and performance",
+    ],
+    requirements: [
+      "Strong foundations in semantic HTML, CSS and JavaScript",
+      "Practical experience with React and TypeScript",
+      "A thoughtful approach to accessibility, testing and performance",
     ],
     seo: seo(
       "Frontend Engineer",
@@ -507,10 +514,17 @@ export const jobs: Job[] = [
     location: "India · Hybrid",
     department: "Consulting",
     employmentType: "Full time",
+    workMode: "Hybrid",
+    experience: "Experience based on role fit",
     responsibilities: [
       "Shape requirements and journeys",
       "Facilitate stakeholder workshops",
       "Support outcome measurement",
+    ],
+    requirements: [
+      "Clear analytical, facilitation and written communication skills",
+      "Experience translating business needs into delivery-ready requirements",
+      "Comfort working with product, design and engineering teams",
     ],
     seo: seo("Business Analyst", "Explore a business analyst role at SENZOFT."),
   },

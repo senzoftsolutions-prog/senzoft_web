@@ -1,57 +1,43 @@
-import { ArrowUpRight, Play } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Reveal } from "../ui/Reveal";
-
-const videoUrl =
-  "https://videos.pexels.com/video-files/3129977/3129977-hd_1920_1080_25fps.mp4";
-
-export function VideoStory() {
+import { VideoPanel } from "../ui/VideoPanel";
+import type { MediaKey } from "../../content/media";
+export function VideoStory({
+  clip = "collaboration",
+  eyebrow = "People. Perspective. Progress.",
+  title = "Great technology starts with a shared understanding.",
+  description = "Bring business and engineering into the same conversation. Explore the problem, test the assumptions and turn a useful first step into a foundation for lasting change.",
+  href = "/about",
+  linkLabel = "Meet our approach",
+}: {
+  clip?: MediaKey;
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  href?: string;
+  linkLabel?: string;
+}) {
   return (
     <section className="section bg-brand-cream">
-      <div className="container-shell">
+      <div className="container-shell grid items-center gap-10 lg:grid-cols-2">
         <Reveal>
-          <div className="relative min-h-[38rem] overflow-hidden rounded-[2rem] bg-brand-wine text-white shadow-2xl">
-            <video
-              className="absolute inset-0 size-full object-cover opacity-55"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              aria-label="Abstract orange digital information moving across a technology grid"
-            >
-              <source src={videoUrl} type="video/mp4" />
-            </video>
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-wine/95 via-brand-wine/65 to-transparent" />
-            <div className="grid-lines absolute inset-0" />
-            <div className="relative flex min-h-[38rem] max-w-3xl flex-col justify-between p-8 md:p-14">
-              <span className="grid size-14 place-items-center rounded-full border border-white/30 bg-white/10 backdrop-blur">
-                <Play size={22} fill="currentColor" />
-              </span>
-              <div>
-                <p className="text-xs font-extrabold uppercase tracking-[.25em] text-brand-amber">
-                  Technology in motion
-                </p>
-                <h2 className="display mt-5 text-5xl md:text-7xl">
-                  Build the digital foundation for what comes next.
-                </h2>
-                <p className="mt-6 max-w-xl text-lg leading-8 text-white/75">
-                  Connect modern software, cloud, data, AI and security into a
-                  technology core designed to learn and evolve.
-                </p>
-                <Link
-                  to="/services"
-                  className="mt-8 inline-flex items-center gap-2 font-extrabold"
-                >
-                  Explore our capabilities <ArrowUpRight size={18} />
-                </Link>
-              </div>
-            </div>
-          </div>
+          <span className="eyebrow">{eyebrow}</span>
+          <h2 className="display mt-6 text-4xl md:text-6xl">{title}</h2>
+          <p className="mt-6 max-w-xl text-lg leading-8 text-brand-muted">
+            {description}
+          </p>
+          <Link
+            to={href}
+            className="mt-8 inline-flex items-center gap-3 font-bold text-brand-orange"
+          >
+            {linkLabel}
+            <ArrowUpRight size={18} />
+          </Link>
         </Reveal>
-        <p className="mt-3 text-right text-xs text-brand-muted">
-          Video: Pressmaster via Pexels
-        </p>
+        <Reveal delay={0.12}>
+          <VideoPanel clip={clip} className="aspect-[4/3]" />
+        </Reveal>
       </div>
     </section>
   );

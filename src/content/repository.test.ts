@@ -8,5 +8,5 @@ describe("content repository", () => {
   it("searches across content types", () =>
     expect(contentRepository.search("cloud").length).toBeGreaterThan(0));
   it("returns no results for unknown terms", () =>
-    expect(contentRepository.getInsights("not-a-real-topic")).toEqual([]));
+    expect(contentRepository.search("not-a-real-topic")).toEqual([]));
 });

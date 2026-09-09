@@ -69,7 +69,18 @@ export function ContentGrid({
           <Reveal className="h-full" key={item.slug} delay={index * 0.05}>
             <Link
               to={`${basePath}/${item.slug}`}
-              className="card group flex h-full min-h-72 flex-col p-7"
+              className="card content-card group flex h-full min-h-64 flex-col p-7"
+              onPointerMove={(event) => {
+                const rect = event.currentTarget.getBoundingClientRect();
+                event.currentTarget.style.setProperty(
+                  "--spot-x",
+                  `${event.clientX - rect.left}px`,
+                );
+                event.currentTarget.style.setProperty(
+                  "--spot-y",
+                  `${event.clientY - rect.top}px`,
+                );
+              }}
             >
               <div className="flex items-start justify-between">
                 <span className="grid size-12 place-items-center rounded-xl bg-brand-cream text-brand-orange">
@@ -86,7 +97,7 @@ export function ContentGrid({
                   {item.eyebrow}
                 </span>
               )}
-              <h3 className="display mt-3 text-3xl">{item.title}</h3>
+              <h3 className="display mt-3 text-2xl">{item.title}</h3>
               <p className="mt-4 grow leading-7 text-brand-muted">
                 {item.summary}
               </p>

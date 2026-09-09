@@ -17,12 +17,12 @@ export function SearchPage() {
     <>
       <Seo
         title="Search | SENZOFT"
-        description="Search SENZOFT services, industries and insights."
+        description="Search SENZOFT services and industries."
       />
       <PageHero
         eyebrow="Search"
         title="Find the right starting point."
-        description="Search across our technology services, industries and thinking."
+        description="Search across our technology services, industries and software solutions."
       />
       <section className="section">
         <div className="container-shell">
@@ -39,6 +39,36 @@ export function SearchPage() {
               <SearchIcon size={18} /> Search
             </button>
           </form>
+          {!term && (
+            <div className="mt-10">
+              <h2 className="text-xl font-bold">Popular starting points</h2>
+              <div className="mt-5 flex flex-wrap gap-3">
+                {["Cloud", "AI", "Engineering", "Security"].map((topic) => (
+                  <button
+                    key={topic}
+                    type="button"
+                    className="btn btn-outline"
+                    onClick={() => {
+                      setQuery(topic);
+                      setTerm(topic);
+                    }}
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+              <p className="mt-5 text-brand-muted">
+                Search by a business challenge, capability or industry. Try a
+                shorter phrase if you do not find a match.
+              </p>
+            </div>
+          )}
+          {term && results.length === 0 && (
+            <p className="mt-8 rounded-xl bg-brand-cream p-6">
+              No matching content. Try a broader term such as cloud, data or
+              engineering.
+            </p>
+          )}
           {term && (
             <p className="mt-8 text-sm font-bold text-brand-muted">
               {results.length} result{results.length === 1 ? "" : "s"} for “
@@ -50,7 +80,7 @@ export function SearchPage() {
               <Link
                 className="block py-6"
                 key={item.id}
-                to={`/${"capabilities" in item ? "services" : "challenges" in item ? "industries" : "insights"}/${item.slug}`}
+                to={`/${"capabilities" in item ? "services" : "industries"}/${item.slug}`}
               >
                 <h2 className="text-2xl font-bold hover:text-brand-orange">
                   {item.title}
@@ -75,15 +105,23 @@ const legal: Record<
     sections: [
       [
         "Information we collect",
-        "We collect information you choose to provide through enquiry and recruitment forms. During this frontend phase, submissions are simulated and are not stored by a SENZOFT backend.",
+        "We collect information you choose to provide through enquiry and recruitment forms. Form details are submitted to our hosting provider for delivery to SENZOFT.",
       ],
       [
         "How information will be used",
-        "When backend services are connected, submitted details will be used to respond to enquiries, evaluate expressions of career interest and protect the website.",
+        "Submitted details are used to respond to enquiries, evaluate expressions of career interest and protect the website.",
       ],
       [
         "Your choices",
-        "You may contact SENZOFT to ask about your personal information. Final legal contact details and retention periods will be added before production launch.",
+        "You may contact SENZOFT to ask about your personal information. For enquiries about your information or to withdraw recruitment contact consent, email hello@senzoft.com.",
+      ],
+      [
+        "Video playback and external sources",
+        "The illustrative videos and their still images are served with this website. Watching a bundled video does not require a Pexels or Mixkit account. Following a footage credit opens the provider's website, where its own privacy practices apply.",
+      ],
+      [
+        "What to include in an enquiry",
+        "Share only the information needed to explain your request. Please do not include passwords, payment details, confidential client records or sensitive documents in the general enquiry form.",
       ],
     ],
   },
@@ -93,7 +131,7 @@ const legal: Record<
     sections: [
       [
         "Website content",
-        "This website provides general information. Draft role and insight content is clearly identified and should not be treated as a commercial commitment.",
+        "This website provides general information. Service information describes our capabilities and does not replace a written engagement agreement. Career discipline pages accept expressions of interest and do not promise an available vacancy.",
       ],
       [
         "Intellectual property",
@@ -102,6 +140,14 @@ const legal: Record<
       [
         "External links",
         "External resources may have their own terms and privacy practices.",
+      ],
+      [
+        "Illustrative media",
+        "Stock footage is used to illustrate technology and collaboration. It does not identify SENZOFT employees, offices, clients or completed engagements. Credits link to the original providers; third-party media remains subject to its applicable license.",
+      ],
+      [
+        "Service scope",
+        "Capability descriptions and example measures help frame a conversation. The scope, deliverables, responsibilities and commercial terms of an engagement are agreed separately.",
       ],
     ],
   },
@@ -121,6 +167,14 @@ const legal: Record<
         "Ongoing improvement",
         "Accessibility is tested throughout design, engineering and content review.",
       ],
+      [
+        "Motion and video",
+        "Decorative videos play a short introduction and then stop automatically. Automatic playback is disabled when your device requests reduced motion or data saving, and on small screens. Still images preserve the context when video is unavailable.",
+      ],
+      [
+        "Keyboard navigation",
+        "Use Tab to move between links, buttons and form controls. The Skip to content link appears when focused. Service and policy navigation links jump to the relevant section, and visible focus outlines help identify the current control.",
+      ],
     ],
   },
 };
@@ -136,12 +190,19 @@ export function LegalPage({ type }: { type: keyof typeof legal }) {
       />
       <article className="section">
         <div className="container-shell max-w-3xl">
-          <p className="mb-10 rounded-xl bg-brand-cream p-4 text-sm text-brand-muted">
-            Draft for review. This page must receive legal approval before
-            production publication.
-          </p>
-          {page.sections.map(([heading, text]) => (
-            <section className="mb-10" key={heading}>
+          <nav aria-label="On this page" className="mb-10 flex flex-wrap gap-3">
+            {page.sections.map(([heading], i) => (
+              <a
+                key={heading}
+                className="rounded-full border border-black/15 px-4 py-2 text-sm font-bold"
+                href={`#policy-${i}`}
+              >
+                {heading}
+              </a>
+            ))}
+          </nav>
+          {page.sections.map(([heading, text], i) => (
+            <section id={`policy-${i}`} className="mb-10" key={heading}>
               <h2 className="text-2xl font-bold">{heading}</h2>
               <p className="mt-3 leading-8 text-brand-muted">{text}</p>
             </section>
@@ -170,6 +231,11 @@ export function NotFoundPage() {
           <Link to="/" className="btn btn-primary mt-8">
             Return home
           </Link>
+          <div className="mt-6 flex justify-center gap-6 text-sm font-bold">
+            <Link to="/services">Browse services</Link>
+            <Link to="/search">Search the site</Link>
+            <Link to="/contact">Contact us</Link>
+          </div>
         </div>
       </section>
     </>

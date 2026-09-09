@@ -1,10 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://www.senzoft.com/</loc></url>
+  <url><loc>https://www.senzoft.com/about</loc></url>
   <url><loc>https://www.senzoft.com/services</loc></url>
   <url><loc>https://www.senzoft.com/industries</loc></url>
-  <url><loc>https://www.senzoft.com/insights</loc></url>
-  <url><loc>https://www.senzoft.com/about</loc></url>
   <url><loc>https://www.senzoft.com/careers</loc></url>
   <url><loc>https://www.senzoft.com/contact</loc></url>
+  <url><loc>https://www.senzoft.com/services/digital-engineering</loc></url>
+  <url><loc>https://www.senzoft.com/services/data-ai</loc></url>
+  <url><loc>https://www.senzoft.com/services/cloud-platforms</loc></url>
+  <url><loc>https://www.senzoft.com/services/business-consulting</loc></url>
+  <url><loc>https://www.senzoft.com/services/application-modernization</loc></url>
+  <url><loc>https://www.senzoft.com/services/cybersecurity</loc></url>
+  <url><loc>https://www.senzoft.com/services/enterprise-applications</loc></url>
+  <url><loc>https://www.senzoft.com/services/quality-engineering</loc></url>
+  <url><loc>https://www.senzoft.com/services/managed-it-services</loc></url>
+  <url><loc>https://www.senzoft.com/industries/banking-financial-services</loc></url>
+  <url><loc>https://www.senzoft.com/industries/healthcare</loc></url>
+  <url><loc>https://www.senzoft.com/industries/retail-consumer</loc></url>
+  <url><loc>https://www.senzoft.com/industries/manufacturing-logistics</loc></url>
+  <url><loc>https://www.senzoft.com/industries/technology-software</loc></url>
+  <url><loc>https://www.senzoft.com/industries/communications-media</loc></url>
+  <url><loc>https://www.senzoft.com/industries/education</loc></url>
+  <url><loc>https://www.senzoft.com/industries/public-sector</loc></url>
+  <url><loc>https://www.senzoft.com/careers/frontend-engineer</loc></url>
+  <url><loc>https://www.senzoft.com/careers/business-analyst</loc></url>
+  <url><loc>https://www.senzoft.com/services/digital-engineering/web-development</loc></url>
+  <url><loc>https://www.senzoft.com/services/digital-engineering/mobile-app-development</loc></url>
+  <url><loc>https://www.senzoft.com/services/digital-engineering/custom-software</loc></url>
+  <url><loc>https://www.senzoft.com/services/business-consulting/ui-ux-design</loc></url>
+  <url><loc>https://www.senzoft.com/services/enterprise-applications/ecommerce-solutions</loc></url>
+  <url><loc>https://www.senzoft.com/services/enterprise-applications/erp-crm-integration</loc></url>
+  <url><loc>https://www.senzoft.com/services/data-ai/ai-automation</loc></url>
+  <url><loc>https://www.senzoft.com/services/data-ai/data-analytics</loc></url>
+  <url><loc>https://www.senzoft.com/services/cloud-platforms/cloud-devops</loc></url>
+  <url><loc>https://www.senzoft.com/services/cybersecurity/security-assurance</loc></url>
+  <url><loc>https://www.senzoft.com/services/quality-engineering/software-testing</loc></url>
+  <url><loc>https://www.senzoft.com/services/managed-it-services/it-support</loc></url>
+  <url><loc>https://www.senzoft.com/careers/pathways/early-careers</loc></url>
+  <url><loc>https://www.senzoft.com/careers/pathways/experienced-professionals</loc></url>
+  <url><loc>https://www.senzoft.com/careers/pathways/internships</loc></url>
+  <url><loc>https://www.senzoft.com/privacy-policy</loc></url>
+  <url><loc>https://www.senzoft.com/terms-of-use</loc></url>
+  <url><loc>https://www.senzoft.com/accessibility</loc></url>
+  <url><loc>https://www.senzoft.com/services/business-consulting/technology-strategy</loc></url>
+  <url><loc>https://www.senzoft.com/services/application-modernization/legacy-modernization</loc></url>
 </urlset>

@@ -1,4 +1,4 @@
-import { ArrowUpRight, Linkedin } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/senzoft-logo.png";
 
@@ -10,7 +10,7 @@ export function Footer() {
           <img
             src={logo}
             alt="SENZOFT Software Solutions Private Limited"
-            className="h-28 w-auto rounded-xl bg-white p-2"
+            className="h-16 w-auto rounded-xl bg-white p-2"
           />
           <p className="mt-5 max-w-sm text-white/60">
             Ideas to Impact. We bring engineering, intelligence and business
@@ -26,20 +26,18 @@ export function Footer() {
             <Link className="mb-3 block text-sm text-white/65" to="/industries">
               Industries
             </Link>
-            <Link className="mb-3 block text-sm text-white/65" to="/insights">
-              Insights
-            </Link>
+
           </div>
           <div>
             <p className="mb-4 font-bold text-brand-amber">Company</p>
             <Link className="mb-3 block text-sm text-white/65" to="/about">
-              About
+              About Us
             </Link>
             <Link className="mb-3 block text-sm text-white/65" to="/careers">
               Careers
             </Link>
             <Link className="mb-3 block text-sm text-white/65" to="/contact">
-              Contact
+              Contact Us
             </Link>
           </div>
           <div>
@@ -49,13 +47,6 @@ export function Footer() {
               href="mailto:hello@senzoft.com"
             >
               hello@senzoft.com <ArrowUpRight size={14} />
-            </a>
-            <a
-              aria-label="LinkedIn"
-              className="inline-flex p-2 text-white/65"
-              href="#"
-            >
-              <Linkedin size={19} />
             </a>
           </div>
         </div>

@@ -1,5 +1,14 @@
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { CapabilityExplorer } from "../components/sections/CapabilityExplorer";
+import { SolutionDirectory } from "../components/sections/SolutionDirectory";
+import {
+  BusinessPriorities,
+  ProjectReadiness,
+} from "../components/sections/BusinessPriorities";
+import {
+  EditorialSections,
+  EngagementOptions,
+} from "../components/sections/EditorialSections";
+
 import { PageHero } from "../components/ui/PageHero";
 import { ContentGrid } from "../components/sections/ContentGrid";
 import { CTA } from "../components/sections/CTA";
@@ -30,6 +39,8 @@ function Listing({
     <>
       <Seo title={`${title} | SENZOFT`} description={description} />
       <PageHero eyebrow={kind} title={title} description={description} />
+      {basePath === "/services" && <SolutionDirectory />}
+      {basePath === "/services" && <BusinessPriorities />}
       <section className="section bg-brand-peach">
         <div className="container-shell grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
           <div>
@@ -69,11 +80,16 @@ function Listing({
           </div>
         </div>
       </section>
-      <section className="section">
-        <div className="container-shell">
-          <ContentGrid items={items} basePath={basePath} />
-        </div>
-      </section>
+      {basePath === "/services" ? (
+        <CapabilityExplorer />
+      ) : (
+        <section className="section">
+          <div className="container-shell">
+            <ContentGrid items={items} basePath={basePath} />
+          </div>
+        </section>
+      )}
+      {basePath === "/industries" && <ProjectReadiness />}
       <section className="section bg-brand-sage">
         <div className="container-shell">
           <span className="eyebrow">Connected capability</span>
@@ -82,25 +98,59 @@ function Listing({
           </h2>
           <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
             {[
-              "Strategy & consulting",
-              "Experience & engineering",
-              "Data, AI & cloud",
-              "Security & operations",
-            ].map((item, index) => (
+              [
+                "Strategy & consulting",
+                "Clarify the decision, compare options and sequence investment around business priorities. Discovery connects stakeholder expectations to a scope the delivery team can act on.",
+              ],
+              [
+                "Experience & engineering",
+                "Translate user needs into accessible journeys and maintainable software. Review the design, integration boundaries and acceptance criteria together before release.",
+              ],
+              [
+                "Data, AI & cloud",
+                "Connect dependable information with the platforms that process it. Establish data ownership, evaluation practices and operational visibility before expanding automation.",
+              ],
+              [
+                "Security & operations",
+                "Define access, monitoring and support responsibilities alongside implementation. Prepare runbooks and recovery paths so teams can sustain the solution after launch.",
+              ],
+            ].map(([item, copy], index) => (
               <div key={item} className="rounded-2xl bg-white p-7">
                 <span className="text-sm font-black text-brand-orange">
                   0{index + 1}
                 </span>
-                <h3 className="display mt-12 text-3xl">{item}</h3>
+                <h3 className="display mt-6 text-3xl">{item}</h3>
                 <p className="mt-4 text-sm leading-7 text-brand-muted">
-                  Integrated into delivery around your priorities, teams and
-                  technology landscape.
+                  {copy}
                 </p>
               </div>
             ))}
           </div>
         </div>
       </section>
+      {basePath === "/services" ? (
+        <EngagementOptions />
+      ) : (
+        <EditorialSections
+          eyebrow="Cross-sector perspective"
+          title="Different industries. Connected challenges."
+          description="Sector knowledge makes technology decisions more useful. We examine the specific workflow before choosing the architecture or platform."
+          items={[
+            [
+              "Customer and employee journeys",
+              "Map the full task across channels, teams and systems. Identify where people lose context, repeat information or need assistance.",
+            ],
+            [
+              "Information that supports action",
+              "Agree the meaning, source and ownership of operational data before introducing dashboards, automation or intelligent features.",
+            ],
+            [
+              "Change that teams can sustain",
+              "Plan integration, adoption and operational handoffs alongside engineering so improvements remain useful after launch.",
+            ],
+          ]}
+        />
+      )}
       <CTA />
     </>
   );
@@ -123,122 +173,3 @@ export const IndustriesPage = () => (
     basePath="/industries"
   />
 );
-export function InsightsPage() {
-  const [query, setQuery] = useState("");
-  const items = useMemo(() => contentRepository.getInsights(query), [query]);
-  return (
-    <>
-      <Seo
-        title="Insights | SENZOFT"
-        description="Perspectives on engineering, AI and enterprise transformation."
-      />
-      <PageHero
-        eyebrow="Insights"
-        title="Useful thinking for consequential change."
-        description="Perspectives designed to make emerging technology and transformation decisions clearer."
-      />
-      <section className="section bg-brand-peach">
-        <div className="container-shell grid items-center gap-8 lg:grid-cols-[1.2fr_.8fr]">
-          <div>
-            <span className="eyebrow">Featured theme</span>
-            <h2 className="display mt-6 text-5xl md:text-6xl">
-              What separates AI activity from AI value?
-            </h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
-              Explore the roles of trusted data, modern architecture,
-              responsible governance and workflow adoption in moving
-              intelligence into the enterprise.
-            </p>
-          </div>
-          <div className="rounded-[2rem] bg-brand-orange p-8 text-white md:p-10">
-            <p className="text-xs font-extrabold uppercase tracking-[.2em] text-white/70">
-              Research agenda
-            </p>
-            <ul className="mt-8 space-y-5 text-xl font-bold">
-              <li>Responsible enterprise AI</li>
-              <li>Cloud economics</li>
-              <li>Modern software delivery</li>
-              <li>Digital trust</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-      <section className="section">
-        <div className="container-shell">
-          <label className="relative mb-10 block max-w-2xl">
-            <span className="sr-only">Search insights</span>
-            <Search
-              aria-hidden="true"
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted"
-              size={20}
-            />
-            <input
-              type="search"
-              className="field field-search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search insights"
-              autoComplete="off"
-            />
-          </label>
-          {items.length ? (
-            <ContentGrid items={items} basePath="/insights" />
-          ) : (
-            <div className="rounded-2xl bg-brand-cream p-10">
-              <h2 className="text-2xl font-bold">No matching insights</h2>
-              <p className="mt-2 text-brand-muted">
-                Try a broader phrase or clear your search.
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
-      <section className="section bg-brand-sage">
-        <div className="container-shell grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
-          <div>
-            <span className="eyebrow">Stay informed</span>
-            <h2 className="display mt-6 text-5xl">
-              Technology perspectives, without the noise.
-            </h2>
-            <p className="mt-5 max-w-2xl text-brand-muted">
-              Newsletter delivery will be connected when the backend service is
-              available.
-            </p>
-          </div>
-          <a
-            href="mailto:hello@senzoft.com?subject=SENZOFT insights"
-            className="btn btn-primary"
-          >
-            Register your interest
-          </a>
-        </div>
-      </section>
-      <CTA />
-    </>
-  );
-}
-export function CaseStudiesPage() {
-  return (
-    <>
-      <Seo
-        title="Case Studies | SENZOFT"
-        description="SENZOFT client outcome stories."
-      />
-      <PageHero
-        eyebrow="Client outcomes"
-        title="Impact needs evidence."
-        description="Approved client stories will appear here. We never publish unverified claims, logos or performance metrics."
-      />
-      <section className="section">
-        <div className="container-shell rounded-3xl border border-dashed border-black/20 p-12 text-center">
-          <h2 className="display text-4xl">Case studies in review</h2>
-          <p className="mx-auto mt-4 max-w-xl text-brand-muted">
-            We are preparing client-approved stories. Talk to our team about
-            experience relevant to your goals.
-          </p>
-        </div>
-      </section>
-      <CTA />
-    </>
-  );
-}

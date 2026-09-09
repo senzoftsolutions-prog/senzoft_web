@@ -1,3 +1,9 @@
+import { Link } from "react-router-dom";
+import {
+  EditorialSections,
+  EngagementOptions,
+} from "../components/sections/EditorialSections";
+import { ContactPlanning } from "../components/sections/CompanyOverview";
 import { FormEvent, useState } from "react";
 import { Mail, MapPin, Send } from "lucide-react";
 import { toast } from "sonner";
@@ -26,7 +32,9 @@ export default function ContactPage() {
       toast.success(res.message);
       setForm(initial);
     } catch {
-      toast.error("We could not send your message. Please try again.");
+      toast.error(
+        "Your message was not sent. Please try again or email hello@senzoft.com.",
+      );
     } finally {
       setBusy(false);
     }
@@ -47,9 +55,9 @@ export default function ContactPage() {
           <div>
             <h2 className="display text-4xl">Start a conversation.</h2>
             <p className="mt-5 leading-7 text-brand-muted">
-              This frontend currently uses a secure mock submission flow. Final
-              contact details and service-level expectations await company
-              approval.
+              Tell us about the outcome you need, the systems involved and where
+              you would like support. Use this form for project enquiries,
+              consulting, ongoing IT services or a delivery partnership.
             </p>
             <a
               href="mailto:hello@senzoft.com"
@@ -196,17 +204,47 @@ export default function ContactPage() {
               "Create a data, analytics or AI roadmap",
               "Strengthen security, quality or technology operations",
               "Discuss a consulting or delivery partnership",
-            ].map((item) => (
-              <div
+            ].map((item, index) => (
+              <Link
+                to={
+                  [
+                    "/services/digital-engineering",
+                    "/services/application-modernization",
+                    "/services/data-ai",
+                    "/services/managed-it-services",
+                    "/services/business-consulting",
+                  ][index]
+                }
                 className="rounded-xl border border-black/10 p-5 font-bold"
                 key={item}
               >
                 {item}
-              </div>
+              </Link>
             ))}
           </div>
         </div>
       </section>
+      <ContactPlanning />
+      <EngagementOptions />
+      <EditorialSections
+        eyebrow="Prepare for a useful conversation"
+        title="A little context goes a long way."
+        description="You do not need a complete specification to start. Share what you know, and identify the questions you want to resolve."
+        items={[
+          [
+            "The outcome you are working toward",
+            "Describe who the work should help and what should become easier, faster or more reliable. A concrete example is more useful than a long list of features.",
+          ],
+          [
+            "The environment you have today",
+            "Summarize the systems, integrations and team responsibilities involved. Mention important constraints such as an existing platform or a fixed delivery window.",
+          ],
+          [
+            "The decision you need to make",
+            "Tell us whether you need discovery, a delivery proposal or ongoing support. We can use that context to shape the scope of a follow-up discussion.",
+          ],
+        ]}
+      />
     </>
   );
 }

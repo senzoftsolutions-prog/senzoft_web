@@ -1,336 +1,430 @@
+import { SolutionDirectory } from "../components/sections/SolutionDirectory";
 import {
   ArrowRight,
   ArrowUpRight,
-  CheckCircle2,
-  Cloud,
-  CodeXml,
+  Check,
+  ChevronDown,
+  Code2,
   Database,
   Layers3,
-  MoveDownRight,
-  Sparkles,
+  ShieldCheck,
 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { ContentGrid } from "../components/sections/ContentGrid";
-import { CTA } from "../components/sections/CTA";
-import { VideoStory } from "../components/sections/VideoStory";
-import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
+import { Reveal } from "../components/ui/Reveal";
+import { SystemCanvas } from "../components/sections/SystemCanvas";
+import { CapabilityExplorer } from "../components/sections/CapabilityExplorer";
+import { DeliveryJourney } from "../components/sections/DeliveryJourney";
+import { TechnologyRibbon } from "../components/sections/TechnologyRibbon";
+import { VideoPanel } from "../components/ui/VideoPanel";
+import {
+  BusinessPriorities,
+  ProjectReadiness,
+} from "../components/sections/BusinessPriorities";
+import { EngagementOptions } from "../components/sections/EditorialSections";
+import { CTA } from "../components/sections/CTA";
 import { contentRepository } from "../content/repository";
+import { homeFaqs, solutionPaths } from "../content/homeExperience";
 
 export default function HomePage() {
-  const services = contentRepository.getServices();
   const industries = contentRepository.getIndustries();
-  const insights = contentRepository.getInsights();
   return (
     <>
       <Seo
-        title="SENZOFT | Software & IT Services"
-        description="Software engineering, cloud, data, AI, cybersecurity and managed IT services for ambitious enterprises."
+        title="SENZOFT | Software, Cloud & Intelligent Solutions"
+        description="Thoughtful digital products, connected data and dependable technology. Explore SENZOFT software engineering, cloud, AI and modernization services."
       />
-      <section className="grid-lines relative min-h-[760px] overflow-hidden bg-brand-plum pt-32 text-white">
-        <div className="tech-orb absolute -right-32 top-10 size-150 rounded-full bg-brand-orange/18 blur-3xl" />
-        <div className="container-shell relative grid min-h-[620px] items-center gap-12 py-14 lg:grid-cols-[1.2fr_.8fr]">
+      <section className="studio-hero enterprise-hero">
+        <div className="hero-aura aura-coral" aria-hidden="true" />
+        <div className="hero-aura aura-violet" aria-hidden="true" />
+        <div className="container-shell hero-layout">
           <Reveal>
-            <span className="eyebrow text-brand-amber!">
-              Software · Cloud · Data · AI
+            <span className="hero-pill">
+              <span />
+              Software engineering. Human perspective.
             </span>
-            <h1 className="display mt-7 text-6xl sm:text-7xl lg:text-[6.7rem]">
-              Engineering the digital core of{" "}
-              <span className="gradient-text">modern business.</span>
+            <h1 className="hero-title">
+              Engineering the digital core.
+              <br />
+              <span className="ink-gradient">
+                Designed for
+                <br />
+                what comes next.
+              </span>
             </h1>
-            <p className="mt-8 max-w-xl text-lg leading-8 text-white/65">
-              SENZOFT designs, builds, modernizes and manages software and
-              technology platforms for ambitious Indian enterprises.
+            <p className="hero-description">
+              From the first idea to the systems behind your business. We bring
+              software, cloud and intelligence together to create technology
+              that works for people.
             </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link to="/contact" className="btn btn-primary">
-                Talk to an expert <ArrowRight size={18} />
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link to="/services" className="btn btn-dark">
+                Explore our expertise
+                <ArrowUpRight size={17} />
               </Link>
-              <Link
-                to="/services"
-                className="btn border border-white/25 text-white"
-              >
-                Explore IT services
+              <Link to="/contact" className="btn btn-outline">
+                Let's build something
+                <ArrowRight size={17} />
               </Link>
+            </div>
+            <div className="hero-principles">
+              {[
+                [Code2, "Thoughtful engineering"],
+                [Layers3, "Connected capabilities"],
+                [ShieldCheck, "Trust by design"],
+              ].map(([Icon, label]) => {
+                const ItemIcon = Icon as typeof Code2;
+                return (
+                  <span key={label as string}>
+                    <ItemIcon size={15} />
+                    {label as string}
+                  </span>
+                );
+              })}
             </div>
           </Reveal>
           <Reveal delay={0.15}>
-            <div className="float-slow relative mx-auto aspect-square max-w-md">
-              <div className="absolute inset-4 rotate-6 rounded-[3rem] border border-brand-orange/30 bg-white/4" />
-              <div className="absolute inset-12 -rotate-3 rounded-[2.5rem] border border-white/15 bg-white/6 backdrop-blur">
-                <Sparkles
-                  className="absolute right-8 top-8 text-brand-amber"
-                  size={38}
-                />
-                <div className="absolute bottom-9 left-9">
-                  <p className="text-xs font-extrabold uppercase tracking-[.25em] text-brand-amber">
-                    Ideas to Impact
-                  </p>
-                  <p className="mt-3 max-w-48 text-2xl font-bold">
-                    Software engineered for change, scale and trust.
-                  </p>
-                </div>
+            <div className="enterprise-film">
+              <VideoPanel clip="digital" className="aspect-[4/5]" />
+              <div className="enterprise-film-caption">
+                <span>Built around people</span>
+                <strong>
+                  Technology that moves
+                  <br />
+                  your business forward.
+                </strong>
               </div>
-              <MoveDownRight
-                className="absolute bottom-1 right-1 text-brand-orange"
-                size={80}
-              />
             </div>
           </Reveal>
         </div>
-      </section>
-      <VideoStory />
-      <section className="border-b border-black/10 bg-brand-cream py-8">
-        <div className="container-shell grid gap-5 text-sm font-extrabold uppercase tracking-wider text-brand-muted sm:grid-cols-2 lg:grid-cols-4">
-          {[
-            "Application engineering",
-            "Cloud modernization",
-            "Data & AI",
-            "Cybersecurity",
-          ].map((item) => (
-            <div className="flex items-center gap-3" key={item}>
-              <CheckCircle2 size={18} className="text-brand-orange" />
-              {item}
-            </div>
-          ))}
-        </div>
-      </section>
-      <section className="section">
-        <div className="container-shell">
-          <Reveal>
-            <span className="eyebrow">Technology services</span>
-            <div className="mt-6 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
-              <h2 className="display max-w-3xl text-5xl md:text-6xl">
-                End-to-end expertise for your{" "}
-                <span className="gradient-text">digital enterprise.</span>
-              </h2>
-              <Link to="/services" className="font-extrabold text-brand-orange">
-                View all services →
-              </Link>
-            </div>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
-              From advisory and architecture to engineering, assurance and
-              operations, SENZOFT helps technology deliver sustained business
-              value.
-            </p>
-          </Reveal>
-          <div className="mt-12">
-            <ContentGrid items={services} basePath="/services" />
-          </div>
-        </div>
-      </section>
-      <section className="section overflow-hidden bg-brand-wine text-white">
-        <div className="container-shell grid items-stretch gap-6 lg:grid-cols-[1.15fr_.85fr]">
-          <Reveal className="rounded-[2rem] border border-white/10 bg-white/4 p-8 md:p-12">
-            <span className="eyebrow text-brand-amber!">
-              Featured perspective
-            </span>
-            <p className="mt-8 text-sm font-bold uppercase tracking-[.2em] text-white/45">
-              Enterprise AI
-            </p>
-            <h2 className="display mt-4 max-w-3xl text-5xl md:text-7xl">
-              Move AI from isolated experiments into{" "}
-              <span className="gradient-text">everyday value.</span>
-            </h2>
-            <p className="mt-7 max-w-2xl text-lg leading-8 text-white/60">
-              Sustainable AI begins with trusted data, fit-for-purpose
-              architecture, responsible controls and workflows designed for
-              adoption.
-            </p>
-            <Link
-              to="/services/data-ai"
-              className="mt-9 inline-flex items-center gap-2 font-extrabold text-brand-amber"
-            >
-              Explore Data & AI <ArrowUpRight size={18} />
-            </Link>
-          </Reveal>
-          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-1">
-            <Reveal className="rounded-[2rem] bg-brand-orange p-8 text-white md:p-10">
-              <p className="text-xs font-extrabold uppercase tracking-[.2em] text-white/75">
-                Modernize the core
-              </p>
-              <h3 className="display mt-5 text-4xl">
-                Renew applications without losing momentum.
-              </h3>
-              <Link
-                to="/services/application-modernization"
-                className="mt-8 inline-flex items-center gap-2 font-bold"
-              >
-                Explore modernization <ArrowUpRight size={18} />
-              </Link>
-            </Reveal>
-            <Reveal className="rounded-[2rem] bg-white p-8 text-brand-ink md:p-10">
-              <p className="text-xs font-extrabold uppercase tracking-[.2em] text-brand-orange">
-                Secure by design
-              </p>
-              <h3 className="display mt-5 text-4xl">
-                Make trust part of the architecture.
-              </h3>
-              <Link
-                to="/services/cybersecurity"
-                className="mt-8 inline-flex items-center gap-2 font-bold"
-              >
-                Explore cybersecurity <ArrowUpRight size={18} />
-              </Link>
-            </Reveal>
-          </div>
-        </div>
-      </section>
-      <section className="section bg-brand-cream">
-        <div className="container-shell">
-          <Reveal>
-            <span className="eyebrow">Industry solutions</span>
-            <h2 className="display mt-6 max-w-3xl text-5xl md:text-6xl">
-              Technology grounded in business context.
-            </h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
-              We connect modern technology capabilities with the operating
-              realities of your sector.
-            </p>
-          </Reveal>
-          <div className="mt-12">
-            <ContentGrid items={industries} basePath="/industries" />
-          </div>
-        </div>
-      </section>
-      <section className="section">
-        <div className="container-shell">
-          <Reveal>
-            <span className="eyebrow">From strategy to operations</span>
-            <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
-              One connected technology journey.
-            </h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
-              Engage SENZOFT at one stage or across the lifecycle. We keep
-              business intent connected to architecture, engineering and
-              continuous improvement.
-            </p>
-          </Reveal>
-          <div className="mt-12 grid overflow-hidden rounded-[2rem] border border-black/10 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              [
-                "01",
-                "Advise",
-                "Clarify priorities, assess the landscape and shape an actionable roadmap.",
-                Layers3,
-              ],
-              [
-                "02",
-                "Engineer",
-                "Design and build secure applications, platforms and digital experiences.",
-                CodeXml,
-              ],
-              [
-                "03",
-                "Modernize",
-                "Renew applications, cloud foundations and enterprise data with control.",
-                Cloud,
-              ],
-              [
-                "04",
-                "Operate",
-                "Support, observe and continuously improve business-critical technology.",
-                Database,
-              ],
-            ].map(([number, title, text, Icon]) => {
-              const ItemIcon = Icon as typeof Layers3;
-              return (
-                <div
-                  className="border-b border-black/10 p-7 last:border-0 md:border-r lg:border-b-0"
-                  key={title as string}
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="font-black text-brand-orange">
-                      {number as string}
-                    </span>
-                    <ItemIcon size={24} className="text-brand-muted" />
-                  </div>
-                  <h3 className="display mt-16 text-3xl">{title as string}</h3>
-                  <p className="mt-4 text-sm leading-7 text-brand-muted">
-                    {text as string}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-      <section className="bg-brand-cream py-12">
-        <div className="container-shell">
-          <p className="text-center text-xs font-extrabold uppercase tracking-[.25em] text-brand-muted">
-            Capabilities across the modern technology landscape
+        <div className="container-shell hero-bottom">
+          <span>IDEAS TO IMPACT</span>
+          <p>
+            A clear purpose. A considered approach. A foundation for change.
           </p>
-          <div className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-5 text-lg font-extrabold text-brand-ink/65">
-            {[
-              "Cloud native",
-              "Generative AI",
-              "Data platforms",
-              "DevSecOps",
-              "Microservices",
-              "ERP & CRM",
-              "Automation",
-              "Digital workplace",
-            ].map((item) => (
-              <span key={item}>{item}</span>
+          <a href="#possibilities" aria-label="Explore what we can build">
+            <ArrowRight size={19} />
+          </a>
+        </div>
+      </section>
+      <section className="enterprise-introduction">
+        <div className="container-shell">
+          <div>
+            <span className="eyebrow">The work behind progress</span>
+            <h2>
+              Business understanding.
+              <br />
+              Engineering depth.
+              <br />
+              <em>Shared ownership.</em>
+            </h2>
+          </div>
+          <div>
+            <p>
+              New products, established systems and everyday operations are
+              connected. Improving one means understanding the people,
+              information and dependencies around it.
+            </p>
+            <p>
+              SENZOFT brings consulting, software delivery, data and cloud
+              capabilities into a shared plan. We help define the first useful
+              outcome, build the foundations around it and prepare your team to
+              own what comes next.
+            </p>
+            <Link to="/about">
+              Discover our approach <ArrowUpRight size={18} />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <div className="enterprise-feature-strip container-shell">
+        <span>In focus</span>
+        <Link to="/services/data-ai">
+          Turning AI experiments into useful work <ArrowUpRight size={18} />
+        </Link>
+        <Link to="/services/application-modernization">
+          A practical path through modernization <ArrowUpRight size={18} />
+        </Link>
+      </div>
+      <TechnologyRibbon />
+      <section id="possibilities" className="section">
+        <div className="container-shell">
+          <Reveal className="section-intro">
+            <div>
+              <span className="eyebrow">Built around your next move</span>
+              <h2 className="section-heading mt-5">
+                Ambitious ideas.
+                <br />
+                Practical possibilities.
+              </h2>
+            </div>
+            <p>
+              Choose a starting point that reflects your business. We connect
+              the experience people see with the technology and operations that
+              make it work.
+            </p>
+          </Reveal>
+          <div className="solution-grid mt-10">
+            {solutionPaths.map((item, i) => (
+              <Reveal key={item.title} delay={i * 0.08} className="h-full">
+                <Link
+                  to={item.href}
+                  className={`solution-card solution-${item.kind}`}
+                >
+                  <div className="solution-visual" aria-hidden="true">
+                    {item.kind === "product" ? (
+                      <>
+                        <div className="mini-browser">
+                          <i />
+                          <i />
+                          <i />
+                          <div />
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                        <span className="mini-badge">
+                          <Code2 size={18} />
+                        </span>
+                      </>
+                    ) : item.kind === "data" ? (
+                      <>
+                        <div className="data-bars">
+                          {[36, 60, 44, 82, 66, 94, 73].map((h, j) => (
+                            <i key={j} style={{ height: h }} />
+                          ))}
+                        </div>
+                        <span className="mini-badge">
+                          <Database size={18} />
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <div className="platform-stack">
+                          <span />
+                          <span />
+                          <span />
+                        </div>
+                        <span className="mini-badge">
+                          <ShieldCheck size={18} />
+                        </span>
+                      </>
+                    )}
+                  </div>
+                  <div className="p-7">
+                    <p className="micro-label">{item.category}</p>
+                    <h3 className="mt-3 text-2xl font-semibold tracking-tight">
+                      {item.title}
+                    </h3>
+                    <p className="mt-4 leading-7 text-brand-muted">
+                      {item.copy}
+                    </p>
+                    <div className="mt-5 flex flex-wrap gap-2">
+                      {item.tags.map((tag) => (
+                        <span className="surface-tag" key={tag}>
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                    <span className="mt-7 flex items-center justify-between text-sm font-semibold">
+                      Explore this direction
+                      <ArrowUpRight size={19} />
+                    </span>
+                  </div>
+                </Link>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
-      <section className="section bg-brand-peach text-brand-ink">
-        <div className="container-shell">
-          <span className="eyebrow">Technology insights</span>
-          <div className="mt-6 flex items-end justify-between">
-            <h2 className="display text-5xl">Ideas for the work ahead.</h2>
-            <Link
-              to="/insights"
-              className="hidden font-bold text-brand-orange sm:block"
-            >
-              View all insights →
-            </Link>
-          </div>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
-            {insights.map((item) => (
-              <Link
-                key={item.slug}
-                to={`/insights/${item.slug}`}
-                className="group border-t border-brand-ink/15 py-7"
-              >
-                <span className="text-xs font-bold text-brand-orange">
-                  {item.type} · {item.readTime}
-                </span>
-                <h3 className="mt-5 text-2xl font-bold group-hover:text-brand-orange">
-                  {item.title}
-                </h3>
-                <p className="mt-4 leading-7 text-brand-muted">
-                  {item.summary}
+      <CapabilityExplorer />
+      <section className="section">
+        <div className="container-shell product-story">
+          <Reveal>
+            <span className="eyebrow">
+              The experience is only the beginning
+            </span>
+            <h2 className="section-heading mt-5">
+              Beautiful on the surface.
+              <br />
+              <span className="ink-gradient">Considered at every layer.</span>
+            </h2>
+            <p className="mt-6 max-w-xl leading-8 text-brand-muted">
+              A useful digital product connects a clear interface with reliable
+              information, well-defined services and an operating model people
+              can sustain. We design those layers together.
+            </p>
+            <div className="mt-6 space-y-4">
+              {[
+                "Journeys that make the next step clear",
+                "Architecture with room for useful change",
+                "Quality and security throughout delivery",
+              ].map((item) => (
+                <p
+                  key={item}
+                  className="flex items-center gap-3 text-sm font-medium"
+                >
+                  <Check size={17} className="text-brand-orange" />
+                  {item}
                 </p>
+              ))}
+            </div>
+            <Link
+              className="mt-7 inline-flex items-center gap-2 font-semibold"
+              to="/services/digital-engineering"
+            >
+              Explore digital engineering
+              <ArrowUpRight size={17} />
+            </Link>
+          </Reveal>
+          <Reveal delay={0.12}>
+            <div
+              className="layer-composition"
+              aria-label="Four connected layers of a digital product"
+            >
+              {[
+                ["01", "Experience", "Clear journeys. Accessible interfaces."],
+                ["02", "Intelligence", "Useful data. Thoughtful automation."],
+                [
+                  "03",
+                  "Engineering",
+                  "Connected services. Dependable releases.",
+                ],
+                ["04", "Operations", "Visible performance. Shared ownership."],
+              ].map(([n, title, copy]) => (
+                <div className="product-layer" key={n}>
+                  <span>{n}</span>
+                  <div>
+                    <strong>{title}</strong>
+                    <p>{copy}</p>
+                  </div>
+                  <Layers3 size={20} />
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+      <section className="section industry-section">
+        <div className="container-shell">
+          <Reveal className="section-intro">
+            <div>
+              <span className="eyebrow">Technology meets context</span>
+              <h2 className="section-heading mt-5">
+                Your industry.
+                <br />
+                Its own set of possibilities.
+              </h2>
+            </div>
+            <p>
+              Every sector has different users, dependencies and operating
+              pressures. Explore approaches grounded in those realities.
+            </p>
+          </Reveal>
+          <div className="industry-directory mt-9">
+            {industries.map((item, i) => (
+              <Link key={item.slug} to={`/industries/${item.slug}`}>
+                <span className="text-xs text-brand-orange">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{item.summary}</p>
+                </div>
+                <ArrowUpRight size={21} />
               </Link>
             ))}
           </div>
         </div>
       </section>
-      <section className="section">
-        <div className="container-shell grid items-center gap-10 rounded-[2rem] bg-brand-cream p-8 md:p-14 lg:grid-cols-[1fr_.7fr]">
+      <DeliveryJourney />
+      <BusinessPriorities />
+      <section className="section engineering-model">
+        <div className="container-shell editorial-grid">
           <div>
-            <span className="eyebrow">Careers at SENZOFT</span>
-            <h2 className="display mt-6 text-5xl md:text-6xl">
-              Build technology. Grow with the challenge.
+            <span className="eyebrow">One connected engineering model</span>
+            <h2 className="section-heading mt-5">
+              The right connections
+              <br />
+              make change possible.
             </h2>
-            <p className="mt-6 max-w-2xl text-lg leading-8 text-brand-muted">
-              Join a collaborative team where curiosity, engineering craft and
-              ownership turn complex problems into useful outcomes.
+            <p className="mt-6 leading-8 text-brand-muted">
+              Experience, applications and platforms need to evolve together.
+              Explore how our engineering model connects delivery, information
+              and continuous improvement.
             </p>
-            <Link to="/careers" className="btn btn-dark mt-8">
-              Explore careers <ArrowRight size={18} />
+            <p className="mt-5 leading-8 text-brand-muted">
+              Each engagement defines the boundaries between systems, the people
+              who own them and the evidence needed to release with confidence.
+              That shared understanding supports both the first launch and the
+              changes that follow.
+            </p>
+            <Link to="/services" className="btn btn-dark mt-6">
+              See our connected capabilities
+              <ArrowUpRight size={17} />
             </Link>
           </div>
-          <div className="grid-lines grid min-h-72 place-items-center rounded-[1.5rem] bg-brand-wine p-8 text-center text-white">
-            <div>
-              <p className="display text-6xl gradient-text">Ideas</p>
-              <p className="mt-3 text-sm font-extrabold uppercase tracking-[.25em] text-white/55">
-                become impact through people
-              </p>
-            </div>
+          <SystemCanvas />
+        </div>
+      </section>
+      <SolutionDirectory />
+      <EngagementOptions />
+      <ProjectReadiness />
+      <section className="section faq-section">
+        <div className="container-shell editorial-grid">
+          <Reveal>
+            <span className="eyebrow">Before we begin</span>
+            <h2 className="section-heading mt-5">
+              Good questions.
+              <br />
+              Clearer next steps.
+            </h2>
+            <p className="mt-5 leading-8 text-brand-muted">
+              A few things you might want to know about working with us. Have a
+              different question? Start a conversation with the team.
+            </p>
+            <Link to="/contact" className="btn btn-dark mt-6">
+              Talk to SENZOFT
+              <ArrowUpRight size={16} />
+            </Link>
+          </Reveal>
+          <div>
+            {homeFaqs.map(([question, answer]) => (
+              <details key={question} className="studio-faq">
+                <summary>
+                  {question}
+                  <ChevronDown size={18} />
+                </summary>
+                <p>{answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container-shell careers-invite">
+          <div>
+            <span className="eyebrow">Create your next chapter</span>
+            <h2 className="section-heading mt-5">
+              Good work starts
+              <br />
+              with curious people.
+            </h2>
+            <p className="mt-5 max-w-xl leading-8 text-brand-muted">
+              Bring your perspective to meaningful engineering challenges.
+              Explore our working principles, career pathways and areas of
+              opportunity.
+            </p>
+            <Link to="/careers" className="btn btn-dark mt-6">
+              Explore careers
+              <ArrowUpRight size={17} />
+            </Link>
+          </div>
+          <div className="craft-composition" aria-hidden="true">
+            <span>Think.</span>
+            <span>Build.</span>
+            <span>Evolve.</span>
+            <Code2 size={36} />
           </div>
         </div>
       </section>

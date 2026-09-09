@@ -11,7 +11,7 @@ export function Seo({
     document
       .querySelector('meta[name="description"]')
       ?.setAttribute("content", description);
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [title, description]);
   return null;
 }

@@ -1,4 +1,4 @@
-import { industries, insights, jobs, services } from "./content";
+import { industries, jobs, services } from "./content";
 export const contentRepository = {
   getServices: () => services,
   getServiceBySlug: (slug: string) =>
@@ -6,18 +6,10 @@ export const contentRepository = {
   getIndustries: () => industries,
   getIndustryBySlug: (slug: string) =>
     industries.find((item) => item.slug === slug),
-  getInsights: (query = "") =>
-    insights.filter((item) =>
-      `${item.title} ${item.summary} ${item.type}`
-        .toLowerCase()
-        .includes(query.toLowerCase()),
-    ),
-  getInsightBySlug: (slug: string) =>
-    insights.find((item) => item.slug === slug),
   getJobs: () => jobs,
   getJobBySlug: (slug: string) => jobs.find((item) => item.slug === slug),
   search: (query: string) =>
-    [...services, ...industries, ...insights].filter((item) =>
+    [...services, ...industries].filter((item) =>
       `${item.title} ${item.summary}`
         .toLowerCase()
         .includes(query.toLowerCase()),

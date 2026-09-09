@@ -1,3 +1,4 @@
+import { capabilityUrl } from "../content/solutions";
 import { ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { CTA } from "../components/sections/CTA";
@@ -5,8 +6,15 @@ import { ContentGrid } from "../components/sections/ContentGrid";
 import { PageHero } from "../components/ui/PageHero";
 import { Seo } from "../components/ui/Seo";
 import { contentRepository } from "../content/repository";
+import {
+  serviceDeliverables,
+  deliverySteps,
+} from "../content/serviceDeliverables";
 import { serviceProfiles } from "../content/serviceProfiles";
-import type { Service } from "../types";
+import { serviceOutcomes } from "../content/serviceOutcomes";
+import { SolutionDirectory } from "../components/sections/SolutionDirectory";
+import { IndustryDetail } from "./EditorialDetail";
+import type { Industry, Service } from "../types";
 
 export default function DetailPage() {
   const { slug } = useParams();
@@ -16,41 +24,17 @@ export default function DetailPage() {
       ? contentRepository.getServiceBySlug(slug!)
       : root === "industries"
         ? contentRepository.getIndustryBySlug(slug!)
-        : contentRepository.getInsightBySlug(slug!);
+        : undefined;
   if (!item) return <Missing />;
   if (root === "services") return <ServiceDetail service={item as Service} />;
-  const first =
-    "challenges" in item
-      ? item.challenges
-      : [
-          "What this means for leaders",
-          "Where to begin",
-          "Building for lasting value",
-        ];
-  const second =
-    "solutions" in item
-      ? item.solutions
-      : [
-          "Connect strategy to everyday work",
-          "Design trust into the foundation",
-          "Measure adoption and outcomes",
-        ];
-  return (
-    <>
-      <Seo title={item.seo.title} description={item.seo.description} />
-      <PageHero
-        eyebrow={"type" in item ? item.type : "Industry"}
-        title={item.title}
-        description={item.summary}
-      />
-      <ValueSections first={first} second={second} />
-      <CTA />
-    </>
-  );
+  if (root === "industries")
+    return <IndustryDetail industry={item as Industry} />;
+  return <Missing />;
 }
 
 function ServiceDetail({ service }: { service: Service }) {
   const profile = serviceProfiles[service.slug];
+  const outcome = serviceOutcomes[service.slug];
   const related = contentRepository
     .getServices()
     .filter((item) => item.slug !== service.slug)
@@ -102,6 +86,31 @@ function ServiceDetail({ service }: { service: Service }) {
           </div>
         </div>
       </section>
+      <section className="section service-outcomes">
+        <div className="container-shell">
+          <span className="eyebrow">Define success together</span>
+          <h2 className="section-heading mt-5 max-w-4xl">{outcome.focus}</h2>
+          <p className="mt-6 max-w-3xl leading-8">
+            Agree a baseline and acceptance criteria before implementation.
+            These are useful measures to discuss for your engagement; targets
+            depend on your systems, users and scope.
+          </p>
+          <div className="outcomes-grid">
+            {outcome.measures.map(([title, copy], i) => (
+              <article key={title}>
+                <span>0{i + 1}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
+          <div className="engagement-preparation">
+            <h3>What to bring to the first conversation</h3>
+            <p>{outcome.preparation}</p>
+          </div>
+        </div>
+      </section>
+      <SolutionDirectory service={service.slug} />
       <section id="capabilities" className="section bg-brand-peach">
         <div className="container-shell">
           <span className="eyebrow">What we deliver</span>
@@ -110,7 +119,8 @@ function ServiceDetail({ service }: { service: Service }) {
           </h2>
           <div className="mt-12 grid gap-5 md:grid-cols-2">
             {service.capabilities.map((capability, index) => (
-              <article
+              <Link
+                to={capabilityUrl(service.slug, index)}
                 className="rounded-2xl bg-white p-8 shadow-sm"
                 key={capability}
               >
@@ -119,11 +129,9 @@ function ServiceDetail({ service }: { service: Service }) {
                 </span>
                 <h3 className="display mt-10 text-3xl">{capability}</h3>
                 <p className="mt-4 leading-7 text-brand-muted">
-                  Assess the current landscape, design the right solution and
-                  deliver it with security, quality and operational readiness
-                  built in.
+                  {serviceDeliverables[service.slug][index]}
                 </p>
-              </article>
+              </Link>
             ))}
           </div>
         </div>
@@ -145,10 +153,7 @@ function ServiceDetail({ service }: { service: Service }) {
                     0{index + 1}
                   </span>
                   <h3 className="text-xl font-bold">{step}</h3>
-                  <p className="text-brand-muted">
-                    Align decisions, delivery and measurable outcomes while
-                    reducing risk at each stage.
-                  </p>
+                  <p className="text-brand-muted">{deliverySteps[index]}</p>
                 </div>
               ))}
             </div>
@@ -308,59 +313,6 @@ function ServiceDetail({ service }: { service: Service }) {
   );
 }
 
-function ValueSections({
-  first,
-  second,
-}: {
-  first: string[];
-  second: string[];
-}) {
-  return (
-    <>
-      <section className="section">
-        <div className="container-shell grid gap-14 lg:grid-cols-2">
-          <div>
-            <span className="eyebrow">What matters</span>
-            <h2 className="display mt-6 text-4xl">
-              Technology built around the outcome.
-            </h2>
-            <p className="mt-6 leading-8 text-brand-muted">
-              We combine business context, architecture, engineering and
-              operational discipline.
-            </p>
-          </div>
-          <div className="grid gap-4">
-            {first.map((x) => (
-              <div className="card flex gap-4 p-5" key={x}>
-                <CheckCircle2 className="shrink-0 text-brand-orange" />
-                <span className="font-bold">{x}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="section bg-brand-cream">
-        <div className="container-shell">
-          <span className="eyebrow">Business value</span>
-          <div className="mt-10 grid gap-px overflow-hidden rounded-3xl bg-black/10 md:grid-cols-3">
-            {second.map((x, i) => (
-              <div className="bg-white p-8" key={x}>
-                <span className="text-sm font-black text-brand-orange">
-                  0{i + 1}
-                </span>
-                <h3 className="mt-8 text-2xl font-bold">{x}</h3>
-                <p className="mt-3 text-sm leading-6 text-brand-muted">
-                  A practical focus area shaped around your context and
-                  priorities.
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-    </>
-  );
-}
 function Missing() {
   return (
     <div className="container-shell py-48 text-center">

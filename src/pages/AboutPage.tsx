@@ -1,13 +1,34 @@
+import { Link } from "react-router-dom";
+import { DeliveryJourney } from "../components/sections/DeliveryJourney";
+import { CompanyOverview } from "../components/sections/CompanyOverview";
+import { EditorialSections } from "../components/sections/EditorialSections";
+import { VideoStory } from "../components/sections/VideoStory";
 import { Compass, Handshake, Lightbulb, ShieldCheck } from "lucide-react";
 import { CTA } from "../components/sections/CTA";
 import { PageHero } from "../components/ui/PageHero";
 import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
 const values = [
-  ["Clarity", "Make complex decisions understandable.", Compass],
-  ["Ownership", "Stay accountable from intent to outcome.", ShieldCheck],
-  ["Curiosity", "Look deeper and keep learning.", Lightbulb],
-  ["Partnership", "Build progress together.", Handshake],
+  [
+    "Clarity",
+    "Turn an open question into a decision the team can act on. We make assumptions, priorities and acceptance criteria visible so business and engineering share the same understanding.",
+    Compass,
+  ],
+  [
+    "Ownership",
+    "Connect delivery decisions with the people who will maintain the result. We define responsibilities, document important choices and prepare operational guidance alongside implementation.",
+    ShieldCheck,
+  ],
+  [
+    "Curiosity",
+    "Explore the reason behind a requirement before choosing a solution. Research, prototypes and technical investigation help uncover constraints and test whether an approach is useful.",
+    Lightbulb,
+  ],
+  [
+    "Partnership",
+    "Work with the knowledge already in your organization. Shared reviews, clear communication and practical knowledge transfer help your team participate in the change and sustain it.",
+    Handshake,
+  ],
 ] as const;
 export default function AboutPage() {
   return (
@@ -21,6 +42,7 @@ export default function AboutPage() {
         title="Built to turn ideas into meaningful impact."
         description="SENZOFT Software Solutions Private Limited brings consulting, software engineering and managed IT services together to help organizations navigate change with confidence."
       />
+      <CompanyOverview />
       <section className="section">
         <div className="container-shell grid gap-12 lg:grid-cols-2">
           <Reveal>
@@ -39,11 +61,6 @@ export default function AboutPage() {
               solution. We listen, simplify and build with the people who will
               use and sustain the change.
             </p>
-            <p className="rounded-xl bg-brand-cream p-4 text-sm">
-              <strong className="text-brand-ink">Content note:</strong> Company
-              history, leadership, locations and certifications will be
-              published after formal approval.
-            </p>
           </div>
         </div>
       </section>
@@ -51,12 +68,23 @@ export default function AboutPage() {
         <div className="container-shell">
           <span className="eyebrow">Our values</span>
           <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {values.map(([title, text, Icon]) => (
-              <div className="card p-7" key={title}>
+            {values.map(([title, text, Icon], index) => (
+              <Link
+                to={
+                  [
+                    "/services/business-consulting",
+                    "/services/managed-it-services",
+                    "/services/digital-engineering",
+                    "/services/enterprise-applications",
+                  ][index]
+                }
+                className="card block p-7"
+                key={title}
+              >
                 <Icon className="text-brand-orange" />
                 <h3 className="mt-8 text-2xl font-bold">{title}</h3>
                 <p className="mt-3 leading-7 text-brand-muted">{text}</p>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -112,6 +140,34 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+      <VideoStory
+        clip="collaboration"
+        eyebrow="A shared way of working"
+        title="Good partnerships make the work clearer."
+        description="We value direct conversations, visible decisions and useful feedback. Business specialists, designers and engineers contribute different perspectives to the same delivery problem."
+        href="/services"
+        linkLabel="Explore our expertise"
+      />
+      <EditorialSections
+        eyebrow="Partnership in practice"
+        title="Clarity at every handoff."
+        description="A working relationship should make it easier to understand progress and make decisions. These principles guide how we shape an engagement."
+        items={[
+          [
+            "A shared definition of done",
+            "Agree the scope, acceptance criteria and responsibilities before delivery begins. Make tradeoffs visible when priorities change.",
+          ],
+          [
+            "Progress you can review",
+            "Use working demonstrations and written decisions to build a shared view of progress. Address uncertainty while there is still time to adapt.",
+          ],
+          [
+            "Knowledge that stays with you",
+            "Treat documentation, operational guidance and knowledge transfer as delivery work. Prepare the people who will maintain and evolve the result.",
+          ],
+        ]}
+      />
+      <DeliveryJourney />
       <CTA />
     </>
   );
@@ -125,14 +181,91 @@ export function LeadershipPage() {
       />
       <PageHero
         eyebrow="Leadership"
-        title="Leadership profiles are being prepared."
-        description="We will publish verified profiles after review and approval. No placeholder identities are presented as fact."
+        title="Clear direction. Shared accountability."
+        description="Our leadership perspective connects business priorities, engineering judgment and responsible delivery. Verified individual profiles will be added after review."
+      />
+      <EditorialSections
+        eyebrow="Accountability in delivery"
+        title="Know who owns the next decision."
+        description="A useful leadership structure gives each engagement clear decision rights. Responsibilities are agreed for the scope of work and reviewed as the delivery team takes shape."
+        items={[
+          [
+            "Business priorities and sponsorship",
+            "The business owner clarifies the intended outcome, resolves priority conflicts and confirms acceptance. Regular checkpoints connect the delivery backlog to changing customer and operational needs.",
+          ],
+          [
+            "Architecture and engineering judgment",
+            "Technical ownership covers system boundaries, integration choices and quality expectations. Significant decisions should include the alternatives considered, the reasons for the choice and the consequences for future maintenance.",
+          ],
+          [
+            "Delivery and operational readiness",
+            "Delivery ownership keeps dependencies, risks and progress visible. Operational responsibilities include release readiness, support handoffs and a clear route for escalating issues after launch.",
+          ],
+        ]}
+      />
+      <EditorialSections
+        eyebrow="Leadership perspective"
+        title="Create the conditions for good decisions."
+        description="The following principles describe our approach to leading delivery. They are not individual biographies or claims of formal governance certifications."
+        dark
+        items={[
+          [
+            "Keep purpose visible",
+            "Connect technical decisions to the people and processes they affect. Revisit the intended outcome when the scope or business context changes.",
+          ],
+          [
+            "Invite different expertise",
+            "Bring business, design, engineering and operations into important decisions early. Make room for questions and evidence that challenge an assumption.",
+          ],
+          [
+            "Own the follow-through",
+            "Assign responsibility for decisions, risks and operational handoffs. Review what happened after delivery and carry the learning into the next engagement.",
+          ],
+        ]}
       />
       <section className="section">
-        <div className="container-shell text-center">
-          <p className="text-brand-muted">
-            For company or leadership enquiries, please contact our team.
-          </p>
+        <div className="container-shell editorial-grid">
+          <div>
+            <span className="eyebrow">Working through uncertainty</span>
+            <h2 className="section-heading mt-5">
+              Make tradeoffs visible early.
+            </h2>
+            <p className="mt-5 leading-8 text-brand-muted">
+              A delivery plan becomes more useful when people can raise a
+              concern, understand its implications and identify who can resolve
+              it.
+            </p>
+          </div>
+          <div className="space-y-5">
+            <div>
+              <h3 className="text-xl font-bold">When scope changes</h3>
+              <p className="mt-3 leading-7 text-brand-muted">
+                Describe the new requirement and compare its value, dependencies
+                and delivery effort with the existing priorities. Record what
+                moves, what remains in scope and who accepts the revised plan.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">
+                When a risk becomes an issue
+              </h3>
+              <p className="mt-3 leading-7 text-brand-muted">
+                Identify the affected workflow and the immediate decision
+                needed. Assign an owner, communicate the options and maintain a
+                record of the response so the team can learn from it.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-xl font-bold">
+                When delivery is ready to hand over
+              </h3>
+              <p className="mt-3 leading-7 text-brand-muted">
+                Review acceptance evidence with business and operational owners.
+                Confirm documentation, support responsibilities and the
+                improvement work that should continue after release.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
       <CTA />
