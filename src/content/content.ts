@@ -7,31 +7,6 @@ const seo = (title: string, description: string) => ({
 
 export const services: Service[] = [
   {
-    id: "svc-1",
-    slug: "digital-engineering",
-    eyebrow: "Build for change",
-    title: "Digital Engineering",
-    summary:
-      "Design and engineer resilient digital experiences that move from idea to measurable impact.",
-    status: "published",
-    icon: "Code2",
-    capabilities: [
-      "Digital strategy and discovery",
-      "Web and mobile engineering",
-      "Platform modernization",
-      "Quality engineering",
-    ],
-    outcomes: [
-      "Faster release cycles",
-      "Scalable software foundations",
-      "Consistent customer experiences",
-    ],
-    seo: seo(
-      "Digital Engineering",
-      "Modern software engineering from SENZOFT.",
-    ),
-  },
-  {
     id: "svc-2",
     slug: "data-ai",
     eyebrow: "Turn data into decisions",

@@ -1,0 +1,362 @@
+{
+  "web-development": {
+    "src": "https://images.pexels.com/photos/256502/pexels-photo-256502.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/256502/pexels-photo-256502.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/256502/pexels-photo-256502.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/256502/pexels-photo-256502.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of colorful CSS code lines on a computer screen for web development."
+  },
+  "mobile-app-development": {
+    "src": "https://images.pexels.com/photos/20694602/pexels-photo-20694602.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/20694602/pexels-photo-20694602.png?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/20694602/pexels-photo-20694602.png?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/20694602/pexels-photo-20694602.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a smartphone showing Python code on the display, showcasing coding and technology."
+  },
+  "data-engineering": {
+    "src": "https://images.pexels.com/photos/32026177/pexels-photo-32026177.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/32026177/pexels-photo-32026177.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/32026177/pexels-photo-32026177.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/32026177/pexels-photo-32026177.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "High-tech command center with advanced digital displays and control panels"
+  },
+  "cloud-migration": {
+    "src": "https://images.pexels.com/photos/5480781/pexels-photo-5480781.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/5480781/pexels-photo-5480781.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/5480781/pexels-photo-5480781.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/5480781/pexels-photo-5480781.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "System with various wires managing access to centralized resource of server in data center"
+  },
+  "cloud-platforms": {
+    "src": "https://images.pexels.com/photos/17489156/pexels-photo-17489156.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/17489156/pexels-photo-17489156.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/17489156/pexels-photo-17489156.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/17489156/pexels-photo-17489156.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Focused detail of a modern server rack with blue LED indicators in a data center."
+  },
+  "business-consulting": {
+    "src": "https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/20752572/pexels-photo-20752572.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A diverse group of professionals in a business consulting office setting."
+  },
+  "enterprise-applications": {
+    "src": "https://images.pexels.com/photos/1181357/pexels-photo-1181357.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/1181357/pexels-photo-1181357.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/1181357/pexels-photo-1181357.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/1181357/pexels-photo-1181357.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Four diverse women engaged in a business meeting with laptops and presentations in an office."
+  },
+  "cybersecurity": {
+    "src": "https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/5380792/pexels-photo-5380792.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of dual computer monitors with green coding interfaces in a dark room, highlighting cyber security themes."
+  },
+  "quality-engineering": {
+    "src": "https://images.pexels.com/photos/34804010/pexels-photo-34804010.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/34804010/pexels-photo-34804010.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/34804010/pexels-photo-34804010.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/34804010/pexels-photo-34804010.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Open laptop displaying code next to a plush toy, set in a bright room with plants."
+  },
+  "managed-it-services": {
+    "src": "https://images.pexels.com/photos/32529341/pexels-photo-32529341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/32529341/pexels-photo-32529341.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/32529341/pexels-photo-32529341.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/32529341/pexels-photo-32529341.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Operator in a modern control room managing technological systems in El Agustino, Lima."
+  },
+  "banking-financial-services": {
+    "src": "https://images.pexels.com/photos/11363562/pexels-photo-11363562.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/11363562/pexels-photo-11363562.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/11363562/pexels-photo-11363562.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/11363562/pexels-photo-11363562.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "High-quality close-up of credit and debit cards, highlighting technology and security."
+  },
+  "healthcare": {
+    "src": "https://images.pexels.com/photos/4269271/pexels-photo-4269271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/4269271/pexels-photo-4269271.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/4269271/pexels-photo-4269271.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/4269271/pexels-photo-4269271.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Professional receptionist using a tablet device at a modern office reception desk."
+  },
+  "retail-consumer": {
+    "src": "https://images.pexels.com/photos/13753893/pexels-photo-13753893.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/13753893/pexels-photo-13753893.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/13753893/pexels-photo-13753893.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/13753893/pexels-photo-13753893.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A bustling shopping center with a large crowd queuing inside an Apple Store."
+  },
+  "manufacturing-logistics": {
+    "src": "https://images.pexels.com/photos/38427501/pexels-photo-38427501.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/38427501/pexels-photo-38427501.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/38427501/pexels-photo-38427501.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/38427501/pexels-photo-38427501.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up view of a complex industrial conveyor system inside a manufacturing facility."
+  },
+  "technology-software": {
+    "src": "https://images.pexels.com/photos/6804068/pexels-photo-6804068.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/6804068/pexels-photo-6804068.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/6804068/pexels-photo-6804068.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/6804068/pexels-photo-6804068.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Team of developers working together on computers in a modern tech office."
+  },
+  "public-sector": {
+    "src": "https://images.pexels.com/photos/30561676/pexels-photo-30561676.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/30561676/pexels-photo-30561676.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/30561676/pexels-photo-30561676.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/30561676/pexels-photo-30561676.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Black and white shot of a technology conference at ULB auditorium, Brussels."
+  },
+  "ai-generative-ai": {
+    "src": "https://images.pexels.com/photos/8294663/pexels-photo-8294663.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8294663/pexels-photo-8294663.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8294663/pexels-photo-8294663.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8294663/pexels-photo-8294663.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a futuristic robotic toy against a gradient background, symbolizing innovation and technology."
+  },
+  "generative-ai": {
+    "src": "https://images.pexels.com/photos/17485678/pexels-photo-17485678.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/17485678/pexels-photo-17485678.png?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/17485678/pexels-photo-17485678.png?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/17485678/pexels-photo-17485678.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A digital abstract cube interwoven with lush greenery, symbolizing sustainability and technology."
+  },
+  "data-analytics-area": {
+    "src": "https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/577210/pexels-photo-577210.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Sleek laptop showcasing data analytics and graphs on the screen in a bright room."
+  },
+  "cloud-engineering": {
+    "src": "https://images.pexels.com/photos/19825057/pexels-photo-19825057.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/19825057/pexels-photo-19825057.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/19825057/pexels-photo-19825057.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/19825057/pexels-photo-19825057.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Detailed view of a black data storage unit highlighting modern technology and data management."
+  },
+  "application-modernization-area": {
+    "src": "https://images.pexels.com/photos/3912478/pexels-photo-3912478.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/3912478/pexels-photo-3912478.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/3912478/pexels-photo-3912478.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/3912478/pexels-photo-3912478.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Two business professionals brainstorming and planning software development with a whiteboard in an office."
+  },
+  "api-integration-area": {
+    "src": "https://images.pexels.com/photos/13963756/pexels-photo-13963756.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/13963756/pexels-photo-13963756.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/13963756/pexels-photo-13963756.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/13963756/pexels-photo-13963756.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Networking equipment with connected cables, showcasing modern technology infrastructure."
+  },
+  "web-mobile-engineering": {
+    "src": "https://images.pexels.com/photos/29502368/pexels-photo-29502368.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/29502368/pexels-photo-29502368.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/29502368/pexels-photo-29502368.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/29502368/pexels-photo-29502368.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A smartphone displaying the Stripe app placed on a laptop keyboard with a blue monochromatic tone."
+  },
+  "cybersecurity-area": {
+    "src": "https://images.pexels.com/photos/37709121/pexels-photo-37709121.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/37709121/pexels-photo-37709121.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/37709121/pexels-photo-37709121.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/37709121/pexels-photo-37709121.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a glowing laptop keypad with digital interface, representing futuristic technology."
+  },
+  "devops-platform-engineering": {
+    "src": "https://images.pexels.com/photos/10845119/pexels-photo-10845119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/10845119/pexels-photo-10845119.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/10845119/pexels-photo-10845119.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/10845119/pexels-photo-10845119.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of colorful source code on a monitor, showcasing programming and technology concepts."
+  },
+  "connected-care-workflow": {
+    "src": "https://images.pexels.com/photos/19957220/pexels-photo-19957220.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/19957220/pexels-photo-19957220.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/19957220/pexels-photo-19957220.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/19957220/pexels-photo-19957220.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Smiling female doctor in scrubs and lab coat writing notes, holding a tablet."
+  },
+  "retail-data-foundation": {
+    "src": "https://images.pexels.com/photos/7857526/pexels-photo-7857526.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/7857526/pexels-photo-7857526.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/7857526/pexels-photo-7857526.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/7857526/pexels-photo-7857526.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Small business owner managing online orders from a laptop in Portugal."
+  },
+  "manufacturing-platform-modernization": {
+    "src": "https://images.pexels.com/photos/36522029/pexels-photo-36522029.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/36522029/pexels-photo-36522029.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/36522029/pexels-photo-36522029.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/36522029/pexels-photo-36522029.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a PCB inspection machine in action, highlighting technology."
+  },
+  "from-ai-pilot-to-practical-value": {
+    "src": "https://images.pexels.com/photos/8849295/pexels-photo-8849295.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8849295/pexels-photo-8849295.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8849295/pexels-photo-8849295.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8849295/pexels-photo-8849295.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Abstract illustration of AI with silhouette head full of eyes, symbolizing observation and technology."
+  },
+  "modernization-without-disruption": {
+    "src": "https://images.pexels.com/photos/6253568/pexels-photo-6253568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/6253568/pexels-photo-6253568.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/6253568/pexels-photo-6253568.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/6253568/pexels-photo-6253568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a video editing timeline on a computer screen, showcasing modern technology."
+  },
+  "designing-trusted-digital-services": {
+    "src": "https://images.pexels.com/photos/8128192/pexels-photo-8128192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8128192/pexels-photo-8128192.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8128192/pexels-photo-8128192.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8128192/pexels-photo-8128192.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Business colleagues collaborating in an office setting with laptops and electronics."
+  },
+  "cloud-cost-to-cloud-value": {
+    "src": "https://images.pexels.com/photos/7013070/pexels-photo-7013070.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/7013070/pexels-photo-7013070.png?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/7013070/pexels-photo-7013070.png?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/7013070/pexels-photo-7013070.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A person in a blue jacket analyzing business analytics on a laptop outdoors during winter."
+  },
+  "quality-engineering-in-ai-era": {
+    "src": "https://images.pexels.com/photos/16027824/pexels-photo-16027824.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/16027824/pexels-photo-16027824.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/16027824/pexels-photo-16027824.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/16027824/pexels-photo-16027824.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a computer screen displaying ChatGPT interface in a dark setting."
+  },
+  "secure-modernization-roadmap": {
+    "src": "https://images.pexels.com/photos/16592498/pexels-photo-16592498.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/16592498/pexels-photo-16592498.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/16592498/pexels-photo-16592498.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/16592498/pexels-photo-16592498.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a computer screen displaying HTML, CSS, and JavaScript code"
+  },
+  "patient-access-experience": {
+    "src": "https://images.pexels.com/photos/6627896/pexels-photo-6627896.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/6627896/pexels-photo-6627896.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/6627896/pexels-photo-6627896.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/6627896/pexels-photo-6627896.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Medical staff wearing masks and scrubs in a clinic's reception area."
+  },
+  "omnichannel-commerce-foundation": {
+    "src": "https://images.pexels.com/photos/6956903/pexels-photo-6956903.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/6956903/pexels-photo-6956903.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/6956903/pexels-photo-6956903.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/6956903/pexels-photo-6956903.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A laptop surrounded by shopping bags and boxes on a blue sofa, ideal for online shopping themes."
+  },
+  "manufacturing-quality-workflow": {
+    "src": "https://images.pexels.com/photos/35383622/pexels-photo-35383622.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/35383622/pexels-photo-35383622.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/35383622/pexels-photo-35383622.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/35383622/pexels-photo-35383622.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Worker in uniform examining sheets in a brightly lit factory environment, focusing on quality."
+  },
+  "digital-banking-onboarding": {
+    "src": "https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/7621381/pexels-photo-7621381.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A smartphone displaying an ecommerce site with a credit card, set on a wooden surface, depicting online shopping."
+  },
+  "shipment-visibility-platform": {
+    "src": "https://images.pexels.com/photos/12196578/pexels-photo-12196578.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/12196578/pexels-photo-12196578.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/12196578/pexels-photo-12196578.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/12196578/pexels-photo-12196578.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Colorful cargo containers on a freight train along a rural railway track under a clear blue sky."
+  },
+  "student-service-portal": {
+    "src": "https://images.pexels.com/photos/8199151/pexels-photo-8199151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8199151/pexels-photo-8199151.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8199151/pexels-photo-8199151.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8199151/pexels-photo-8199151.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Students engaging with a professor in a university lecture hall, utilizing technology."
+  },
+  "citizen-case-management": {
+    "src": "https://images.pexels.com/photos/38668890/pexels-photo-38668890.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/38668890/pexels-photo-38668890.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/38668890/pexels-photo-38668890.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/38668890/pexels-photo-38668890.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "The Texas House of Representatives chamber, featuring legislative seats and historical portraits."
+  },
+  "claims-workflow-modernization": {
+    "src": "https://images.pexels.com/photos/10341357/pexels-photo-10341357.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/10341357/pexels-photo-10341357.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/10341357/pexels-photo-10341357.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/10341357/pexels-photo-10341357.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up image of an insurance policy with a magnifying glass, money, and toy car."
+  },
+  "saas-platform-engineering": {
+    "src": "https://images.pexels.com/photos/33607952/pexels-photo-33607952.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/33607952/pexels-photo-33607952.png?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/33607952/pexels-photo-33607952.png?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/33607952/pexels-photo-33607952.png?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A detailed view of computer programming code on a screen, showcasing software development."
+  },
+  "build-vs-buy": {
+    "src": "https://images.pexels.com/photos/5582591/pexels-photo-5582591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/5582591/pexels-photo-5582591.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/5582591/pexels-photo-5582591.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/5582591/pexels-photo-5582591.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Architect focused on digital design at dual monitors in a modern workspace."
+  },
+  "api-modernization-roadmap": {
+    "src": "https://images.pexels.com/photos/10816120/pexels-photo-10816120.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/10816120/pexels-photo-10816120.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/10816120/pexels-photo-10816120.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/10816120/pexels-photo-10816120.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Detailed view of programming code in a dark theme on a computer screen."
+  },
+  "data-foundations-for-ai": {
+    "src": "https://images.pexels.com/photos/30547568/pexels-photo-30547568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/30547568/pexels-photo-30547568.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/30547568/pexels-photo-30547568.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/30547568/pexels-photo-30547568.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Stunning abstract view of futuristic digital circuitry with glowing effects."
+  },
+  "measuring-modernization": {
+    "src": "https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/12969403/pexels-photo-12969403.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A laptop displaying an analytics dashboard with real-time data tracking and analysis tools."
+  },
+  "software-as-capability": {
+    "src": "https://images.pexels.com/photos/8101968/pexels-photo-8101968.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8101968/pexels-photo-8101968.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8101968/pexels-photo-8101968.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8101968/pexels-photo-8101968.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Group of young professionals engaged in a collaborative discussion using digital technology in a modern office."
+  },
+  "user-behavior-digital-products": {
+    "src": "https://images.pexels.com/photos/4384669/pexels-photo-4384669.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/4384669/pexels-photo-4384669.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/4384669/pexels-photo-4384669.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/4384669/pexels-photo-4384669.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Woman exploring virtual reality with VR goggles in a modern technological environment."
+  },
+  "observability-architecture": {
+    "src": "https://images.pexels.com/photos/106344/pexels-photo-106344.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/106344/pexels-photo-106344.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/106344/pexels-photo-106344.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/106344/pexels-photo-106344.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a tablet displaying analytics charts on a wooden office desk, alongside a smartphone and coffee cup."
+  },
+  "staged-cloud-modernization": {
+    "src": "https://images.pexels.com/photos/15559037/pexels-photo-15559037.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/15559037/pexels-photo-15559037.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/15559037/pexels-photo-15559037.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/15559037/pexels-photo-15559037.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of blue ethernet cables hanging in a data center, highlighting technology connections."
+  },
+  "testing-ai-applications": {
+    "src": "https://images.pexels.com/photos/20870805/pexels-photo-20870805.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/20870805/pexels-photo-20870805.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/20870805/pexels-photo-20870805.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/20870805/pexels-photo-20870805.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a hand holding a smartphone with AI applications on screen."
+  },
+  "reliable-workflow-automation": {
+    "src": "https://images.pexels.com/photos/7605981/pexels-photo-7605981.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/7605981/pexels-photo-7605981.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/7605981/pexels-photo-7605981.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/7605981/pexels-photo-7605981.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Overhead view of project management documents and charts on a desk with a pencil."
+  },
+  "genai-questions-leaders": {
+    "src": "https://images.pexels.com/photos/7433929/pexels-photo-7433929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/7433929/pexels-photo-7433929.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/7433929/pexels-photo-7433929.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/7433929/pexels-photo-7433929.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Business executive standing confidently in meeting room with team engaged in discussion behind."
+  },
+  "data-governance-engineering": {
+    "src": "https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/2653362/pexels-photo-2653362.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Detailed view of HTML and CSS code on a dark screen, representing modern web development."
+  },
+  "accessible-digital-experiences": {
+    "src": "https://images.pexels.com/photos/19747887/pexels-photo-19747887.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/19747887/pexels-photo-19747887.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/19747887/pexels-photo-19747887.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/19747887/pexels-photo-19747887.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A smiling adult man using a desktop computer at a desk, creating a positive work environment."
+  },
+  "dashboards-to-decisions": {
+    "src": "https://images.pexels.com/photos/10020092/pexels-photo-10020092.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/10020092/pexels-photo-10020092.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/10020092/pexels-photo-10020092.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/10020092/pexels-photo-10020092.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A digital tablet showing a web analytics dashboard with graphs and charts."
+  },
+  "api-first-modernization": {
+    "src": "https://images.pexels.com/photos/4976710/pexels-photo-4976710.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/4976710/pexels-photo-4976710.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/4976710/pexels-photo-4976710.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/4976710/pexels-photo-4976710.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a computer screen displaying colorful programming code with depth of field."
+  },
+  "quality-delivery-economics": {
+    "src": "https://images.pexels.com/photos/14553707/pexels-photo-14553707.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/14553707/pexels-photo-14553707.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/14553707/pexels-photo-14553707.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/14553707/pexels-photo-14553707.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Colorful HTML code displayed on a computer screen for programming projects."
+  },
+  "practical-cloud-security": {
+    "src": "https://images.pexels.com/photos/38482455/pexels-photo-38482455.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/38482455/pexels-photo-38482455.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/38482455/pexels-photo-38482455.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/38482455/pexels-photo-38482455.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Cyber security concept shown on grunge-style background highlights the importance of digital protection."
+  },
+  "resilient-customer-journeys": {
+    "src": "https://images.pexels.com/photos/14851416/pexels-photo-14851416.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/14851416/pexels-photo-14851416.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/14851416/pexels-photo-14851416.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/14851416/pexels-photo-14851416.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A person using a touchscreen to browse vinyl record information for Nick Cave & The Bad Seeds."
+  },
+  "platform-engineering-guide": {
+    "src": "https://images.pexels.com/photos/34987129/pexels-photo-34987129.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/34987129/pexels-photo-34987129.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/34987129/pexels-photo-34987129.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/34987129/pexels-photo-34987129.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Three men collaborate in an office, focusing on tech innovation. Leadership and team dynamics emphasized."
+  },
+  "technology-roadmap": {
+    "src": "https://images.pexels.com/photos/1143521/pexels-photo-1143521.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/1143521/pexels-photo-1143521.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/1143521/pexels-photo-1143521.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/1143521/pexels-photo-1143521.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Team collaboration over financial documents in a modern office setting."
+  },
+  "product-thinking-enterprise": {
+    "src": "https://images.pexels.com/photos/15505179/pexels-photo-15505179.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/15505179/pexels-photo-15505179.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/15505179/pexels-photo-15505179.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/15505179/pexels-photo-15505179.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Women collaborating in a modern office with laptops and large digital display."
+  },
+  "internal-knowledge-assistants": {
+    "src": "https://images.pexels.com/photos/32021560/pexels-photo-32021560.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/32021560/pexels-photo-32021560.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/32021560/pexels-photo-32021560.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/32021560/pexels-photo-32021560.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a smartphone with AI chat interface, showcasing advanced technology in a sleek design."
+  },
+  "maintainable-enterprise-apps": {
+    "src": "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/4974912/pexels-photo-4974912.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A developer working on a laptop, typing code, showcasing programming and technology skills."
+  },
+  "modernization-beyond-migration": {
+    "src": "https://images.pexels.com/photos/8728291/pexels-photo-8728291.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/8728291/pexels-photo-8728291.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/8728291/pexels-photo-8728291.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/8728291/pexels-photo-8728291.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Two individuals engaging with futuristic transparent touch screens in a vibrant purple-lit studio."
+  },
+  "about-software-products": {
+    "src": "https://images.pexels.com/photos/37085301/pexels-photo-37085301.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/37085301/pexels-photo-37085301.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/37085301/pexels-photo-37085301.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/37085301/pexels-photo-37085301.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "A developer codes on a laptop in an outdoor setting, showcasing modern web development in Surat, India."
+  },
+  "about-data-intelligence": {
+    "src": "https://images.pexels.com/photos/27141316/pexels-photo-27141316.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/27141316/pexels-photo-27141316.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/27141316/pexels-photo-27141316.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/27141316/pexels-photo-27141316.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Close-up of a digital interface showcasing futuristic graphs and data analytics in low light."
+  },
+  "about-cloud-platforms": {
+    "src": "https://images.pexels.com/photos/39528387/pexels-photo-39528387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/39528387/pexels-photo-39528387.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/39528387/pexels-photo-39528387.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/39528387/pexels-photo-39528387.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Two telecommunication towers with antennas against a clear blue sky and clouds."
+  },
+  "about-quality-security": {
+    "src": "https://images.pexels.com/photos/5240547/pexels-photo-5240547.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/5240547/pexels-photo-5240547.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/5240547/pexels-photo-5240547.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/5240547/pexels-photo-5240547.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Side view of crop anonymous male cyber thief accessing information on desktop computer screens at dusk"
+  },
+  "cloud-modernization": {
+    "src": "https://images.pexels.com/photos/9539073/pexels-photo-9539073.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "srcSet": "https://images.pexels.com/photos/9539073/pexels-photo-9539073.jpeg?auto=compress&cs=tinysrgb&h=350 640w, https://images.pexels.com/photos/9539073/pexels-photo-9539073.jpeg?auto=compress&cs=tinysrgb&h=650&w=940 940w, https://images.pexels.com/photos/9539073/pexels-photo-9539073.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940 1880w",
+    "alt": "Detailed close-up of Dell EMC server logo on hardware grill with shallow focus and textured patterns."
+  }
+}

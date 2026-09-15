@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Navigate, Route, Routes } from "react-router-dom";
 import { AppLayout } from "../components/layout/AppLayout";
 import { LegalPage, NotFoundPage, SearchPage } from "../pages/UtilityPages";
@@ -21,14 +21,28 @@ const CareersPage = lazy(() => import("../pages/CareersPage"));
 const CareerPathPage = lazy(() => import("../pages/CareerPathPage"));
 const JobPage = lazy(() => import("../pages/JobPage"));
 const ContactPage = lazy(() => import("../pages/ContactPage"));
-const Loading = () => (
-  <div className="grid min-h-screen place-items-center">
-    <span
-      className="size-10 animate-spin rounded-full border-4 border-brand-orange border-t-transparent"
-      aria-label="Loading"
-    />
-  </div>
-);
+const InsightsPage = lazy(() => import("../pages/InsightsPage"));
+const InsightDetailPage = lazy(() => import("../pages/InsightDetailPage"));
+const TechnologyPage = lazy(() => import("../pages/PlatformPages").then(m => ({ default: m.TechnologyPage })));
+const TechnologyDetailPage = lazy(() => import("../pages/PlatformPages").then(m => ({ default: m.TechnologyDetailPage })));
+const CaseStudiesPage = lazy(() => import("../pages/PlatformPages").then(m => ({ default: m.CaseStudiesPage })));
+const CaseStudyDetailPage = lazy(() => import("../pages/PlatformPages").then(m => ({ default: m.CaseStudyDetailPage })));
+function Loading() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    const delay = window.setTimeout(() => setShow(true), 700);
+    return () => window.clearTimeout(delay);
+  }, []);
+
+  if (!show) return null;
+
+  return (
+    <div className="grid min-h-screen place-items-center" role="status" aria-label="Loading page">
+      <span className="size-10 animate-spin rounded-full border-4 border-brand-orange border-t-transparent" />
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -37,6 +51,11 @@ export default function App() {
         <Route element={<AppLayout />}>
           <Route index element={<HomePage />} />
           <Route path="services" element={<ServicesPage />} />
+          <Route path="services/web-development" element={<Navigate to="/solutions/web-development" replace />} />
+          <Route path="services/mobile-app-development" element={<Navigate to="/solutions/mobile-app-development" replace />} />
+          <Route path="services/data-engineering" element={<Navigate to="/technology/data-engineering" replace />} />
+          <Route path="services/cloud-migration" element={<Navigate to="/solutions/cloud-modernization" replace />} />
+          <Route path="services/digital-engineering" element={<Navigate to="/services/application-modernization" replace />} />
           <Route path="services/:slug" element={<DetailPage />} />
           <Route
             path="services/:slug/:solutionSlug"
@@ -44,15 +63,16 @@ export default function App() {
           />
           <Route path="industries" element={<IndustriesPage />} />
           <Route path="industries/:slug" element={<DetailPage />} />
-          <Route
-            path="insights/*"
-            element={<Navigate to="/services" replace />}
-          />
-          <Route
-            path="case-studies/*"
-            element={<Navigate to="/services" replace />}
-          />
+          <Route path="insights" element={<InsightsPage />} />
+          <Route path="insights/:slug" element={<InsightDetailPage />} />
+          <Route path="technology" element={<TechnologyPage />} />
+          <Route path="technology/:slug" element={<TechnologyDetailPage />} />
+          <Route path="solutions" element={<Navigate to="/services" replace />} />
+          <Route path="solutions/:solutionSlug" element={<SolutionPage />} />
+          <Route path="case-studies" element={<CaseStudiesPage />} />
+          <Route path="case-studies/:slug" element={<CaseStudyDetailPage />} />
           <Route path="about" element={<AboutPage />} />
+          <Route path="who-we-are" element={<Navigate to="/about" replace />} />
           <Route path="leadership" element={<Navigate to="/about" replace />} />
           <Route path="careers" element={<CareersPage />} />
           <Route

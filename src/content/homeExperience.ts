@@ -4,7 +4,7 @@ export const solutionPaths = [
     category: "PRODUCT & EXPERIENCE",
     copy: "Turn a business idea into a focused product scope, a usable interface and an application foundation your team can evolve.",
     tags: ["Discovery", "UX & UI", "Web & mobile"],
-    href: "/services/digital-engineering",
+    href: "/services/application-modernization",
     kind: "product",
   },
   {

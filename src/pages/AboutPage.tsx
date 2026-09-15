@@ -43,15 +43,15 @@ export default function AboutPage() {
         description="SENZOFT Software Solutions Private Limited brings consulting, software engineering and managed IT services together to help organizations navigate change with confidence."
       />
       <CompanyOverview />
-      <section className="section">
-        <div className="container-shell grid gap-12 lg:grid-cols-2">
+      <section className="section reference-story-section">
+        <div className="container-shell reference-story-grid">
           <Reveal>
-            <span className="eyebrow">Our purpose</span>
-            <h2 className="display mt-6 text-5xl">
+            <span className="eyebrow accent">Our purpose</span>
+            <h2 className="reference-text-block">
               Make technology useful, trusted and human.
             </h2>
           </Reveal>
-          <div className="space-y-6 text-lg leading-8 text-brand-muted">
+          <div className="reference-story-copy">
             <p>
               We believe transformation works when business context, thoughtful
               design and disciplined engineering move together.
@@ -64,38 +64,38 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
-      <section className="section bg-brand-cream">
+      <section className="section reference-values-section">
         <div className="container-shell">
-          <span className="eyebrow">Our values</span>
-          <div className="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
+          <span className="eyebrow accent">Our values</span>
+          <div className="reference-value-grid">
             {values.map(([title, text, Icon], index) => (
               <Link
                 to={
                   [
                     "/services/business-consulting",
                     "/services/managed-it-services",
-                    "/services/digital-engineering",
+                    "/services/application-modernization",
                     "/services/enterprise-applications",
                   ][index]
                 }
-                className="card block p-7"
+                className="reference-value-card"
                 key={title}
               >
                 <Icon className="text-brand-orange" />
-                <h3 className="mt-8 text-2xl font-bold">{title}</h3>
-                <p className="mt-3 leading-7 text-brand-muted">{text}</p>
+                <h3>{title}</h3>
+                <p>{text}</p>
               </Link>
             ))}
           </div>
         </div>
       </section>
-      <section className="section">
+      <section className="section reference-impact-section">
         <div className="container-shell">
-          <span className="eyebrow">How we create impact</span>
-          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
+          <span className="eyebrow accent">How we create impact</span>
+          <h2 className="reference-impact-title">
             Small enough to stay close. Structured to deliver well.
           </h2>
-          <div className="mt-12 grid gap-5 md:grid-cols-3">
+          <div className="reference-impact-grid">
             {[
               [
                 "Business-led",
@@ -110,32 +110,30 @@ export default function AboutPage() {
                 "Open collaboration and knowledge transfer help change last beyond delivery.",
               ],
             ].map(([title, copy]) => (
-              <article className="rounded-2xl bg-brand-peach p-8" key={title}>
-                <h3 className="display text-3xl">{title}</h3>
-                <p className="mt-5 leading-7 text-brand-muted">{copy}</p>
+              <article className="reference-impact-card" key={title}>
+                <h3>{title}</h3>
+                <p>{copy}</p>
               </article>
             ))}
           </div>
         </div>
       </section>
-      <section className="section bg-brand-sage">
-        <div className="container-shell grid gap-10 lg:grid-cols-2">
+      <section className="section reference-commitment-section">
+        <div className="container-shell reference-commitment-grid">
           <div>
-            <span className="eyebrow">Our commitment</span>
-            <h2 className="display mt-6 text-5xl">
+            <span className="eyebrow accent">Our commitment</span>
+            <h2 className="reference-commitment-title">
               Responsible progress by design.
             </h2>
           </div>
-          <div className="grid gap-4">
+          <div className="reference-commitment-list">
             {[
               "Accessible and inclusive digital experiences",
               "Responsible use of data and artificial intelligence",
               "Security and privacy built into delivery",
               "Sustainable, maintainable technology choices",
             ].map((item) => (
-              <div className="rounded-xl bg-white p-5 font-bold" key={item}>
-                {item}
-              </div>
+              <div key={item}>{item}</div>
             ))}
           </div>
         </div>

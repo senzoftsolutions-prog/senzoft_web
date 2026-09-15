@@ -2,7 +2,7 @@ import { capabilityUrl } from "../content/solutions";
 import { ArrowRight, CheckCircle2, ChevronDown } from "lucide-react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { CTA } from "../components/sections/CTA";
-import { ContentGrid } from "../components/sections/ContentGrid";
+import { RelatedContent } from "../components/sections/RelatedContent";
 import { PageHero } from "../components/ui/PageHero";
 import { Seo } from "../components/ui/Seo";
 import { contentRepository } from "../content/repository";
@@ -12,7 +12,6 @@ import {
 } from "../content/serviceDeliverables";
 import { serviceProfiles } from "../content/serviceProfiles";
 import { serviceOutcomes } from "../content/serviceOutcomes";
-import { SolutionDirectory } from "../components/sections/SolutionDirectory";
 import { IndustryDetail } from "./EditorialDetail";
 import type { Industry, Service } from "../types";
 
@@ -39,6 +38,18 @@ function ServiceDetail({ service }: { service: Service }) {
     .getServices()
     .filter((item) => item.slug !== service.slug)
     .slice(0, 3);
+  const technologies = contentRepository
+    .getTechnologiesForService(service.slug)
+    .slice(0, 6);
+  const industries = contentRepository
+    .getIndustriesForService(service.slug)
+    .slice(0, 4);
+  const cases = contentRepository
+    .getCaseStudiesForService(service.slug)
+    .slice(0, 2);
+  const insights = contentRepository
+    .getInsightsForService(service.slug)
+    .slice(0, 2);
   return (
     <>
       <Seo title={service.seo.title} description={service.seo.description} />
@@ -46,9 +57,17 @@ function ServiceDetail({ service }: { service: Service }) {
         eyebrow="SENZOFT technology services"
         title={service.title}
         description={service.summary}
+        imageSlug={service.slug.includes("cloud") ? undefined : service.slug}
+        media={
+          service.slug === "cloud-migration"
+            ? "cloudMigration"
+            : service.slug === "cloud-platforms"
+              ? "cloudSecurity"
+              : undefined
+        }
       />
       <nav
-        className="sticky top-24 z-30 hidden border-b border-black/10 bg-white/95 backdrop-blur md:block"
+        className="solution-section-nav hidden md:block"
         aria-label="On this page"
       >
         <div className="container-shell flex gap-8 overflow-x-auto py-4 text-sm font-bold">
@@ -110,7 +129,6 @@ function ServiceDetail({ service }: { service: Service }) {
           </div>
         </div>
       </section>
-      <SolutionDirectory service={service.slug} />
       <section id="capabilities" className="section bg-brand-peach">
         <div className="container-shell">
           <span className="eyebrow">What we deliver</span>
@@ -173,13 +191,14 @@ function ServiceDetail({ service }: { service: Service }) {
             </p>
           </div>
           <div className="flex content-start flex-wrap gap-3">
-            {profile.technologies.map((item) => (
-              <span
+            {technologies.map((item) => (
+              <Link
                 className="rounded-full border border-brand-ink/15 bg-white px-5 py-3 font-bold"
-                key={item}
+                key={item.slug}
+                to={`/technology/${item.slug}`}
               >
-                {item}
-              </span>
+                {item.title}
+              </Link>
             ))}
           </div>
         </div>
@@ -299,15 +318,31 @@ function ServiceDetail({ service }: { service: Service }) {
           </div>
         </div>
       </section>
-      <section className="section bg-brand-cream">
-        <div className="container-shell">
-          <span className="eyebrow">Connected expertise</span>
-          <h2 className="display mt-6 text-5xl">Explore related services.</h2>
-          <div className="mt-10">
-            <ContentGrid items={related} basePath="/services" />
-          </div>
-        </div>
-      </section>
+      <RelatedContent
+        items={[
+          ...related.map((item) => ({
+            ...item,
+            href: `/services/${item.slug}`,
+            label: "Service",
+          })),
+          ...industries.map((item) => ({
+            ...item,
+            href: `/industries/${item.slug}`,
+            label: "Industry",
+          })),
+          ...cases.map((item) => ({
+            ...item,
+            href: `/case-studies/${item.slug}`,
+            label: "Reference engagement",
+          })),
+          ...insights.map((item) => ({
+            ...item,
+            href: `/insights/${item.slug}`,
+            label: item.type,
+          })),
+        ].slice(0, 6)}
+        heading="Continue through connected expertise."
+      />
       <CTA />
     </>
   );

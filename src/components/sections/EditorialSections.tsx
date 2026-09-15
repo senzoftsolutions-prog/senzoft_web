@@ -82,7 +82,7 @@ export function EngagementOptions() {
       title: "Build a defined outcome",
       label: "Project delivery",
       copy: "For a product, integration or modernization scope. Agree acceptance criteria, deliver in reviewable increments and prepare your team for launch and ongoing ownership.",
-      href: "/services/digital-engineering",
+      href: "/services/application-modernization",
       outputs: [
         "Reviewed designs and a prioritized delivery backlog",
         "Working increments with acceptance evidence",

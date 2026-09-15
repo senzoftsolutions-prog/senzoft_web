@@ -17,13 +17,14 @@ export interface Service extends BaseContent {
   capabilities: string[];
   outcomes: string[];
   icon: string;
+  image?: string;
 }
 export interface Industry extends BaseContent {
   challenges: string[];
   solutions: string[];
   icon: string;
 }
-export type InsightType = "Article" | "Perspective" | "Report";
+export type InsightType = "Article" | "Perspective" | "Report" | "Guide";
 export interface Insight extends BaseContent {
   type: InsightType;
   readTime: string;

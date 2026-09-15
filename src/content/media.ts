@@ -1,6 +1,6 @@
 import imported from "./imported-media.json";
 interface MediaAsset {
-  src: string;
+  src?: string;
   poster: string;
   title: string;
   source: string;
@@ -28,6 +28,61 @@ const defaults = {
     title: "A team discussing plans around a table",
     source:
       "https://mixkit.co/free-stock-video/business-people-at-work-meeting-4809/",
+  },
+  strategy: {
+    src: "/media/8814715-uhd_3840_2160_25fps.mp4",
+    poster: "/media/campaign-creators-gMsnXqILjp4-unsplash.jpg",
+    credit: "Pexels / Unsplash",
+    title: "A business team reviewing strategy together",
+    source: "https://www.pexels.com/video/4974884/",
+  },
+  engineering: {
+    src: "/media/4974884-hd_1920_1080_25fps.mp4",
+    poster: "/media/pexels-cottonbro-6804071.jpg",
+    credit: "Pexels",
+    title: "Software engineers collaborating around their work",
+    source: "https://www.pexels.com/video/7534267/",
+  },
+  cloudSecurity: {
+    src: "/media/7534267-hd_1920_1080_25fps.mp4",
+    poster: "/media/cybersecurity-concept-illustration.jpg",
+    credit: "Pexels",
+    title: "Cybersecurity monitoring and secure digital access",
+    source: "https://www.pexels.com/video/7534267/",
+  },
+  cloudMigration: {
+    src: "/media/128210-747086064_medium.mp4",
+    poster: "/media/cybersecurity-concept-illustration.jpg",
+    credit: "Pexels",
+    title: "Connected cloud services and mobile workloads",
+    source: "https://www.pexels.com/video/128210/",
+  },
+  dataAnalytics: {
+    src: "/media/gettyimages-1264338570-640_adpp.mp4",
+    poster: "/media/digital-work.jpg",
+    credit: "Getty Images",
+    title: "Business data, charts and analytical reporting",
+    source: "https://www.gettyimages.com/",
+  },
+  delivery: {
+    src: "/media/team-collaboration.mp4",
+    poster: "/media/pexels-cottonbro-6804071.jpg",
+    credit: "Pexels",
+    title: "A technology team delivering software together",
+    source: "https://www.pexels.com/video/128210/",
+  },
+  leadership: {
+    src: "/media/8814715-uhd_3840_2160_25fps.mp4",
+    poster: "/media/campaign-creators-gMsnXqILjp4-unsplash.jpg",
+    credit: "Getty Images",
+    title: "Business leaders in a collaborative working session",
+    source: "https://www.gettyimages.com/",
+  },
+  devops: {
+    poster: "/media/devops-platform-engineering.png",
+    credit: "Provided asset",
+    title: "DevOps continuous delivery and operations",
+    source: "",
   },
 } as const;
 export type MediaKey = keyof typeof defaults;

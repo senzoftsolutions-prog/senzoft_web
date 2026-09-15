@@ -1,20 +1,45 @@
+import { Link } from "react-router-dom";
 import type { Industry } from "../types";
-import { industryProfiles } from "../content/industryProfiles";
-import { industryDelivery } from "../content/industryDelivery";
-import { contentRepository } from "../content/repository";
-import { PageHero } from "../components/ui/PageHero";
-import { Seo } from "../components/ui/Seo";
 import { CTA } from "../components/sections/CTA";
 import { ContentGrid } from "../components/sections/ContentGrid";
-import { EditorialSections } from "../components/sections/EditorialSections";
-import { SolutionDirectory } from "../components/sections/SolutionDirectory";
+import { RelatedContent } from "../components/sections/RelatedContent";
+import { PageHero } from "../components/ui/PageHero";
+import { Seo } from "../components/ui/Seo";
+import { industryProfiles } from "../content/industryProfiles";
+import { contentRepository } from "../content/repository";
 
 export function IndustryDetail({ industry }: { industry: Industry }) {
-  const profile = industryProfiles[industry.slug];
-  const delivery = industryDelivery[industry.slug];
-  const related = contentRepository
-    .getServices()
-    .filter((service) => profile.services.includes(service.slug));
+  const profile = industryProfiles[industry.slug] || {
+    introduction: industry.summary,
+    scenarios: industry.challenges.map(
+      (item) =>
+        [
+          item,
+          `Define the affected workflow, its owners and the evidence required to improve ${item.toLowerCase()}.`,
+        ] as [string, string],
+    ),
+    discovery: industry.challenges,
+    measures: [
+      "Journey quality",
+      "Information reliability",
+      "Operational readiness",
+    ],
+    services: [],
+  };
+  const services = contentRepository
+    .getServicesForIndustry(industry.slug)
+    .slice(0, 4);
+  const serviceSlugs = services.map((item) => item.slug);
+  const technologies = contentRepository
+    .getTechnologiesForIndustry(industry.slug)
+    .slice(0, 6);
+  const solutions = contentRepository
+    .getSolutions()
+    .filter((item) => serviceSlugs.includes(item.service))
+    .slice(0, 3);
+  const cases = contentRepository
+    .getCaseStudiesForIndustry(industry.slug)
+    .slice(0, 2);
   return (
     <>
       <Seo title={industry.seo.title} description={industry.seo.description} />
@@ -22,117 +47,87 @@ export function IndustryDetail({ industry }: { industry: Industry }) {
         eyebrow="Industry perspective"
         title={industry.title}
         description={industry.summary}
+        imageSlug={industry.slug}
       />
-      <EditorialSections
-        eyebrow="Where technology can help"
-        title="Built around the realities of your sector."
-        description={profile.introduction}
-        items={profile.scenarios}
-      />
+
       <section className="section">
         <div className="container-shell editorial-grid">
           <div>
-            <span className="eyebrow">Start with the right questions</span>
-            <h2 className="section-heading mt-6">Make discovery specific.</h2>
-            <p className="mt-6 leading-8 text-brand-muted">
-              These questions help define a useful first engagement. The scope,
-              controls and delivery plan are shaped with your domain and
-              operational teams.
-            </p>
-          </div>
-          <ol className="space-y-4">
-            {profile.discovery.map((question, i) => (
-              <li key={question} className="card flex gap-5 p-6">
-                <span className="font-bold text-brand-orange">0{i + 1}</span>
-                <p className="text-lg font-semibold">{question}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-      <section className="section bg-brand-plum text-white">
-        <div className="container-shell">
-          <span className="eyebrow !text-brand-amber">
-            Define success together
-          </span>
-          <h2 className="section-heading mt-6">
-            Measure the change that matters.
-          </h2>
-          <p className="mt-5 max-w-2xl leading-7 text-white/75">
-            Suggested measures for discovery, rather than claims of achieved
-            results. Agree a baseline, owner and review cadence for each
-            selected measure.
-          </p>
-          <div className="mt-10 grid gap-5 md:grid-cols-3">
-            {profile.measures.map((item) => (
-              <div
-                key={item}
-                className="rounded-2xl border border-white/20 p-7 text-xl font-bold"
-              >
-                {item}
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      <section className="section bg-brand-cream">
-        <div className="container-shell editorial-grid">
-          <div>
-            <span className="eyebrow">A focused first engagement</span>
+            <span className="eyebrow">Industry challenges</span>
             <h2 className="section-heading mt-5">
-              Turn the priority into a practical scope.
+              Start with the operating reality.
             </h2>
-            <p className="mt-5 leading-8 text-brand-muted">{delivery.scope}</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold">What the work could produce</h3>
-            <ul className="mt-5 space-y-3">
-              {delivery.deliverables.map((item) => (
-                <li
-                  key={item}
-                  className="border-b border-black/10 pb-3 font-semibold"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <h3 className="mt-7 text-xl font-bold">
-              Before expanding the solution
-            </h3>
-            <p className="mt-3 leading-8 text-brand-muted">
-              {delivery.readiness}
+            <p className="mt-5 leading-8 text-brand-muted">
+              {profile.introduction}
             </p>
           </div>
+          <div className="reference-listing-points">
+            {profile.scenarios.slice(0, 4).map(([title, copy], index) => (
+              <article key={title}>
+                <span>0{index + 1}</span>
+                <h3>{title}</h3>
+                <p>{copy}</p>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
-      <section className="section">
+
+      <section className="section bg-brand-cream">
         <div className="container-shell">
-          <span className="eyebrow">Relevant expertise</span>
-          <h2 className="section-heading mt-6 mb-10">
-            Connect the capabilities you need.
+          <span className="eyebrow">Relevant services</span>
+          <h2 className="section-heading mt-5">
+            Capabilities connected to your context.
           </h2>
-          <ContentGrid items={related} basePath="/services" />
+          <div className="mt-10">
+            <ContentGrid items={services} basePath="/services" />
+          </div>
         </div>
       </section>
-      <SolutionDirectory service={profile.services} />
-      <EditorialSections
-        eyebrow="From pilot to ongoing service"
-        title={`Prepare the people behind ${industry.title.toLowerCase()}.`}
-        description="A technical release changes how information and responsibilities move between teams. Operational readiness is part of the delivery scope, with domain specialists involved in the decisions that affect daily work."
+
+      <section className="section bg-brand-ink text-white">
+        <div className="container-shell editorial-grid">
+          <div>
+            <span className="eyebrow text-brand-amber!">Technology</span>
+            <h2 className="section-heading mt-5">Selected for the workflow.</h2>
+            <p className="mt-5 leading-8 text-white/70">
+              Supporting technologies are chosen around integration, governance,
+              security and long-term ownership.
+            </p>
+          </div>
+          <div className="flex flex-wrap content-start gap-3">
+            {technologies.map((item) => (
+              <Link
+                className="rounded-full border border-white/25 px-5 py-3 font-bold hover:border-brand-amber hover:text-brand-amber"
+                to={`/technology/${item.slug}`}
+                key={item.slug}
+              >
+                {item.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <RelatedContent
         items={[
-          [
-            "Agree information ownership",
-            "Identify the source of each important record and who can resolve an exception. Document access permissions, update rules and the checks needed when information moves between systems. Validate the interpretation with the business teams who use it.",
-          ],
-          [
-            "Prepare a controlled rollout",
-            "Choose a bounded workflow and define the conditions for expanding access. Rehearse representative transactions, recovery and the support handoff before launch. Make remaining limitations visible so users understand the first release.",
-          ],
-          [
-            "Support adoption and improvement",
-            "Give users task-focused guidance and a clear route for reporting a problem. Review feedback alongside operational measures, and agree which improvements belong in the next release. Keep ownership current as the service evolves.",
-          ],
-        ]}
+          ...solutions.map((item) => ({
+            ...item,
+            href: `/solutions/${item.slug}`,
+            label: "Solution concept",
+          })),
+          ...services.map((item) => ({
+            ...item,
+            href: `/services/${item.slug}`,
+            label: "Service",
+          })),
+          ...cases.map((item) => ({
+            ...item,
+            href: `/case-studies/${item.slug}`,
+            label: "Reference engagement",
+          })),
+        ].slice(0, 6)}
+        heading="Explore the capabilities connected to this industry."
       />
       <CTA />
     </>

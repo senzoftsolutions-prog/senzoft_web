@@ -139,7 +139,7 @@ export function CareerDevelopment({ engineering }: { engineering?: boolean }) {
             <Link
               to={
                 engineering
-                  ? "/services/digital-engineering"
+                  ? "/services/application-modernization"
                   : "/services/business-consulting"
               }
               className="btn btn-dark mt-7"

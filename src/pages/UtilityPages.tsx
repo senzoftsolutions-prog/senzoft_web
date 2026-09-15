@@ -17,7 +17,7 @@ export function SearchPage() {
     <>
       <Seo
         title="Search | SENZOFT"
-        description="Search SENZOFT services and industries."
+        description="Search SENZOFT services, industries, solutions, insights and careers."
       />
       <PageHero
         eyebrow="Search"
@@ -80,8 +80,9 @@ export function SearchPage() {
               <Link
                 className="block py-6"
                 key={item.id}
-                to={`/${"capabilities" in item ? "services" : "industries"}/${item.slug}`}
+                to={item.route}
               >
+                <span className="micro-label">{item.type}</span>
                 <h2 className="text-2xl font-bold hover:text-brand-orange">
                   {item.title}
                 </h2>
@@ -116,8 +117,8 @@ const legal: Record<
         "You may contact SENZOFT to ask about your personal information. For enquiries about your information or to withdraw recruitment contact consent, email hello@senzoft.com.",
       ],
       [
-        "Video playback and external sources",
-        "The illustrative videos and their still images are served with this website. Watching a bundled video does not require a Pexels or Mixkit account. Following a footage credit opens the provider's website, where its own privacy practices apply.",
+        "Video playback",
+        "Illustrative videos and their still images are served directly with this website. Playback does not require a third-party account.",
       ],
       [
         "What to include in an enquiry",
@@ -143,7 +144,7 @@ const legal: Record<
       ],
       [
         "Illustrative media",
-        "Stock footage is used to illustrate technology and collaboration. It does not identify SENZOFT employees, offices, clients or completed engagements. Credits link to the original providers; third-party media remains subject to its applicable license.",
+        "Illustrative media supports the website's technology and collaboration themes. It does not identify SENZOFT employees, offices, clients or completed engagements.",
       ],
       [
         "Service scope",

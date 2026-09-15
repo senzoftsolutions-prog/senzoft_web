@@ -15,7 +15,6 @@ export function VideoPanel({
   const reduced = useEffectsPaused();
   const [visible, setVisible] = useState(false);
   const [failed, setFailed] = useState(false);
-  const [finished, setFinished] = useState(false);
   const [allowed, setAllowed] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
   useEffect(() => {
@@ -41,8 +40,7 @@ export function VideoPanel({
       document.removeEventListener("visibilitychange", visibility);
     };
   }, []);
-  const shouldPlay =
-    allowed && visible && pageVisible && !reduced && !finished && !failed;
+  const shouldPlay = allowed && visible && pageVisible && !reduced && !failed;
   useEffect(() => {
     const element = video.current;
     if (!element) return;
@@ -51,13 +49,7 @@ export function VideoPanel({
       return;
     }
     void element.play().catch(() => setFailed(true));
-    // A short ambient introduction replaces looping footage and playback controls.
-    const stop = window.setTimeout(() => {
-      element.pause();
-      setFinished(true);
-    }, 4500);
     return () => {
-      window.clearTimeout(stop);
       element.pause();
     };
   }, [shouldPlay]);
@@ -66,36 +58,27 @@ export function VideoPanel({
       <img
         src={asset.poster}
         alt={asset.title}
+        width="1280"
+        height="720"
+        decoding="async"
+        fetchPriority={clip === "digital" ? "high" : "auto"}
         className="absolute inset-0 size-full object-cover"
         loading={clip === "digital" ? "eager" : "lazy"}
       />
-      {!failed && (
+      {asset.src && !failed && (
         <video
           ref={video}
           src={allowed && visible && !reduced ? asset.src : undefined}
           muted
+          loop
           playsInline
           preload="none"
           aria-hidden="true"
           className="absolute inset-0 size-full object-cover"
-          onTimeUpdate={(event) => {
-            if (event.currentTarget.currentTime >= 4.5) {
-              event.currentTarget.pause();
-              setFinished(true);
-            }
-          }}
           onError={() => setFailed(true)}
         />
       )}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10" />
-      <a
-        href={asset.source}
-        target="_blank"
-        rel="noreferrer"
-        className="absolute bottom-5 left-5 text-xs leading-5 text-white underline decoration-white/40 underline-offset-4"
-      >
-        Stock footage | {asset.credit}
-      </a>
     </div>
   );
 }

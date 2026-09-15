@@ -2,26 +2,13 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export function CTA() {
-  return (
-    <section className="cta-section">
-      <div className="container-shell grid-lines overflow-hidden rounded-[2rem] bg-brand-wine px-6 py-14 text-white md:px-14 md:py-18">
-        <span className="eyebrow text-white!">Start a conversation</span>
-        <div className="mt-6 flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
-          <h2 className="display max-w-3xl text-4xl md:text-6xl">
-            Bring us the idea.
-            <br />
-            <span className="text-brand-amber">
-              We’ll help create the impact.
-            </span>
-          </h2>
-          <Link
-            to="/contact"
-            className="btn shrink-0 bg-white text-brand-ink hover:bg-brand-cream"
-          >
-            Talk to our team <ArrowRight size={18} />
-          </Link>
-        </div>
+  return <section className="cta-section">
+    <div className="container-shell cta-card grid-lines text-white">
+      <span className="eyebrow text-white!">Have a technology challenge?</span>
+      <div className="cta-card-content">
+        <h2 className="display">Let&apos;s build something<br/><span>that works for your business.</span></h2>
+        <Link to="/contact" className="btn shrink-0 bg-white text-brand-ink hover:bg-brand-cream">Talk to our team <ArrowRight size={18}/></Link>
       </div>
-    </section>
-  );
+    </div>
+  </section>;
 }

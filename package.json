@@ -11,7 +11,8 @@
     "test": "vitest run src",
     "test:e2e": "playwright test",
     "preview": "vite preview",
-    "media:import": "node scripts/import-pexels.mjs"
+    "media:import": "node scripts/import-pexels.mjs",
+    "media:fields": "node scripts/import-pexels-fields.mjs"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.13",

@@ -485,6 +485,24 @@ export const solutions: Solution[] = [
       "What existing providers and escalation responsibilities must be coordinated?",
     ],
   },
+  ...[
+    ["digital-transformation", "Digital Transformation", "business-consulting", "Connect customer, operational and technology change through a sequenced transformation roadmap."],
+    ["cloud-modernization", "Cloud Modernization", "cloud-platforms", "Modernize workloads and operating practices around resilience, security and sustainable ownership."],
+    ["workflow-automation", "Workflow Automation", "enterprise-applications", "Replace manual handoffs with visible, recoverable and measurable digital workflows."],
+    ["customer-experience-transformation", "Customer Experience Transformation", "digital-engineering", "Improve end-to-end customer journeys across channels, teams and systems."],
+    ["ai-knowledge-assistants", "AI Knowledge Assistants", "data-ai", "Build governed assistance around approved knowledge, permissions, evaluation and human review."],
+    ["api-modernization", "API Modernization", "application-modernization", "Create stable integration boundaries that reduce coupling and support incremental platform change."],
+  ].map(([slug, title, service, summary]) => ({
+    slug, title, service, summary,
+    challenge: `${title} initiatives lose value when user needs, integration constraints and operational ownership are considered separately.`,
+    scope: [
+      ["Assess", "Map the current workflow, systems, users and constraints before selecting the first increment."],
+      ["Design", "Define the target experience, architecture, controls and acceptance evidence together."],
+      ["Deliver", "Build in reviewable increments and prepare the operating team for ownership."],
+    ] as Array<[string, string]>,
+    deliverables: ["Current-state assessment", "Target architecture and experience", "Incremental delivery roadmap", "Operational readiness guidance"],
+    considerations: ["Which outcome matters first?", "Which systems and owners must participate?", "How will readiness and value be measured?"],
+  })),
 ];
 export const solutionUrl = (item: Solution) =>
   `/services/${item.service}/${item.slug}`;

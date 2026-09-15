@@ -1,27 +1,32 @@
 import { Link } from "react-router-dom";
 import { ArrowUpRight } from "lucide-react";
+import { FieldMedia } from "./ContentGrid";
 
 export function CompanyOverview() {
   const areas = [
     [
       "Software for customers and teams",
       "Websites, mobile applications and custom business software connect the people using a service with the operations behind it. We work through the journeys, business rules and integrations together, then deliver the interface and application layers needed to support them.",
-      "/services/digital-engineering",
+      "/services/application-modernization",
+      "about-software-products",
     ],
     [
       "Information, automation and intelligence",
       "Data engineering and analytics bring consistency to information that is spread across systems. Automation and AI are considered around a defined workflow, with evaluation, access and human review built into the approach.",
       "/services/data-ai",
+      "about-data-intelligence",
     ],
     [
       "Platforms that sustain the business",
       "Cloud, application modernization and enterprise integrations support how software is delivered and operated. We connect technical changes to reliability, cost visibility and ownership so the platform can keep evolving after the first release.",
       "/services/cloud-platforms",
+      "about-cloud-platforms",
     ],
     [
       "Quality, security and ongoing care",
       "Testing, security review and managed services help maintain confidence in daily operations. Clear acceptance criteria, accountable remediation and practical runbooks make the work useful to the teams who rely on it.",
       "/services/managed-it-services",
+      "about-quality-security",
     ],
   ];
   return (
@@ -48,8 +53,13 @@ export function CompanyOverview() {
           </p>
         </div>
         <div className="company-capability-grid">
-          {areas.map(([title, copy, href], i) => (
-            <Link to={href} key={title} className="company-capability">
+          {areas.map(([title, copy, href, imageSlug], i) => (
+            <Link
+              to={href}
+              key={title}
+              className="company-capability content-card"
+            >
+              <FieldMedia slug={imageSlug} />
               <span>0{i + 1}</span>
               <h3>{title}</h3>
               <p>{copy}</p>
@@ -81,7 +91,7 @@ export function ContactPlanning() {
               [
                 "Build something new",
                 "You have a product idea, a website requirement or a business process that needs its own application. Explore our development services, then share the intended users, essential behavior and any systems the solution needs to connect with.",
-                "/services/digital-engineering",
+                "/services/application-modernization",
               ],
               [
                 "Improve what you have",

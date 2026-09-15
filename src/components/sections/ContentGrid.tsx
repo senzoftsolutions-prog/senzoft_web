@@ -20,7 +20,15 @@ import {
 } from "lucide-react";
 import type { ComponentType } from "react";
 import { Link } from "react-router-dom";
-import { Reveal } from "../ui/Reveal";
+import pexelsImages from "../../content/pexels-images.json";
+
+type FieldImage = { src: string; srcSet: string; alt: string };
+const visuals = pexelsImages as Record<string, FieldImage>;
+export function FieldMedia({ slug }: { slug: string }) {
+  const visual = visuals[slug];
+  if (!visual) return null;
+  return <div className="content-card-media"><img src={visual.src} alt={visual.alt} loading="lazy" decoding="async"/></div>;
+}
 
 const icons: Record<string, ComponentType<{ size?: number }>> = {
   Blocks,
@@ -41,34 +49,40 @@ const icons: Record<string, ComponentType<{ size?: number }>> = {
   ShoppingBag,
   TestTube2,
 };
-interface GridItem {
+export interface ContentGridItem {
   slug: string;
   title: string;
   summary: string;
   icon?: string;
   eyebrow?: string;
   status?: string;
+  href?: string;
+  label?: string;
+  image?: string;
 }
 
 export function ContentGrid({
   items,
   basePath,
 }: {
-  items: GridItem[];
+  items: ContentGridItem[];
   basePath: string;
 }) {
   const layout =
-    items.length === 2
-      ? "mx-auto w-full max-w-4xl md:grid-cols-2"
-      : "md:grid-cols-2 lg:grid-cols-3";
+    items.length >= 3
+      ? "md:grid-cols-2 lg:grid-cols-3"
+      : items.length === 2
+        ? "mx-auto w-full max-w-4xl md:grid-cols-2"
+        : "mx-auto w-full max-w-md";
+  if (!items.length) return null;
   return (
     <div className={`grid items-stretch gap-5 ${layout}`}>
-      {items.map((item, index) => {
+      {items.map((item) => {
         const Icon = icons[item.icon ?? "Code2"] ?? Code2;
         return (
-          <Reveal className="h-full" key={item.slug} delay={index * 0.05}>
+          <div className="h-full" key={item.slug}>
             <Link
-              to={`${basePath}/${item.slug}`}
+              to={item.href ?? `${basePath}/${item.slug}`}
               className="card content-card group flex h-full min-h-64 flex-col p-7"
               onPointerMove={(event) => {
                 const rect = event.currentTarget.getBoundingClientRect();
@@ -82,6 +96,18 @@ export function ContentGrid({
                 );
               }}
             >
+              <FieldMedia slug={item.slug}/>
+              {item.image && !visuals[item.slug] && (
+                <div className="offering-card-media">
+                  <img
+                    src={item.image}
+                    alt=""
+                    onError={(event) => {
+                      event.currentTarget.src = "/media/digital-work.jpg";
+                    }}
+                  />
+                </div>
+              )}
               <div className="flex items-start justify-between">
                 <span className="grid size-12 place-items-center rounded-xl bg-brand-cream text-brand-orange">
                   <Icon size={23} />
@@ -92,9 +118,9 @@ export function ContentGrid({
                   </span>
                 )}
               </div>
-              {item.eyebrow && (
+              {(item.eyebrow || item.label) && (
                 <span className="mt-7 text-xs font-bold uppercase tracking-wider text-brand-orange">
-                  {item.eyebrow}
+                  {item.eyebrow ?? item.label}
                 </span>
               )}
               <h3 className="display mt-3 text-2xl">{item.title}</h3>
@@ -105,7 +131,7 @@ export function ContentGrid({
                 Explore <ArrowUpRight size={17} />
               </span>
             </Link>
-          </Reveal>
+          </div>
         );
       })}
     </div>

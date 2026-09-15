@@ -1,15 +1,25 @@
 import { capabilityUrl } from "../../content/solutions";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { ArrowUpRight, Check, Layers3 } from "lucide-react";
 import { Link } from "react-router-dom";
-import { contentRepository } from "../../content/repository";
+import { featuredServices } from "../../content/presentation";
 import { serviceDeliverables } from "../../content/serviceDeliverables";
 import { Reveal } from "../ui/Reveal";
 
 export function CapabilityExplorer() {
-  const services = contentRepository.getServices();
+  const services = featuredServices;
   const [selected, setSelected] = useState(0);
+  const detailRef = useRef<HTMLDivElement>(null);
   const item = services[selected];
+  const selectCapability = (index: number) => {
+    setSelected(index);
+    if (!window.matchMedia("(max-width: 767px)").matches) return;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        detailRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  };
   return (
     <section className="section explorer-section">
       <div className="container-shell">
@@ -37,7 +47,7 @@ export function CapabilityExplorer() {
               <button
                 key={service.slug}
                 aria-pressed={selected === i}
-                onClick={() => setSelected(i)}
+                onClick={() => selectCapability(i)}
               >
                 <span className="text-xs tabular-nums">
                   {String(i + 1).padStart(2, "0")}
@@ -47,7 +57,7 @@ export function CapabilityExplorer() {
               </button>
             ))}
           </div>
-          <div className="capability-detail" aria-live="polite">
+          <div ref={detailRef} className="capability-detail" key={item.slug} aria-live="polite">
             <div className="flex items-center justify-between gap-4">
               <span className="micro-label">{item.eyebrow}</span>
               <span className="feature-icon">
@@ -70,7 +80,7 @@ export function CapabilityExplorer() {
                   <Check size={16} />
                   <h4 className="mt-3 font-semibold">{capability}</h4>
                   <p className="mt-2 text-sm leading-6 text-brand-muted">
-                    {serviceDeliverables[item.slug][i]}
+                    {serviceDeliverables[item.slug]?.[i] ?? `Plan and deliver ${capability.toLowerCase()} around clear business outcomes, secure integration and sustainable ownership.`}
                   </p>
                 </Link>
               ))}

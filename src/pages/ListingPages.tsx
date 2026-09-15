@@ -1,175 +1,46 @@
-import { CapabilityExplorer } from "../components/sections/CapabilityExplorer";
-import { SolutionDirectory } from "../components/sections/SolutionDirectory";
-import {
-  BusinessPriorities,
-  ProjectReadiness,
-} from "../components/sections/BusinessPriorities";
-import {
-  EditorialSections,
-  EngagementOptions,
-} from "../components/sections/EditorialSections";
-
-import { PageHero } from "../components/ui/PageHero";
-import { ContentGrid } from "../components/sections/ContentGrid";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import { CTA } from "../components/sections/CTA";
+import { ContentGrid } from "../components/sections/ContentGrid";
+import { PageHero } from "../components/ui/PageHero";
 import { Seo } from "../components/ui/Seo";
-import { contentRepository } from "../content/repository";
+import { deliveryProcess, featuredIndustries, featuredServices, technologyAreas } from "../content/presentation";
+import { Section } from "../components/ui/Section";
+import { StatStrip } from "../components/sections/StatStrip";
 
-function Listing({
-  kind,
-  title,
-  description,
-  items,
-  basePath,
-}: {
-  kind: string;
-  title: string;
-  description: string;
-  items: Array<{
-    slug: string;
-    title: string;
-    summary: string;
-    icon?: string;
-    eyebrow?: string;
-    status?: string;
-  }>;
-  basePath: string;
-}) {
-  return (
-    <>
-      <Seo title={`${title} | SENZOFT`} description={description} />
-      <PageHero eyebrow={kind} title={title} description={description} />
-      {basePath === "/services" && <SolutionDirectory />}
-      {basePath === "/services" && <BusinessPriorities />}
-      <section className="section bg-brand-peach">
-        <div className="container-shell grid gap-10 lg:grid-cols-[.8fr_1.2fr]">
-          <div>
-            <span className="eyebrow">Built for meaningful change</span>
-            <h2 className="display mt-6 text-5xl">
-              Business context first. Technology with purpose.
-            </h2>
-          </div>
-          <div className="grid gap-5 sm:grid-cols-3">
-            {[
-              [
-                "Understand",
-                "Begin with users, operations, systems and the outcome that matters.",
-              ],
-              [
-                "Connect",
-                "Bring experience, data, applications, cloud and security into one roadmap.",
-              ],
-              [
-                "Deliver",
-                "Build in focused increments and improve continuously through measurable signals.",
-              ],
-            ].map(([heading, copy], index) => (
-              <article
-                key={heading}
-                className="border-t-2 border-brand-orange pt-5"
-              >
-                <span className="text-xs font-black text-brand-orange">
-                  0{index + 1}
-                </span>
-                <h3 className="mt-5 text-xl font-bold">{heading}</h3>
-                <p className="mt-3 text-sm leading-7 text-brand-muted">
-                  {copy}
-                </p>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-      {basePath === "/services" ? (
-        <CapabilityExplorer />
-      ) : (
-        <section className="section">
-          <div className="container-shell">
-            <ContentGrid items={items} basePath={basePath} />
-          </div>
-        </section>
-      )}
-      {basePath === "/industries" && <ProjectReadiness />}
-      <section className="section bg-brand-sage">
-        <div className="container-shell">
-          <span className="eyebrow">Connected capability</span>
-          <h2 className="display mt-6 max-w-4xl text-5xl md:text-6xl">
-            Change works when the pieces work together.
-          </h2>
-          <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              [
-                "Strategy & consulting",
-                "Clarify the decision, compare options and sequence investment around business priorities. Discovery connects stakeholder expectations to a scope the delivery team can act on.",
-              ],
-              [
-                "Experience & engineering",
-                "Translate user needs into accessible journeys and maintainable software. Review the design, integration boundaries and acceptance criteria together before release.",
-              ],
-              [
-                "Data, AI & cloud",
-                "Connect dependable information with the platforms that process it. Establish data ownership, evaluation practices and operational visibility before expanding automation.",
-              ],
-              [
-                "Security & operations",
-                "Define access, monitoring and support responsibilities alongside implementation. Prepare runbooks and recovery paths so teams can sustain the solution after launch.",
-              ],
-            ].map(([item, copy], index) => (
-              <div key={item} className="rounded-2xl bg-white p-7">
-                <span className="text-sm font-black text-brand-orange">
-                  0{index + 1}
-                </span>
-                <h3 className="display mt-6 text-3xl">{item}</h3>
-                <p className="mt-4 text-sm leading-7 text-brand-muted">
-                  {copy}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-      {basePath === "/services" ? (
-        <EngagementOptions />
-      ) : (
-        <EditorialSections
-          eyebrow="Cross-sector perspective"
-          title="Different industries. Connected challenges."
-          description="Sector knowledge makes technology decisions more useful. We examine the specific workflow before choosing the architecture or platform."
-          items={[
-            [
-              "Customer and employee journeys",
-              "Map the full task across channels, teams and systems. Identify where people lose context, repeat information or need assistance.",
-            ],
-            [
-              "Information that supports action",
-              "Agree the meaning, source and ownership of operational data before introducing dashboards, automation or intelligent features.",
-            ],
-            [
-              "Change that teams can sustain",
-              "Plan integration, adoption and operational handoffs alongside engineering so improvements remain useful after launch.",
-            ],
-          ]}
-        />
-      )}
-      <CTA />
-    </>
-  );
+const proofStandards = [
+  ["Business context", "The intended outcome, constraints and ownership are made explicit."],
+  ["Delivery evidence", "Working increments and acceptance signals support each decision."],
+  ["Sustainable handover", "Operations, recovery and improvement paths are prepared before launch."],
+] as const;
+
+const Process = () => <section className="section bg-brand-cream"><div className="container-shell editorial-grid"><div><span className="eyebrow">How we work</span><h2 className="section-heading mt-5">One connected delivery process.</h2></div><div className="reference-listing-points">{deliveryProcess.map(([title, copy], index) => <article key={title}><span>0{index + 1}</span><h3>{title}</h3><p>{copy}</p></article>)}</div></div></section>;
+
+const Technology = () => <section className="section bg-brand-ink text-white"><div className="container-shell"><span className="eyebrow text-brand-amber!">Technology</span><h2 className="section-heading mt-5">Capabilities selected around the outcome.</h2><div className="technology-area-grid mt-10">{technologyAreas.map((item, index) => <Link className="technology-area" to={`/technology/${item.slug}`} key={item.slug}><span>0{index + 1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div><ArrowUpRight size={18}/></Link>)}</div></div></section>;
+
+const Industries = () => <section className="section"><div className="container-shell"><span className="eyebrow">Industries</span><h2 className="section-heading mt-5">Technology shaped by operating context.</h2><div className="industry-directory mt-10">{featuredIndustries.map((item, index) => <Link to={`/industries/${item.slug}`} key={item.slug}><span className="text-brand-orange">0{index + 1}</span><div><h3>{item.title}</h3><p>{item.summary}</p></div><ArrowUpRight size={18}/></Link>)}</div></div></section>;
+
+const Proof = () => <Section tone="sage" eyebrow="Delivery confidence" heading="Proof is built into the work."><StatStrip items={proofStandards.map(([title, copy]) => ({ title, copy }))}/></Section>;
+
+export function ServicesPage() {
+  return <><Seo title="Services | SENZOFT" description="Technology services built around business outcomes."/><PageHero eyebrow="Services" title="Technology services built around business outcomes." description="Choose the capability that best matches the change your organization needs to make." media="engineering"/>
+    <section className="section"><div className="container-shell"><span className="eyebrow">Service expertise</span><h2 className="section-heading mt-5">A clear place to begin.</h2><div className="mt-10"><ContentGrid items={featuredServices} basePath="/services"/></div></div></section>
+    <Process/><Technology/><Industries/><Proof/><CTA/>
+  </>;
 }
-export const ServicesPage = () => (
-  <Listing
-    kind="Capabilities"
-    title="Expertise built around your ambition."
-    description="From strategy through engineering and operations, we help organizations create confident, lasting change."
-    items={contentRepository.getServices()}
-    basePath="/services"
-  />
-);
-export const IndustriesPage = () => (
-  <Listing
-    kind="Industry context"
-    title="Technology grounded in your world."
-    description="Focused solutions that combine sector understanding with modern engineering, data and experience capabilities."
-    items={contentRepository.getIndustries()}
-    basePath="/industries"
-  />
-);
+
+const challenges = [
+  ["Fragmented journeys", "Customers and employees lose context across channels, teams and systems."],
+  ["Complex information", "Data remains difficult to trust, govern and use at the moment of decision."],
+  ["Legacy constraints", "Critical platforms resist change while operational risk continues to grow."],
+  ["Security and resilience", "Regulation, identity and service continuity must evolve with the technology."],
+] as const;
+
+export function IndustriesPage() {
+  return <><Seo title="Industries | SENZOFT" description="Technology grounded in your industry context."/><PageHero eyebrow="Industries" title="Technology grounded in how your world works." description="Explore six priority sectors and the connected services that address their users, regulations and operations." media="delivery"/>
+    <section className="section"><div className="container-shell"><span className="eyebrow">Priority industries</span><h2 className="section-heading mt-5">Choose your context.</h2><div className="mt-10"><ContentGrid items={featuredIndustries} basePath="/industries"/></div></div></section>
+    <section className="section bg-brand-cream"><div className="container-shell"><span className="eyebrow">Common challenges</span><h2 className="section-heading mt-5">Different sectors. Connected pressures.</h2><div className="outcome-strip mt-10">{challenges.map(([title, copy], index) => <article className="card p-7" key={title}><span className="micro-label">0{index + 1}</span><h3 className="display mt-5 text-2xl">{title}</h3><p className="mt-4 leading-7 text-brand-muted">{copy}</p></article>)}</div></div></section>
+    <section className="section bg-brand-ink text-white"><div className="container-shell editorial-grid"><div><span className="eyebrow text-brand-amber!">How SENZOFT helps</span><h2 className="section-heading mt-5">Context first. Connected capability next.</h2></div><div className="grid gap-4 sm:grid-cols-2">{featuredServices.slice(0,4).map((service) => <Link className="flex items-center justify-between border-b border-white/15 py-5" to={`/services/${service.slug}`} key={service.slug}><strong>{service.title}</strong><ArrowUpRight size={18}/></Link>)}</div></div></section>
+    <Proof/><CTA/>
+  </>;
+}

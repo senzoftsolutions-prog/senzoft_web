@@ -1,36 +1,49 @@
 import { VideoPanel } from "./VideoPanel";
 import type { MediaKey } from "../../content/media";
 import { Reveal } from "./Reveal";
+import pexelsImages from "../../content/pexels-images.json";
+type FieldImage = { src: string; srcSet: string; alt: string };
+const fieldImages = pexelsImages as Record<string, FieldImage>;
 export function PageHero({
   eyebrow,
   title,
   description,
   media,
+  imageSlug,
 }: {
   eyebrow: string;
   title: string;
   description: string;
   media?: MediaKey;
+  imageSlug?: string;
 }) {
+  const image = imageSlug ? fieldImages[imageSlug] : undefined;
+  const hasVisual = Boolean(image || media);
   return (
-    <section className="page-hero text-white pt-36 pb-16 md:pt-40 md:pb-20">
+    <section className="reference-page-hero">
       <div
-        className={`container-shell relative ${media ? "grid items-center gap-12 lg:grid-cols-[1.15fr_.85fr]" : ""}`}
+        className={`container-shell relative ${hasVisual ? "grid items-center gap-12 lg:grid-cols-[1.15fr_.85fr]" : ""}`}
       >
         <Reveal>
-          <span className="eyebrow text-brand-amber!">{eyebrow}</span>
-          <h1 className="display mt-6 max-w-4xl text-5xl md:text-7xl">
-            {title}
-          </h1>
-          <p className="mt-7 max-w-2xl text-base leading-8 text-brand-muted">
-            {description}
-          </p>
+          <span className="reference-page-kicker">{eyebrow}</span>
+          <h1 className="reference-page-title">{title}</h1>
+          <p className="reference-page-description">{description}</p>
         </Reveal>
-        {media && (
+        {image ? (
+          <Reveal delay={0.15}>
+            <div className="reference-page-image">
+              <img
+                src={image.src}
+                alt={image.alt}
+                decoding="async"
+              />
+            </div>
+          </Reveal>
+        ) : media ? (
           <Reveal delay={0.15}>
             <VideoPanel clip={media} className="aspect-[4/3]" />
           </Reveal>
-        )}
+        ) : null}
       </div>
     </section>
   );

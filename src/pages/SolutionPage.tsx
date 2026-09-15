@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { ArrowUpRight, CheckCircle2 } from "lucide-react";
+import { ArrowUpRight, CheckCircle2, Users } from "lucide-react";
 import { solutions, solutionUrl } from "../content/solutions";
 import { serviceOutcomes } from "../content/serviceOutcomes";
 import { contentRepository } from "../content/repository";
@@ -7,12 +7,14 @@ import { PageHero } from "../components/ui/PageHero";
 import { Seo } from "../components/ui/Seo";
 import { EditorialSections } from "../components/sections/EditorialSections";
 import { CTA } from "../components/sections/CTA";
+import { RelatedContent } from "../components/sections/RelatedContent";
 import { NotFoundPage } from "./UtilityPages";
 
 export default function SolutionPage() {
   const { slug, solutionSlug } = useParams();
   const item = solutions.find(
-    (solution) => solution.slug === solutionSlug && solution.service === slug,
+    (solution) =>
+      solution.slug === solutionSlug && (!slug || solution.service === slug),
   );
   if (!item) return <NotFoundPage />;
   const parent = contentRepository.getServiceBySlug(item.service)!;
@@ -24,6 +26,18 @@ export default function SolutionPage() {
   const alternatives = related.length
     ? related
     : solutions.filter((solution) => solution.slug !== item.slug).slice(0, 3);
+  const technologies = contentRepository
+    .getTechnologiesForService(parent.slug)
+    .slice(0, 8);
+  const industries = contentRepository
+    .getIndustriesForService(parent.slug)
+    .slice(0, 6);
+  const cases = contentRepository.getCaseStudiesForSolution(item.slug).length
+    ? contentRepository.getCaseStudiesForSolution(item.slug)
+    : contentRepository.getCaseStudiesForService(parent.slug).slice(0, 3);
+  const insights = contentRepository
+    .getInsightsForService(parent.slug)
+    .slice(0, 3);
   return (
     <>
       <Seo title={`${item.title} | SENZOFT`} description={item.summary} />
@@ -31,6 +45,7 @@ export default function SolutionPage() {
         eyebrow={parent.title}
         title={item.title}
         description={item.summary}
+        imageSlug={item.slug}
       />
       <nav aria-label="Solution sections" className="solution-section-nav">
         <div className="container-shell">
@@ -74,6 +89,33 @@ export default function SolutionPage() {
           items={item.scope}
         />
       </div>
+      <section className="section bg-brand-cream">
+        <div className="container-shell editorial-grid">
+          <div>
+            <span className="eyebrow">Who typically needs it</span>
+            <h2 className="section-heading mt-5">
+              For teams responsible for a measurable change.
+            </h2>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2">
+            {[
+              "Business and product owners",
+              "Technology and architecture leaders",
+              "Engineering and quality teams",
+              "Operations and service owners",
+            ].map((role) => (
+              <article className="card p-6" key={role}>
+                <Users className="text-brand-orange" />
+                <h3 className="mt-5 text-xl font-bold">{role}</h3>
+                <p className="mt-3 leading-7 text-brand-muted">
+                  Align the problem, dependencies, acceptance evidence and
+                  ownership needed to move forward.
+                </p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
       <section className="section service-outcomes">
         <div className="container-shell">
           <span className="eyebrow">What you take forward</span>
@@ -143,6 +185,78 @@ export default function SolutionPage() {
         description="Set targets against your current baseline. We use relevant measures to make tradeoffs visible and to evaluate the work, rather than applying the same target to every environment."
         items={outcome.measures}
         dark
+      />
+      <section className="section bg-brand-sage">
+        <div className="container-shell editorial-grid">
+          <div>
+            <span className="eyebrow">Architecture considerations</span>
+            <h2 className="section-heading mt-5">
+              Design the boundaries before the build.
+            </h2>
+            <p className="mt-5 leading-8 text-brand-muted">
+              Connect users, application behavior, interfaces, data ownership,
+              security and operations in one decision model.
+            </p>
+          </div>
+          <div className="delivery-chapters">
+            {[
+              "Experience and access",
+              "Application and integration boundaries",
+              "Data ownership and quality",
+              "Operations, security and recovery",
+            ].map((title, index) => (
+              <article key={title}>
+                <span>0{index + 1}</span>
+                <div>
+                  <h3>{title}</h3>
+                  <p>
+                    Record the current constraint, target behavior, trade-offs
+                    and accountable owner.
+                  </p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+      <section className="section">
+        <div className="container-shell">
+          <span className="eyebrow">Technology choices</span>
+          <h2 className="section-heading mt-5">
+            Tools that support the solution—not the other way around.
+          </h2>
+          <div className="mt-8 flex flex-wrap gap-3">
+            {technologies.map((technology) => (
+              <Link
+                className="rounded-full border border-black/15 px-5 py-3 font-bold hover:border-brand-orange hover:text-brand-orange"
+                to={`/technology/${technology.slug}`}
+                key={technology.slug}
+              >
+                {technology.title}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+      <RelatedContent
+        items={[
+          ...industries.map((item) => ({
+            ...item,
+            href: `/industries/${item.slug}`,
+            label: "Industry",
+          })),
+          ...cases.map((item) => ({
+            ...item,
+            href: `/case-studies/${item.slug}`,
+            label: "Reference engagement",
+          })),
+          ...insights.map((item) => ({
+            ...item,
+            href: `/insights/${item.slug}`,
+            label: item.type,
+          })),
+        ].slice(0, 6)}
+        heading="Explore the context connected to this solution."
       />
       <section id="solution-questions" className="section">
         <div className="container-shell editorial-grid">

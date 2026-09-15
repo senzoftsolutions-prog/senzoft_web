@@ -1,5 +1,4 @@
 import { submitTalentInterest } from "../services/api";
-import { VideoStory } from "../components/sections/VideoStory";
 import { FormEvent, useMemo, useState } from "react";
 import {
   ArrowDown,
@@ -7,7 +6,6 @@ import {
   ArrowUpRight,
   BriefcaseBusiness,
   Check,
-  Code2,
   GraduationCap,
   MapPin,
   Search,
@@ -20,6 +18,23 @@ import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
 import { careersData } from "../content/careers";
 import { contentRepository } from "../content/repository";
+import { media } from "../content/media";
+import pexelsImages from "../content/pexels-images.json";
+
+const careerTechnologyImages = pexelsImages as Record<
+  string,
+  { src: string; alt: string }
+>;
+const careerTechnologySlugs = [
+  "ai-generative-ai",
+  "data-analytics-area",
+  "cloud-engineering",
+  "web-development",
+  "mobile-app-development",
+  "reliable-workflow-automation",
+  "quality-engineering",
+  "cybersecurity",
+];
 
 const pathIcons = [GraduationCap, BriefcaseBusiness, Sparkles];
 
@@ -230,18 +245,30 @@ export default function CareersPage() {
                     "/services/data-ai/ai-automation",
                     "/services/data-ai/data-analytics",
                     "/services/cloud-platforms/cloud-devops",
-                    "/services/digital-engineering/web-development",
-                    "/services/digital-engineering/mobile-app-development",
+                    "/solutions/web-development",
+                    "/solutions/mobile-app-development",
                     "/services/data-ai/ai-automation",
                     "/services/quality-engineering/software-testing",
                     "/services/cybersecurity/security-assurance",
                   ][index]
                 }
                 key={tech}
-                className="card flex min-h-24 flex-col items-center justify-center gap-3 p-4 text-center font-extrabold"
+                className="career-tech-card card group"
               >
-                <Code2 className="text-brand-orange" size={24} />
-                {tech}
+                <img
+                  src={
+                    careerTechnologyImages[careerTechnologySlugs[index]]?.src ??
+                    media.digital.poster
+                  }
+                  alt={
+                    careerTechnologyImages[careerTechnologySlugs[index]]?.alt ??
+                    tech
+                  }
+                  loading="lazy"
+                  decoding="async"
+                />
+                <span className="career-tech-overlay" />
+                <span className="career-tech-label">{tech}</span>
               </Link>
             ))}
           </div>
@@ -279,14 +306,6 @@ export default function CareersPage() {
         </div>
       </section>
 
-      <VideoStory
-        clip="workplace"
-        eyebrow="Your next chapter"
-        title="Bring your craft. Keep your curiosity."
-        description="Explore a place for thoughtful engineering, open collaboration and continuous learning. The footage illustrates a collaborative workplace; it is not a recording of SENZOFT offices."
-        href="/about"
-        linkLabel="Get to know SENZOFT"
-      />
       <section
         id="life-at-senzoft"
         className="section bg-brand-plum text-white"
