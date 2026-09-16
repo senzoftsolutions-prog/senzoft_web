@@ -3,7 +3,13 @@ import { DeliveryJourney } from "../components/sections/DeliveryJourney";
 import { CompanyOverview } from "../components/sections/CompanyOverview";
 import { EditorialSections } from "../components/sections/EditorialSections";
 import { VideoStory } from "../components/sections/VideoStory";
-import { Compass, Handshake, Lightbulb, ShieldCheck } from "lucide-react";
+import {
+  Check,
+  Compass,
+  Handshake,
+  Lightbulb,
+  ShieldCheck,
+} from "lucide-react";
 import { CTA } from "../components/sections/CTA";
 import { PageHero } from "../components/ui/PageHero";
 import { Reveal } from "../components/ui/Reveal";
@@ -109,10 +115,16 @@ export default function AboutPage() {
                 "Built together",
                 "Open collaboration and knowledge transfer help change last beyond delivery.",
               ],
-            ].map(([title, copy]) => (
+            ].map(([title, copy], index) => (
               <article className="reference-impact-card" key={title}>
-                <h3>{title}</h3>
-                <p>{copy}</p>
+                <div className="reference-impact-card-top">
+                  <span>0{index + 1}</span>
+                  <i aria-hidden="true" />
+                </div>
+                <div>
+                  <h3>{title}</h3>
+                  <p>{copy}</p>
+                </div>
               </article>
             ))}
           </div>
@@ -132,8 +144,14 @@ export default function AboutPage() {
               "Responsible use of data and artificial intelligence",
               "Security and privacy built into delivery",
               "Sustainable, maintainable technology choices",
-            ].map((item) => (
-              <div key={item}>{item}</div>
+            ].map((item, index) => (
+              <div key={item}>
+                <span className="reference-commitment-icon" aria-hidden="true">
+                  <Check />
+                </span>
+                <span className="reference-commitment-number">0{index + 1}</span>
+                <strong>{item}</strong>
+              </div>
             ))}
           </div>
         </div>

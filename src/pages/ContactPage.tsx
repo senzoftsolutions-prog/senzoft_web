@@ -41,12 +41,14 @@ export default function ContactPage() {
         title="Contact | SENZOFT"
         description="Talk to SENZOFT about your technology goals."
       />
-      <PageHero
-        eyebrow="Contact"
-        title="Let’s make the next move count."
-        description="Share the outcome you need, the context you already know and where you would value support."
-      />
-      <section className="section reference-contact-section">
+      <div className="contact-page">
+        <div className="contact-ambient" aria-hidden="true"><i/><i/><i/></div>
+        <PageHero
+          eyebrow="Contact"
+          title="Let’s make the next move count."
+          description="Share the outcome you need, the context you already know and where you would value support."
+        />
+        <section className="section reference-contact-section">
         <div className="container-shell reference-contact-grid">
           <div className="reference-contact-copy">
             <span className="eyebrow">Let’s talk</span>
@@ -148,7 +150,8 @@ export default function ContactPage() {
             </button>
           </form>
         </div>
-      </section>
+        </section>
+      </div>
     </>
   );
 }
