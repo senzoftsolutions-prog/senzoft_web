@@ -18,6 +18,7 @@ export function SearchPage() {
       <Seo
         title="Search | SENZOFT"
         description="Search SENZOFT services, industries, solutions, insights and careers."
+        noIndex
       />
       <PageHero
         eyebrow="Search"
@@ -219,6 +220,7 @@ export function NotFoundPage() {
       <Seo
         title="Page not found | SENZOFT"
         description="The requested page could not be found."
+        noIndex
       />
       <section className="grid min-h-[75vh] place-items-center bg-brand-ink px-4 pt-20 text-center text-white grid-lines">
         <div>

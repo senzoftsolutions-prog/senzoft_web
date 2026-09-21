@@ -1,28 +1,24 @@
 import { ChevronRight } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { buildBreadcrumbs } from "../../seo/seo";
 export function Breadcrumbs() {
-  const parts = useLocation().pathname.split("/").filter(Boolean);
-  if (!parts.length) return null;
+  const items = buildBreadcrumbs(useLocation().pathname);
+  if (items.length === 1) return null;
   return (
     <nav
       aria-label="Breadcrumb"
       className="container-shell py-4 text-xs font-bold text-brand-muted"
     >
       <ol className="flex flex-wrap items-center gap-2">
-        <li>
-          <Link to="/">Home</Link>
-        </li>
-        {parts.map((part, index) => (
-          <li className="flex items-center gap-2" key={part}>
-            <ChevronRight size={13} />
-            {index === parts.length - 1 ? (
+        {items.map((item, index) => (
+          <li className="flex items-center gap-2" key={item.path}>
+            {index > 0 && <ChevronRight size={13} aria-hidden="true" />}
+            {index === items.length - 1 ? (
               <span className="text-brand-orange">
-                {part.replaceAll("-", " ")}
+                {item.name}
               </span>
             ) : (
-              <Link to={`/${parts.slice(0, index + 1).join("/")}`}>
-                {part.replaceAll("-", " ")}
-              </Link>
+              <Link to={item.path}>{item.name}</Link>
             )}
           </li>
         ))}

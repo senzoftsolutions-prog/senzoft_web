@@ -14,6 +14,7 @@ export function Reveal({
   const reduced = useEffectsPaused();
   return (
     <motion.div
+      data-motion-reveal
       className={className}
       initial={reduced ? false : fadeUp.hidden}
       animate={reduced ? { opacity: 1, y: 0 } : undefined}

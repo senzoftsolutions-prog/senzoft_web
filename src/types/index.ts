@@ -58,7 +58,8 @@ export interface ContactSubmission {
   name: string;
   email: string;
   company: string;
-  phone?: string;
+  country: string;
+  phone: string;
   enquiryType: string;
   message: string;
   consent: boolean;

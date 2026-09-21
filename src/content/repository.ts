@@ -1,4 +1,5 @@
-import { industries, jobs, services } from "./content";
+import { industries, services } from "./content";
+import { findCareerJob, jobs } from "../data/jobs";
 import { insights } from "./insights";
 import { solutions, solutionUrl } from "./solutions";
 import { caseStudies, technologies } from "./platform";
@@ -7,7 +8,7 @@ import { featuredIndustries, featuredServices } from "./presentation";
 
 const allIndustries = [...industries, ...expandedIndustries];
 const normalizeService = (value: string) => ({
-  "digital-engineering": "business-consulting",
+  "digital-engineering": "application-modernization",
 }[value] ?? value);
 const industryAliases: Record<string, string> = {
   "Retail & E-commerce": "retail-consumer", "Retail & Consumer": "retail-consumer",
@@ -48,12 +49,13 @@ type SearchResult = {
 export const contentRepository = {
   getServices: () => [...services, ...featuredServices.filter((featured) => !services.some((service) => service.slug === featured.slug))],
   getServiceBySlug: (slug: string) =>
-    featuredServices.find((item) => item.slug === normalizeService(slug)) ?? services.find((item) => item.slug === slug),
+    featuredServices.find((item) => item.slug === normalizeService(slug)) ?? services.find((item) => item.slug === normalizeService(slug)),
   getIndustries: () => featuredIndustries,
+  getAllIndustries: () => allIndustries,
   getIndustryBySlug: (slug: string) =>
     featuredIndustries.find((item) => item.slug === slug) ?? allIndustries.find((item) => item.slug === slug),
   getJobs: () => jobs,
-  getJobBySlug: (slug: string) => jobs.find((item) => item.slug === slug),
+  getJobBySlug: findCareerJob,
   getSolutions: () => solutions.map((item) => ({ ...item, service: normalizeService(item.service) })),
   getSolutionBySlug: (slug: string) => {
     const item = solutions.find((solution) => solution.slug === slug);
@@ -91,7 +93,7 @@ export const contentRepository = {
     return item ? insights.filter((insight) => item.relatedInsights.includes(insight.slug)) : [];
   },
   getTechnologiesForIndustry: (industry: string) => technologies.filter((item) => item.industries.map(normalizeIndustry).includes(normalizeIndustry(industry))),
-  getServicesForIndustry: (industry: string) => featuredServices.filter((service) =>
+  getServicesForIndustry: (industry: string) => services.filter((service) =>
     technologies.some((technology) => technology.services.map(normalizeService).includes(service.slug) && technology.industries.map(normalizeIndustry).includes(normalizeIndustry(industry))) ||
     caseStudies.some((study) => study.services.map(normalizeService).includes(service.slug) && normalizeIndustry(study.industry) === normalizeIndustry(industry)),
   ),
@@ -103,7 +105,7 @@ export const contentRepository = {
       ...technologies.map((item) => ({ ...item, id: `technology-${item.slug}`, route: `/technology/${item.slug}`, type: "Technology" as const })),
       ...caseStudies.map((item) => ({ ...item, id: `case-study-${item.slug}`, route: `/case-studies/${item.slug}`, type: "Case Study" as const })),
       ...insights.map((item) => ({ ...item, route: `/insights/${item.slug}`, type: "Insight" as const })),
-      ...jobs.map((item) => ({ ...item, route: `/careers/${item.slug}`, type: "Career" as const })),
+      ...jobs.map((item) => ({ ...item, summary: `Illustrative role: ${item.summary}`, route: `/careers/openings/${item.id}`, type: "Career" as const })),
     ];
     const normalized = query.trim().toLowerCase();
     return records.filter((item) =>

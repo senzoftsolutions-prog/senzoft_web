@@ -1,5 +1,6 @@
 import { industries, services } from "./content";
 import { solutions } from "./solutions";
+import { technologies } from "./platform";
 
 const serviceOrder = [
   "web-development",
@@ -68,16 +69,9 @@ export const featuredIndustries = industryOrder
   .filter((item): item is NonNullable<typeof item> => Boolean(item))
   .map((item) => ({ ...item, title: industryTitles[item.slug] ?? item.title }));
 
-export const technologyAreas = [
-  { slug: "ai-generative-ai", title: "AI & Generative AI", summary: "Apply governed intelligence to knowledge, decisions and useful automation." },
-  { slug: "data-analytics-area", title: "Data & Analytics", summary: "Turn reliable information into operational insight and measurable action." },
-  { slug: "cloud-engineering", title: "Cloud", summary: "Create secure, scalable foundations with clear cost and operational ownership." },
-  { slug: "application-modernization-area", title: "Application Modernization", summary: "Renew critical systems in controlled, valuable and reversible increments." },
-  { slug: "api-integration-area", title: "API & Integration", summary: "Connect applications and partners through explicit, dependable boundaries." },
-  { slug: "web-mobile-engineering", title: "Web & Mobile Engineering", summary: "Build accessible experiences for customers, employees and field teams." },
-  { slug: "cybersecurity-area", title: "Cybersecurity", summary: "Design identity, protection and visibility into every technology layer." },
-  { slug: "devops-platform-engineering", title: "DevOps & Platform Engineering", summary: "Improve delivery flow through automation, observability and reusable platforms." },
-] as const;
+export const technologyAreas = technologies
+  .filter((item) => item.category === "Technology area")
+  .map(({ slug, title, summary }) => ({ slug, title, summary }));
 
 export const businessOutcomes = [
   ["Modernize legacy systems", "Reduce change risk while protecting the business knowledge inside critical applications."],

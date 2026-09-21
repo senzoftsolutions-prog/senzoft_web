@@ -1,8 +1,16 @@
-import { createContext, useContext, useEffect, type ReactNode } from "react";
-import { useReducedMotion } from "framer-motion";
+import { createContext, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react";
+
+const motionQuery = "(prefers-reduced-motion: reduce)";
+const subscribe = (notify: () => void) => {
+  const media = window.matchMedia(motionQuery);
+  media.addEventListener("change", notify);
+  return () => media.removeEventListener("change", notify);
+};
+const getSnapshot = () => window.matchMedia(motionQuery).matches;
+const getServerSnapshot = () => false;
 const MotionContext = createContext(false);
 export function MotionPreferences({ children }: { children: ReactNode }) {
-  const reduced = Boolean(useReducedMotion());
+  const reduced = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
   useEffect(() => {
     document.documentElement.dataset.effects = reduced ? "paused" : "playing";
     return () => {

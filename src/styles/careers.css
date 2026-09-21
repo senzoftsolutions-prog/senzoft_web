@@ -1,0 +1,196 @@
+.career-editorial-hero,
+.career-editorial-intro {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  background: #fff;
+}
+
+.career-editorial-hero {
+  min-height: clamp(36rem, 48vw, 47rem);
+}
+
+.career-editorial-hero-copy {
+  display: flex;
+  align-items: flex-end;
+  padding: clamp(2.5rem, 5vw, 6rem);
+  padding-bottom: clamp(3.5rem, 6vw, 6.5rem);
+}
+
+.career-editorial-kicker {
+  margin: 0;
+  color: #39455b;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
+  line-height: 1.4;
+}
+
+.career-editorial-hero h1,
+.career-editorial-intro h2,
+.career-editorial-chapters h2,
+.career-editorial-opportunities h2,
+.career-editorial-final h2 {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  letter-spacing: -.045em;
+  line-height: 1.08;
+}
+
+.career-editorial-hero h1 {
+  max-width: 11ch;
+  margin: 1.15rem 0 0;
+  font-size: clamp(3.7rem, 5.4vw, 6rem);
+  color: #101722;
+}
+
+.career-editorial-hero-summary {
+  max-width: 38rem;
+  margin: 1.5rem 0 0;
+  color: #515d6f;
+  font-size: clamp(1.05rem, 1.25vw, 1.28rem);
+  line-height: 1.6;
+}
+
+.career-editorial-link {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: .6rem;
+  margin-top: 1.6rem;
+  padding-bottom: .35rem;
+  border-bottom: 1px solid currentColor;
+  color: #14223a;
+  font-size: 1rem;
+  font-weight: 700;
+  transition: color .2s ease, gap .2s ease;
+}
+
+.career-editorial-link:hover { gap: .9rem; color: #cf471a; }
+
+.career-editorial-hero-image,
+.career-editorial-intro-image,
+.career-editorial-chapter-image,
+.career-editorial-job-image {
+  position: relative;
+  overflow: hidden;
+}
+
+.career-editorial-hero-image img,
+.career-editorial-intro-image img,
+.career-editorial-chapter-image img,
+.career-editorial-job-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.career-editorial-hero-image img { object-position: 62% center; }
+
+.career-editorial-hero-image::after {
+  position: absolute;
+  inset: auto 0 0;
+  height: 55%;
+  background: linear-gradient(0deg, #e6225466, #dc275900 75%);
+  content: "";
+  pointer-events: none;
+}
+
+.career-editorial-image-note {
+  position: absolute;
+  z-index: 1;
+  right: 1.4rem;
+  bottom: 1.2rem;
+  color: #fff;
+  font-size: .72rem;
+  font-weight: 700;
+  text-shadow: 0 1px 4px #172034aa;
+}
+
+.career-editorial-intro { grid-template-columns: 50% 50%; min-height: clamp(28rem, 38vw, 37rem); }
+.career-editorial-intro-image img { object-position: center; }
+.career-editorial-intro-copy { display: grid; align-items: center; padding: clamp(2.5rem, 5vw, 6rem); }
+.career-editorial-intro h2 { max-width: 15ch; margin: 1.1rem 0 0; font-size: clamp(2.6rem, 3.7vw, 4.6rem); }
+.career-editorial-intro-copy > div > p:not(.career-editorial-kicker) { max-width: 35rem; margin: 1.5rem 0 0; color: #515d6f; font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.75; }
+
+.career-editorial-values { padding-block: clamp(3rem, 5vw, 5rem); background: #f6f8fb; }
+.career-editorial-values-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 2rem; margin-top: 2rem; }
+.career-editorial-values-grid > div { min-height: 8rem; padding-top: 1rem; border-top: 2px solid #dce2ea; }
+.career-editorial-values-grid strong { display: block; max-width: 14ch; margin-top: .8rem; color: #1a2739; font-size: clamp(1.25rem, 1.6vw, 1.6rem); line-height: 1.25; }
+.career-editorial-value-number { color: #ca421b; font-size: .85rem; font-weight: 800; }
+
+.career-editorial-opportunities,
+.career-editorial-final { padding-block: clamp(4rem, 7vw, 7rem); }
+
+.career-editorial-opportunities h2 { max-width: 18ch; margin: 1rem 0 0; font-size: clamp(2.75rem, 4.3vw, 5rem); }
+.career-editorial-chapters { background: #fff; }
+.career-editorial-chapter-heading { padding: clamp(4rem, 6vw, 6rem) clamp(1.5rem, 4vw, 4rem) clamp(2.5rem, 4vw, 4rem); }
+.career-editorial-chapters h2 { margin: 1rem 0 0; font-size: clamp(2.75rem, 4.3vw, 5rem); }
+.career-editorial-chapter { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: clamp(31rem, 40vw, 40rem); }
+.career-editorial-chapter.is-reversed .career-editorial-chapter-image { order: 2; }
+.career-editorial-chapter.is-reversed .career-editorial-chapter-copy { order: 1; }
+.career-editorial-chapter-image { display: block; min-height: 100%; }
+.career-editorial-chapter-image img,
+.career-editorial-job-image img { transition: transform .35s ease-out; }
+.career-editorial-chapter-image:hover img,
+.career-editorial-job-image:hover img { transform: scale(1.03); }
+.career-editorial-chapter-copy { display: grid; align-items: center; padding: clamp(2rem, 5vw, 6rem); background: #fff; }
+.career-editorial-chapter h3 { margin: 0; font-size: clamp(2.5rem, 3.5vw, 4rem); font-weight: 500; letter-spacing: -.04em; }
+.career-editorial-chapter p { max-width: 38rem; margin: 1.4rem 0 0; color: #344158; font-size: clamp(1.1rem, 1.4vw, 1.3rem); line-height: 1.65; }
+.career-editorial-button { display: inline-flex; align-items: center; gap: .8rem; min-height: 3.4rem; margin-top: 2rem; padding: .9rem 1.25rem; border-radius: .6rem; background: #27100d; color: #fff; font-weight: 700; transition: background .2s ease, gap .2s ease; }
+.career-editorial-button:hover { gap: 1.1rem; background: #b93916; }
+
+.career-editorial-stats { padding-block: 3.4rem; background: #172034; color: white; }
+.career-editorial-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+.career-editorial-stats .display { font-family: var(--font-sans); font-weight: 500; }
+.career-editorial-stats span { color: #d5dce9; }
+
+.career-editorial-opportunities { background: #f7f9fc; }
+.career-editorial-section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; margin-bottom: 2rem; }
+.career-editorial-section-head .career-editorial-link { flex: 0 0 auto; }
+.career-editorial-job-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1.25rem; margin-top: 2rem; }
+.career-editorial-job { height: 100%; background: #fff; }
+.career-editorial-job-image { display: block; height: clamp(12rem, 16vw, 17rem); }
+.career-editorial-job-copy { padding: 1.4rem; }
+.career-editorial-job-copy > span { color: #bd431b; font-size: .78rem; font-weight: 800; }
+.career-editorial-job h3 { margin: .9rem 0 0; font-size: 1.45rem; letter-spacing: -.025em; }
+.career-editorial-job p { min-height: 5.3rem; margin: .7rem 0 0; color: #526074; line-height: 1.55; }
+
+.career-editorial-final { background: #fff; }
+.career-editorial-final-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 2rem; }
+.career-editorial-final-grid > div { padding-top: 1.5rem; border-top: 3px solid #e65222; }
+.career-editorial-final h2 { max-width: 13ch; margin: 1rem 0 0; font-size: clamp(2.4rem, 3.5vw, 4rem); }
+
+@media (max-width: 900px) {
+  .career-editorial-hero { grid-template-columns: 50% 50%; min-height: 35rem; }
+  .career-editorial-hero-copy { padding: 2rem; padding-bottom: 3rem; }
+  .career-editorial-hero h1 { font-size: clamp(3.3rem, 6.3vw, 4.8rem); }
+  .career-editorial-job-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+  .career-editorial-hero,
+  .career-editorial-intro { display: flex; flex-direction: column; }
+  .career-editorial-hero { min-height: 0; }
+  .career-editorial-hero-copy { min-height: 24rem; padding: 5.5rem 1.5rem 2.5rem; }
+  .career-editorial-hero h1 { font-size: clamp(3.1rem, 12vw, 4.5rem); }
+  .career-editorial-hero-image { height: 24rem; }
+  .career-editorial-intro-image { height: 18rem; }
+  .career-editorial-intro-copy { padding: 3rem 1.5rem; }
+  .career-editorial-values-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+  .career-editorial-job-grid,
+  .career-editorial-final-grid { grid-template-columns: 1fr; }
+  .career-editorial-chapter { display: flex; flex-direction: column; min-height: 0; }
+  .career-editorial-chapter.is-reversed .career-editorial-chapter-image { order: 0; }
+  .career-editorial-chapter.is-reversed .career-editorial-chapter-copy { order: 1; }
+  .career-editorial-chapter-image { height: 18rem; min-height: 0; }
+  .career-editorial-chapter-copy { padding: 3rem 1.5rem 4rem; }
+  .career-editorial-chapter h3 { font-size: 2.5rem; }
+  .career-editorial-opportunities,
+  .career-editorial-final { padding-block: 4rem; }
+  .career-editorial-section-head { display: block; }
+  .career-editorial-stats-grid { grid-template-columns: 1fr 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .career-editorial-chapter-image img,
+  .career-editorial-job-image img { transition: none; }
+}

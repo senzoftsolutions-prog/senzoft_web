@@ -13,7 +13,8 @@ import {
 } from "../content/platform";
 import { contentRepository } from "../content/repository";
 import { technologyAreas } from "../content/presentation";
-import { FieldMedia } from "../components/sections/ContentGrid";
+import { getFieldVisual } from "../content/fieldVisuals";
+import { ImageHoverCard } from "../components/ui/ImageHoverCard";
 import { NotFoundPage } from "./UtilityPages";
 
 const Card = ({
@@ -27,15 +28,19 @@ const Card = ({
   title: string;
   copy: string;
 }) => (
-  <Link to={to} className="card content-card group flex min-h-64 flex-col p-7">
-    <FieldMedia slug={to.split("/").filter(Boolean).at(-1) ?? ""} />
+  <ImageHoverCard
+    to={to}
+    image={getFieldVisual(to.split("/").filter(Boolean).at(-1) ?? "")?.src ?? "/media/digital-work.jpg"}
+    alt={getFieldVisual(to.split("/").filter(Boolean).at(-1) ?? "")?.alt ?? ""}
+    className="card content-card group min-h-64"
+  >
     <span className="micro-label">{label}</span>
     <h3 className="display mt-5 text-2xl">{title}</h3>
     <p className="mt-4 grow leading-7 text-brand-muted">{copy}</p>
     <span className="mt-6 inline-flex items-center gap-2 font-bold">
       Explore <ArrowUpRight size={18} />
     </span>
-  </Link>
+  </ImageHoverCard>
 );
 
 export function TechnologyPage() {

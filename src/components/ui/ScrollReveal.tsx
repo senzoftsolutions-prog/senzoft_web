@@ -46,24 +46,11 @@ export function ScrollReveal() {
       main.querySelectorAll(selectors).forEach((element, index) => {
         if (
           observed.has(element) ||
-          element.closest(".page-hero, .studio-hero, .careers-hero")
+          element.closest(".page-hero, .studio-hero, .careers-hero, [data-motion-reveal]")
         )
           return;
         observed.add(element);
-        (element as HTMLElement).style.setProperty("--reveal-delay", `${(index % 4) * 70}ms`);
-        (element as HTMLElement).style.setProperty("--reveal-x", `${index % 2 ? 28 : -28}px`);
-        const host = element.closest("section");
-        (element as HTMLElement).dataset.reveal = element.classList.contains("content-card")
-          ? "rise"
-          : element.closest(".industry-directory")
-            ? "sweep"
-          : element.closest(".capability-explorer")
-            ? "clip"
-            : host?.className.includes("career")
-              ? "mosaic"
-              : element.closest(".architecture-grid")
-                ? "connect"
-                : ["rise", "turn", "focus", "unfold"][index % 4];
+        (element as HTMLElement).style.setProperty("--reveal-delay", `${(index % 4) * 50}ms`);
         if (element.getBoundingClientRect().top < window.innerHeight) return;
         element.classList.add("scroll-reveal-item");
         observer.observe(element);

@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import { ArrowUpRight, CheckCircle2, Users } from "lucide-react";
 import { solutions, solutionUrl } from "../content/solutions";
 import { serviceOutcomes } from "../content/serviceOutcomes";
@@ -12,11 +12,12 @@ import { NotFoundPage } from "./UtilityPages";
 
 export default function SolutionPage() {
   const { slug, solutionSlug } = useParams();
-  const item = solutions.find(
-    (solution) =>
-      solution.slug === solutionSlug && (!slug || solution.service === slug),
-  );
+  const item = solutions.find((solution) => solution.slug === solutionSlug);
   if (!item) return <NotFoundPage />;
+  if (slug && `/services/${slug}/${item.slug}` !== solutionUrl(item)) {
+    if (slug !== item.service) return <NotFoundPage />;
+    return <Navigate to={solutionUrl(item)} replace />;
+  }
   const parent = contentRepository.getServiceBySlug(item.service)!;
   const outcome = serviceOutcomes[item.service];
   const related = solutions.filter(
@@ -40,7 +41,11 @@ export default function SolutionPage() {
     .slice(0, 3);
   return (
     <>
-      <Seo title={`${item.title} | SENZOFT`} description={item.summary} />
+      <Seo
+        title={`${item.title} | SENZOFT`}
+        description={item.summary}
+        canonical={solutionUrl(item)}
+      />
       <PageHero
         eyebrow={parent.title}
         title={item.title}

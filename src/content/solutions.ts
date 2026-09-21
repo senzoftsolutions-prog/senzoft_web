@@ -505,7 +505,7 @@ export const solutions: Solution[] = [
   })),
 ];
 export const solutionUrl = (item: Solution) =>
-  `/services/${item.service}/${item.slug}`;
+  `/services/${item.service === "digital-engineering" ? "application-modernization" : item.service}/${item.slug}`;
 
 const capabilitySolutions: Record<string, string[]> = {
   "digital-engineering": [

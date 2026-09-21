@@ -71,7 +71,21 @@ export default function InsightDetailPage() {
     .slice(0, 3);
   return (
     <>
-      <Seo title={insight.seo.title} description={insight.seo.description} />
+      <Seo
+        title={insight.seo.title}
+        description={insight.seo.description}
+        type="article"
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "Article",
+          headline: insight.title,
+          description: insight.seo.description,
+          datePublished: insight.publishedAt,
+          author: { "@type": "Organization", name: "SENZOFT" },
+          publisher: { "@type": "Organization", name: "SENZOFT" },
+          mainEntityOfPage: `https://www.senzoft.com/insights/${insight.slug}`,
+        }}
+      />
       <PageHero
         eyebrow={`${insight.type} · ${insight.readTime}`}
         title={insight.title}

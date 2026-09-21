@@ -1,0 +1,11 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { Search } from "lucide-react";
+import { type AdminCandidate } from "../../services/api/admin";
+import { AdminState, formatDate, StatusBadge } from "../AdminUI";
+import { useAdminList, useDebouncedValue } from "../useAdminList";
+
+export default function AdminCandidatesPage() {
+  const [search, setSearch] = useState(""); const [page, setPage] = useState(1); const query = useDebouncedValue(search); const list = useAdminList<AdminCandidate>("candidates", { search: query, ordering: "-created_at", page });
+  return <div className="admin-page"><header className="admin-page-header"><div><span className="admin-kicker">Talent</span><h1>Candidates</h1><p>Profiles and recruitment activity, protected by backend permissions.</p></div></header><div className="admin-toolbar"><label className="admin-search"><Search /><span className="sr-only">Search candidates</span><input value={search} onChange={(event) => { setSearch(event.target.value); setPage(1); }} placeholder="Search ID, name, email or skills" /></label></div><AdminState loading={list.loading} error={list.error} empty={!list.data.results.length} onRetry={list.reload}><div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>Candidate</th><th>Location</th><th>Skills</th><th>Applications</th><th>Latest status</th><th>Created</th><th>Action</th></tr></thead><tbody>{list.data.results.map((item) => <tr key={item.id}><td data-label="Candidate"><strong>{item.name}</strong><span>{item.id} · {item.email}</span></td><td data-label="Location">{item.location || "—"}</td><td data-label="Skills">{item.skills.slice(0, 3).join(", ") || "—"}</td><td data-label="Applications">{item.applications_count}</td><td data-label="Latest status"><StatusBadge value={item.latest_status} /></td><td data-label="Created">{formatDate(item.created_at)}</td><td data-label="Action"><Link className="admin-table-link" to={`/admin/candidates/${item.id}`}>View</Link></td></tr>)}</tbody></table></div><div className="admin-pagination"><button disabled={page === 1} onClick={() => setPage((value) => value - 1)}>Previous</button><span>Page {page} · {list.data.count} records</span><button disabled={!list.data.next} onClick={() => setPage((value) => value + 1)}>Next</button></div></AdminState></div>;
+}

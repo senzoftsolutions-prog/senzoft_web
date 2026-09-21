@@ -9,7 +9,9 @@ npm install
 npm run dev
 ```
 
-Copy `.env.example` to `.env.local` for local configuration. Contact, career interest and talent-network forms use Netlify Forms; there is no simulated success adapter.
+Copy `.env.example` to `.env.local` for local configuration. The contact and existing talent-network forms use Netlify Forms; there is no simulated success adapter.
+
+The redesigned `/careers` experience uses local sample data in `src/data` for its role listing, benefits and illustrative quotes. Sample roles are explicitly marked as unverified, not live vacancies. The `/careers/apply/:jobId` preview prepares a `mailto:` message; a selected resume must be attached manually in the mail app. No careers listing fetch or application upload is performed on those new routes. Replace the sample content with approved company information before publishing it as real opportunities.
 
 ## Quality commands
 

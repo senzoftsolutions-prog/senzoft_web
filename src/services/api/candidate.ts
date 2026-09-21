@@ -1,0 +1,36 @@
+import { apiRequest } from "./client";
+import type { Paginated } from "./jobs";
+
+export type CandidateProfile = { id: string; name: string; email: string; phone: string; location: string; current_role: string; years_of_experience: number | null; professional_summary: string; skills: string[]; experience: Array<Record<string, string>>; education: Array<Record<string, string>>; certifications: unknown[]; resume_metadata: Record<string, unknown>; linkedin_url: string; portfolio_url: string; updated_at: string };
+export type CandidateApplication = { id: string; job: string; job_title: string; job_department: string; applied_at: string; current_status: string; resume_version: Record<string, unknown>; profile_snapshot: Record<string, unknown>; status_history: Array<{ previous_status: string; new_status: string; reason: string; timestamp: string }>; updated_at: string };
+export type CandidateDashboard = { profile_completion: number; active_applications: number; upcoming_interviews: number; pending_documents: number; unread_notifications: number; latest_application: CandidateApplication | null };
+export type CandidateInterview = { id: string; application_id: string; job_id: string; job_title: string; interview_type: string; status: string; scheduled_at: string | null; instructions: string };
+export type InterviewQuestion = { id: string; sequence: number; question: string; category: string; difficulty: string; answered: boolean };
+export type InterviewSession = CandidateInterview & { expires_at: string | null; configuration: Record<string, number | string>; questions: InterviewQuestion[]; responses: Array<{ id:string; question_id:string; transcript:string; created_at:string }>; integrity_events: Array<{ id:string; event_type:string; severity:string; occurred_at:string }>; final_result: Record<string, unknown> };
+export type CandidateDocument = { id: string; application_id: string | null; document_type: string; file_name: string; file_size: number; mime_type: string; upload_status: string; uploaded_at: string | null; reviewed_at: string | null };
+export type CandidateBgv = { id: string; application_id: string; job_title: string; status: string; requested_at: string | null; started_at: string | null; completed_at: string | null };
+export type CandidateOffer = { id: string; application_id: string; job_id: string; job_title: string; status: string; issued_at: string | null; expires_at: string | null; accepted_at: string | null; declined_at: string | null; joining_date: string | null };
+export type CandidateJoining = { id: string; application_id: string; job_id: string; job_title: string; joining_date: string; status: string; location: string; department: string };
+export type CandidateNotification = { id: string; application_id: string | null; notification_type: string; channel: string; status: string; title: string; message: string; is_read: boolean; read_at: string | null; created_at: string };
+
+export const getCandidateDashboard = () => apiRequest<CandidateDashboard>("candidates/me/dashboard/");
+export const getProfile = () => apiRequest<CandidateProfile>("candidates/me/");
+export const updateProfile = (payload: Partial<CandidateProfile>) => apiRequest<CandidateProfile>("candidates/me/", { method: "PATCH", body: JSON.stringify(payload) });
+export const listApplications = () => apiRequest<Paginated<CandidateApplication>>("candidates/me/applications/");
+export const getCandidateApplication = (id: string) => apiRequest<CandidateApplication>(`applications/${encodeURIComponent(id)}/`);
+export const submitApplication = (jobId: string, resume: Record<string, unknown>) => apiRequest<CandidateApplication>("applications/", { method: "POST", body: JSON.stringify({ job_id: jobId, resume_version: resume }) });
+export const listInterviews = () => apiRequest<Paginated<CandidateInterview>>("candidates/me/interviews/");
+export const getInterview = (id: string) => apiRequest<CandidateInterview>(`candidates/me/interviews/${encodeURIComponent(id)}/`);
+export const getInterviewSession = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/session/`);
+export const startInterview = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/start/`, { method: "POST", body: "{}" });
+export const submitInterviewResponse = (id: string, questionId: string, transcript: string) => apiRequest<{ response_id:string; evaluation_recorded:boolean; next_question:InterviewQuestion|null }>(`candidates/me/interviews/${encodeURIComponent(id)}/responses/`, { method:"POST", body:JSON.stringify({ question_id:questionId, transcript }) });
+export const recordIntegrityEvent = (id: string, event_type: string, severity="INFO", metadata:Record<string,unknown>={}) => apiRequest(`candidates/me/interviews/${encodeURIComponent(id)}/integrity-events/`, { method:"POST", body:JSON.stringify({ event_type, severity, metadata }) });
+export const completeInterview = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/complete/`, { method:"POST", body:"{}" });
+export const listDocuments = () => apiRequest<Paginated<CandidateDocument>>("candidates/me/documents/");
+export const listBgv = () => apiRequest<Paginated<CandidateBgv>>("candidates/me/background-verifications/");
+export const listOffers = () => apiRequest<Paginated<CandidateOffer>>("candidates/me/offers/");
+export const getOffer = (id: string) => apiRequest<CandidateOffer>(`candidates/me/offers/${encodeURIComponent(id)}/`);
+export const decideOffer = (id: string, decision: "accept" | "decline") => apiRequest<CandidateOffer>(`candidates/me/offers/${encodeURIComponent(id)}/${decision}/`, { method: "POST", body: "{}" });
+export const listJoining = () => apiRequest<Paginated<CandidateJoining>>("candidates/me/joining/");
+export const listNotifications = () => apiRequest<Paginated<CandidateNotification>>("candidates/me/notifications/");
+export const markNotificationRead = (id: string) => apiRequest<CandidateNotification>(`candidates/me/notifications/${encodeURIComponent(id)}/read/`, { method: "POST", body: "{}" });

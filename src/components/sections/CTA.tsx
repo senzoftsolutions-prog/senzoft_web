@@ -4,16 +4,15 @@ import { Link } from "react-router-dom";
 import { useEffectsPaused } from "../ui/MotionPreferences";
 
 const CTA_SLIDES = [
-  { title: "Software Engineering", image: "/media/cta-software-engineering.png", alt: "Software engineers collaborating on a modern digital product" },
-  { title: "AI & Data", image: "/media/cta-ai-data.png", alt: "An abstract intelligent data core with connected signal paths" },
+  { title: "Software Engineering", image: "/media/cta-software-engineering-v2.png", alt: "Experienced software engineers reviewing application architecture and code in a professional technology studio" },
+  { title: "AI & Data", image: "/media/cta-ai-data-professionals.webp", alt: "Data specialists reviewing analytics and connected data workflows in a professional office" },
   { title: "Cloud & Infrastructure", image: "/media/cta-cloud-infrastructure.png", alt: "An abstract resilient cloud infrastructure architecture" },
 ] as const;
-const SLIDE_DURATION = 3200;
+const SLIDE_DURATION = 2200;
 
 export function CTA() {
   const reducedMotion = useEffectsPaused();
   const [activeSlide, setActiveSlide] = useState(0);
-  const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const touchStart = useRef<{ x: number; y: number } | null>(null);
@@ -30,13 +29,13 @@ export function CTA() {
     return () => observer.disconnect();
   }, []);
   useEffect(() => {
-    if (reducedMotion || paused || !visible) return;
+    if (reducedMotion || !visible) return;
     const timer = window.setTimeout(() => selectSlide(activeSlide + 1), SLIDE_DURATION);
     return () => window.clearTimeout(timer);
-  }, [activeSlide, paused, reducedMotion, selectSlide, visible]);
+  }, [activeSlide, reducedMotion, selectSlide, visible]);
 
   return <section className="cta-section">
-    <div ref={cardRef} className="container-shell cta-card cta-carousel text-white" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={(event) => { const touch = event.touches[0]; touchStart.current = { x: touch.clientX, y: touch.clientY }; }} onTouchEnd={(event) => {
+    <div ref={cardRef} className="container-shell cta-card cta-carousel text-white" onTouchStart={(event) => { const touch = event.touches[0]; touchStart.current = { x: touch.clientX, y: touch.clientY }; }} onTouchEnd={(event) => {
       if (!touchStart.current) return;
       const touch = event.changedTouches[0];
       const dx = touch.clientX - touchStart.current.x, dy = touch.clientY - touchStart.current.y;

@@ -98,12 +98,12 @@ export default function CareerPathPage() {
               [
                 "Frontend engineering",
                 "Explore interface development, application behavior and quality, and introduce your experience in building digital products.",
-                "/careers/frontend-engineer",
+                "/careers/openings/frontend-01",
               ],
               [
                 "Business analysis",
                 "Explore how process understanding, requirements and stakeholder communication connect business goals with delivery.",
-                "/careers/business-analyst",
+                "/careers/openings/analyst-01",
               ],
               [
                 "Stay connected",

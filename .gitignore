@@ -7,3 +7,11 @@ test-results
 .DS_Store
 *.local
 *.tsbuildinfo
+.neon
+
+# Python / Django
+__pycache__/
+*.py[cod]
+.venv/
+backend/staticfiles/
+backend/media/
