@@ -1,16 +1,17 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { getCurrentUser, signIn, signOut, type CurrentUser } from "../services/api/auth";
+import { getCurrentUser, signIn, signOut, verifyLoginCode, type AuthChallenge, type CurrentUser } from "../services/api/auth";
 import { tokenStore } from "../services/api/client";
 
 type AuthContextValue = {
   user: CurrentUser | null;
   loading: boolean;
-  login: (username: string, password: string) => Promise<void>;
+  login: (username: string, password: string) => Promise<AuthChallenge | null>;
+  verify: (challengeId: string, code: string) => Promise<void>;
   logout: () => void;
 };
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-const adminRoles = new Set(["RECRUITER", "HIRING_MANAGER", "INTERVIEWER", "HR", "ADMIN", "SUPER_ADMIN"]);
+const adminRoles = new Set(["SUPER_ADMIN"]);
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -41,7 +42,8 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
     user,
     loading,
     login: async (username, password) => {
-      await signIn(username, password);
+      const result = await signIn(username, password);
+      if ("verification_required" in result) return result;
       try {
         const response = await getCurrentUser();
         if (!adminRoles.has(response.data.role)) throw new Error("This account does not have admin-panel access.");
@@ -50,7 +52,9 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
         signOut();
         throw error;
       }
+      return null;
     },
+    verify: async (challengeId, code) => { await verifyLoginCode(challengeId, code); try { const response = await getCurrentUser(); if (!adminRoles.has(response.data.role)) throw new Error("This account does not have admin-panel access."); setUser(response.data); } catch (error) { signOut(); throw error; } },
     logout: () => { signOut(); setUser(null); },
   }), [loading, user]);
 

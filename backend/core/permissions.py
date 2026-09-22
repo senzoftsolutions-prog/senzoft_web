@@ -6,14 +6,14 @@ def has_role(user, *roles):
 
 
 class IsRecruitmentStaff(BasePermission):
-    allowed = {"RECRUITER", "HIRING_MANAGER", "HR", "ADMIN", "SUPER_ADMIN"}
+    allowed = {"SUPER_ADMIN"}
 
     def has_permission(self, request, view):
         return has_role(request.user, *self.allowed)
 
 
 class IsAdminPanelUser(BasePermission):
-    allowed = {"RECRUITER", "HIRING_MANAGER", "INTERVIEWER", "HR", "ADMIN", "SUPER_ADMIN"}
+    allowed = {"SUPER_ADMIN"}
 
     def has_permission(self, request, view):
         return has_role(request.user, *self.allowed)
@@ -28,7 +28,14 @@ class HasModuleRole(BasePermission):
 
 class IsAdminRole(BasePermission):
     def has_permission(self, request, view):
-        return has_role(request.user, "ADMIN", "SUPER_ADMIN")
+        return has_role(request.user, "SUPER_ADMIN")
+
+
+class IsSuperAdminRole(BasePermission):
+    """Restrict sensitive platform administration to super administrators."""
+
+    def has_permission(self, request, view):
+        return has_role(request.user, "SUPER_ADMIN")
 
 
 class IsCandidate(BasePermission):

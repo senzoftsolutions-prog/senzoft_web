@@ -7,7 +7,7 @@ class PublicJobSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Job
-        fields = ("id", "title", "slug", "department", "business_unit", "location", "work_mode", "employment_type", "experience_level", "minimum_experience", "maximum_experience", "description", "responsibilities", "required_skills", "preferred_skills", "qualifications", "benefits", "number_of_openings", "application_deadline", "published_at")
+        fields = ("id", "title", "slug", "department", "business_unit", "location", "additional_locations", "work_mode", "employment_type", "experience_level", "minimum_experience", "maximum_experience", "description", "responsibilities", "required_skills", "preferred_skills", "qualifications", "benefits", "reporting_to", "travel_requirement", "hiring_eligibility", "relocation_assistance", "about_company", "number_of_openings", "application_deadline", "published_at")
 
 
 class JobAdminSerializer(serializers.ModelSerializer):
@@ -35,6 +35,7 @@ class CandidateAdminSerializer(CandidateProfileSerializer):
     latest_status = serializers.CharField(read_only=True, allow_null=True)
 
     class Meta(CandidateProfileSerializer.Meta):
+        exclude = None
         fields = (
             "id", "name", "email", "phone", "location", "professional_summary",
             "skills", "experience", "education", "certifications", "resume_metadata",

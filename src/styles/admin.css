@@ -126,6 +126,14 @@
 .admin-login-form > p:not(.admin-form-error) { color: #737c8f; }
 .admin-login-form label { display: grid; gap: .45rem; margin-top: 1.1rem; font-size: .8rem; font-weight: 750; }
 .admin-login-form input { min-height: 3rem; padding: .75rem; border: 1px solid #ccd2dd; border-radius: .65rem; }
+.admin-login-form .password-field input { width: 100%; box-sizing: border-box; padding-right: 3rem; }
+.admin-login-form .password-field { position: relative; width: 100%; }
+.admin-login-form .password-field button { position: absolute; top: 50%; right: .4rem; display: grid; width: 2.25rem; height: 2.25rem; padding: 0; place-items: center; transform: translateY(-50%); border: 0; border-radius: .45rem; background: transparent; color: #626c80; cursor: pointer; }
+.admin-login-form .password-field button:hover { background: #eef1f5; color: #172034; }
+.admin-login-form .password-field button svg { width: 1.1rem; height: 1.1rem; }
+.admin-verification-code { min-height:3.8rem!important;text-align:center;font-size:1.55rem;font-weight:800;letter-spacing:.32em;font-variant-numeric:tabular-nums; }
+.admin-back-button { display:flex;width:100%;align-items:center;justify-content:center;gap:.4rem;border:0;background:transparent;cursor:pointer; }
+.admin-back-button svg { width:1rem; }
 .admin-login-submit { width: 100%; margin-top: 1.2rem; }
 .admin-back-link { display: block; margin-top: 1.2rem; color: #626c80; font-size: .8rem; text-align: center; }
 .admin-auth-loading { display: grid; min-height: 100svh; place-items: center; }

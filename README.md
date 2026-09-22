@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Copy `.env.example` to `.env.local` for local configuration. The contact and existing talent-network forms use Netlify Forms; there is no simulated success adapter.
+Copy `.env.example` to `.env.local` for local configuration. The contact form posts to the Vercel `/api/contact` function and delivers through Resend. Configure `RESEND_API_KEY`, `CONTACT_RECIPIENT_EMAIL`, and `CONTACT_FROM_EMAIL` in the deployment environment. Other legacy interest forms still use Netlify Forms.
 
 The redesigned `/careers` experience uses local sample data in `src/data` for its role listing, benefits and illustrative quotes. Sample roles are explicitly marked as unverified, not live vacancies. The `/careers/apply/:jobId` preview prepares a `mailto:` message; a selected resume must be attached manually in the mail app. No careers listing fetch or application upload is performed on those new routes. Replace the sample content with approved company information before publishing it as real opportunities.
 
@@ -38,7 +38,7 @@ Career discipline pages accept expressions of interest and are not advertised va
 
 ## Deployment
 
-Vercel and Netlify SPA route rewrites are included. Set `VITE_SITE_URL` in the deployment environment. Enable form detection under Forms in Netlify, redeploy, and verify a real submission in the Netlify dashboard. Configure notifications there for the company recipient. Live receipt is not verified by local browser tests. A different hosting provider needs a real form endpoint. Preview `development`; deploy production from `main`.
+Vercel and Netlify SPA route rewrites are included. Set `VITE_SITE_URL` in the deployment environment. On Vercel, configure the contact email variables above and verify the sending domain in Resend. Preview `development`; deploy production from the configured production branch.
 
 ## Brand asset
 

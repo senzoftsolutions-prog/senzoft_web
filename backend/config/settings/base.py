@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     "blog",
     "notifications",
     "audit",
+    "consent",
 ]
 
 MIDDLEWARE = [
@@ -103,8 +104,8 @@ REST_FRAMEWORK = {
     "DEFAULT_PAGINATION_CLASS": "core.pagination.ApiPagination",
     "PAGE_SIZE": 20,
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
-    "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle"),
-    "DEFAULT_THROTTLE_RATES": {"anon": "100/hour", "user": "1000/hour", "interview": "120/hour", "interview_events": "300/hour"},
+    "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle", "rest_framework.throttling.ScopedRateThrottle"),
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/hour", "user": "1000/hour", "auth": "30/hour", "consent": "120/hour", "interview": "120/hour", "interview_events": "300/hour"},
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
@@ -134,6 +135,8 @@ DEFAULT_FROM_EMAIL = os.getenv(
 )
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "15"))
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BACKEND_DIR / "media"
 AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
 AI_INTERVIEW_DEFAULTS = {
     "minimum_questions": 3,

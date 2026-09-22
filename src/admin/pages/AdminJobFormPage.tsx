@@ -1,26 +1,499 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 import { ArrowLeft, Check } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { createAdminRecord, getAdminRecord, runAdminAction, updateAdminRecord, type AdminJob } from "../../services/api/admin";
+import {
+  createAdminRecord,
+  getAdminRecord,
+  runAdminAction,
+  updateAdminRecord,
+  type AdminJob,
+} from "../../services/api/admin";
 
 type JobForm = {
-  title: string; slug: string; department: string; business_unit: string; location: string;
-  work_mode: string; employment_type: string; experience_level: string; minimum_experience: string;
-  maximum_experience: string; description: string; responsibilities: string; required_skills: string;
-  preferred_skills: string; qualifications: string; benefits: string; number_of_openings: string;
-  application_deadline: string; seo_title: string; seo_description: string;
+  title: string;
+  slug: string;
+  department: string;
+  business_unit: string;
+  location: string;
+  additional_locations: string;
+  work_mode: string;
+  employment_type: string;
+  experience_level: string;
+  minimum_experience: string;
+  maximum_experience: string;
+  description: string;
+  responsibilities: string;
+  required_skills: string;
+  preferred_skills: string;
+  qualifications: string;
+  benefits: string;
+  number_of_openings: string;
+  application_deadline: string;
+  reporting_to: string;
+  travel_requirement: string;
+  hiring_eligibility: string;
+  relocation_assistance: string;
+  about_company: string;
+  seo_title: string;
+  seo_description: string;
 };
-const empty: JobForm = { title: "", slug: "", department: "", business_unit: "", location: "", work_mode: "HYBRID", employment_type: "FULL_TIME", experience_level: "", minimum_experience: "0", maximum_experience: "", description: "", responsibilities: "", required_skills: "", preferred_skills: "", qualifications: "", benefits: "", number_of_openings: "1", application_deadline: "", seo_title: "", seo_description: "" };
+const empty: JobForm = {
+  title: "",
+  slug: "",
+  department: "",
+  business_unit: "",
+  location: "",
+  additional_locations: "",
+  work_mode: "HYBRID",
+  employment_type: "FULL_TIME",
+  experience_level: "",
+  minimum_experience: "0",
+  maximum_experience: "",
+  description: "",
+  responsibilities: "",
+  required_skills: "",
+  preferred_skills: "",
+  qualifications: "",
+  benefits: "",
+  number_of_openings: "1",
+  application_deadline: "",
+  reporting_to: "",
+  travel_requirement: "",
+  hiring_eligibility: "External and internal candidates",
+  relocation_assistance: "Not specified",
+  about_company: "",
+  seo_title: "",
+  seo_description: "",
+};
 const join = (value?: string[]) => value?.join("\n") ?? "";
-const split = (value: string) => value.split(/\n|,/).map((item) => item.trim()).filter(Boolean);
+const split = (value: string) =>
+  value
+    .split(/\r?\n/)
+    .map((item) => item.trim())
+    .filter(Boolean);
 
 export default function AdminJobFormPage() {
-  const { id } = useParams(); const navigate = useNavigate(); const [form, setForm] = useState<JobForm>(empty); const [initial, setInitial] = useState(JSON.stringify(empty)); const [loading, setLoading] = useState(Boolean(id)); const [saving, setSaving] = useState(false); const [error, setError] = useState(""); const [saved, setSaved] = useState(false);
-  const dirty = useMemo(() => JSON.stringify(form) !== initial, [form, initial]);
-  useEffect(() => { if (!id) return; getAdminRecord<AdminJob>("jobs", id).then((job) => { const value: JobForm = { title: job.title, slug: job.slug, department: job.department, business_unit: job.business_unit, location: job.location, work_mode: job.work_mode, employment_type: job.employment_type, experience_level: job.experience_level, minimum_experience: String(job.minimum_experience), maximum_experience: job.maximum_experience === null ? "" : String(job.maximum_experience), description: job.description, responsibilities: join(job.responsibilities), required_skills: join(job.required_skills), preferred_skills: join(job.preferred_skills), qualifications: join(job.qualifications), benefits: join(job.benefits), number_of_openings: String(job.number_of_openings), application_deadline: job.application_deadline ?? "", seo_title: job.seo_title, seo_description: job.seo_description }; setForm(value); setInitial(JSON.stringify(value)); }).catch((reason) => setError(reason instanceof Error ? reason.message : "Unable to load job.")).finally(() => setLoading(false)); }, [id]);
-  useEffect(() => { const protect = (event: BeforeUnloadEvent) => { if (dirty) event.preventDefault(); }; window.addEventListener("beforeunload", protect); return () => window.removeEventListener("beforeunload", protect); }, [dirty]);
-  function field<K extends keyof JobForm>(name: K, value: JobForm[K]) { setForm((current) => ({ ...current, [name]: value })); setSaved(false); }
-  async function save(event: FormEvent, publish = false) { event.preventDefault(); setSaving(true); setError(""); const payload = { ...form, minimum_experience: Number(form.minimum_experience), maximum_experience: form.maximum_experience ? Number(form.maximum_experience) : null, number_of_openings: Number(form.number_of_openings), application_deadline: form.application_deadline || null, responsibilities: split(form.responsibilities), required_skills: split(form.required_skills), preferred_skills: split(form.preferred_skills), qualifications: split(form.qualifications), benefits: split(form.benefits) }; try { const job = id ? await updateAdminRecord<AdminJob>("jobs", id, payload) : await createAdminRecord<AdminJob>("jobs", payload); if (publish) await runAdminAction("jobs", job.id, "publish"); setInitial(JSON.stringify(form)); setSaved(true); if (!id) navigate(`/admin/jobs/${job.id}`, { replace: true }); } catch (reason) { setError(reason instanceof Error ? reason.message : "Unable to save job."); } finally { setSaving(false); } }
-  if (loading) return <div className="admin-state" role="status">Loading job…</div>;
-  return <div className="admin-page"><header className="admin-page-header"><div><Link to="/admin/jobs" className="admin-back"><ArrowLeft /> Jobs</Link><span className="admin-kicker">Careers</span><h1>{id ? "Edit job" : "Create job"}</h1><p>{id ? "Update the production vacancy and its publishing metadata." : "Create a real vacancy in the recruitment database."}</p></div></header><form className="admin-form" onSubmit={(event) => void save(event)}><section className="admin-form-section"><div><h2>Basic information</h2><p>How candidates and recruitment teams identify this role.</p></div><div className="admin-form-grid"><label>Job title *<input required value={form.title} onChange={(event) => field("title", event.target.value)} /></label><label>Slug *<input required pattern="[a-z0-9]+(?:-[a-z0-9]+)*" value={form.slug} onChange={(event) => field("slug", event.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-"))} /></label><label>Department *<input required value={form.department} onChange={(event) => field("department", event.target.value)} /></label><label>Business unit<input value={form.business_unit} onChange={(event) => field("business_unit", event.target.value)} /></label><label>Location *<input required value={form.location} onChange={(event) => field("location", event.target.value)} /></label><label>Work mode *<select value={form.work_mode} onChange={(event) => field("work_mode", event.target.value)}><option>ONSITE</option><option>HYBRID</option><option>REMOTE</option></select></label><label>Employment type *<select value={form.employment_type} onChange={(event) => field("employment_type", event.target.value)}><option value="FULL_TIME">Full-time</option><option value="PART_TIME">Part-time</option><option value="CONTRACT">Contract</option><option value="INTERNSHIP">Internship</option></select></label><label>Experience level<input value={form.experience_level} onChange={(event) => field("experience_level", event.target.value)} /></label><label>Minimum experience<input min="0" type="number" value={form.minimum_experience} onChange={(event) => field("minimum_experience", event.target.value)} /></label><label>Maximum experience<input min="0" type="number" value={form.maximum_experience} onChange={(event) => field("maximum_experience", event.target.value)} /></label></div></section><section className="admin-form-section"><div><h2>Job details</h2><p>Use one item per line for structured lists.</p></div><div className="admin-form-grid"><label className="admin-field-wide">Description *<textarea required rows={7} value={form.description} onChange={(event) => field("description", event.target.value)} /></label>{(["responsibilities", "required_skills", "preferred_skills", "qualifications", "benefits"] as const).map((name) => <label key={name}>{name.replaceAll("_", " ")} {name === "responsibilities" || name === "required_skills" ? "*" : ""}<textarea required={name === "responsibilities" || name === "required_skills"} rows={5} value={form[name]} onChange={(event) => field(name, event.target.value)} /></label>)}</div></section><section className="admin-form-section"><div><h2>Recruitment</h2><p>Capacity and application window.</p></div><div className="admin-form-grid"><label>Number of openings *<input required min="1" type="number" value={form.number_of_openings} onChange={(event) => field("number_of_openings", event.target.value)} /></label><label>Application deadline<input type="date" value={form.application_deadline} onChange={(event) => field("application_deadline", event.target.value)} /></label></div></section><section className="admin-form-section"><div><h2>Search metadata</h2><p>Optional metadata for the future public job page.</p></div><div className="admin-form-grid"><label>SEO title<input maxLength={180} value={form.seo_title} onChange={(event) => field("seo_title", event.target.value)} /></label><label className="admin-field-wide">SEO description<textarea maxLength={320} rows={3} value={form.seo_description} onChange={(event) => field("seo_description", event.target.value)} /></label></div></section>{error && <p className="admin-form-error" role="alert">{error}</p>}{saved && <p className="admin-form-success" role="status"><Check /> Job saved successfully.</p>}<div className="admin-form-actions"><button disabled={saving || !dirty} className="admin-btn admin-btn-secondary" type="submit">{saving ? "Saving…" : "Save draft"}</button><button disabled={saving} className="admin-btn admin-btn-primary" type="button" onClick={(event) => void save(event as unknown as FormEvent, true)}>{saving ? "Publishing…" : "Save and publish"}</button></div></form></div>;
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [form, setForm] = useState<JobForm>(empty);
+  const [initial, setInitial] = useState(JSON.stringify(empty));
+  const [loading, setLoading] = useState(Boolean(id));
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [saved, setSaved] = useState(false);
+  const dirty = useMemo(
+    () => JSON.stringify(form) !== initial,
+    [form, initial],
+  );
+  useEffect(() => {
+    if (!id) return;
+    getAdminRecord<AdminJob>("jobs", id)
+      .then((job) => {
+        const value: JobForm = {
+          title: job.title,
+          slug: job.slug,
+          department: job.department,
+          business_unit: job.business_unit,
+          location: job.location,
+          additional_locations: join(job.additional_locations),
+          work_mode: job.work_mode,
+          employment_type: job.employment_type,
+          experience_level: job.experience_level,
+          minimum_experience: String(job.minimum_experience),
+          maximum_experience:
+            job.maximum_experience === null
+              ? ""
+              : String(job.maximum_experience),
+          description: job.description,
+          responsibilities: join(job.responsibilities),
+          required_skills: join(job.required_skills),
+          preferred_skills: join(job.preferred_skills),
+          qualifications: join(job.qualifications),
+          benefits: join(job.benefits),
+          number_of_openings: String(job.number_of_openings),
+          application_deadline: job.application_deadline ?? "",
+          reporting_to: job.reporting_to,
+          travel_requirement: job.travel_requirement,
+          hiring_eligibility: job.hiring_eligibility,
+          relocation_assistance: job.relocation_assistance,
+          about_company: job.about_company,
+          seo_title: job.seo_title,
+          seo_description: job.seo_description,
+        };
+        setForm(value);
+        setInitial(JSON.stringify(value));
+      })
+      .catch((reason) =>
+        setError(
+          reason instanceof Error ? reason.message : "Unable to load job.",
+        ),
+      )
+      .finally(() => setLoading(false));
+  }, [id]);
+  useEffect(() => {
+    const protect = (event: BeforeUnloadEvent) => {
+      if (dirty) event.preventDefault();
+    };
+    window.addEventListener("beforeunload", protect);
+    return () => window.removeEventListener("beforeunload", protect);
+  }, [dirty]);
+  function field<K extends keyof JobForm>(name: K, value: JobForm[K]) {
+    setForm((current) => ({ ...current, [name]: value }));
+    setSaved(false);
+  }
+  async function save(event: FormEvent, publish = false) {
+    event.preventDefault();
+    setSaving(true);
+    setError("");
+    const payload = {
+      ...form,
+      minimum_experience: Number(form.minimum_experience),
+      maximum_experience: form.maximum_experience
+        ? Number(form.maximum_experience)
+        : null,
+      number_of_openings: Number(form.number_of_openings),
+      application_deadline: form.application_deadline || null,
+      additional_locations: split(form.additional_locations),
+      responsibilities: split(form.responsibilities),
+      required_skills: split(form.required_skills),
+      preferred_skills: split(form.preferred_skills),
+      qualifications: split(form.qualifications),
+      benefits: split(form.benefits),
+    };
+    try {
+      const job = id
+        ? await updateAdminRecord<AdminJob>("jobs", id, payload)
+        : await createAdminRecord<AdminJob>("jobs", payload);
+      if (publish) await runAdminAction("jobs", job.id, "publish");
+      setInitial(JSON.stringify(form));
+      setSaved(true);
+      if (!id) navigate(`/admin/jobs/${job.id}`, { replace: true });
+    } catch (reason) {
+      setError(
+        reason instanceof Error ? reason.message : "Unable to save job.",
+      );
+    } finally {
+      setSaving(false);
+    }
+  }
+  if (loading)
+    return (
+      <div className="admin-state" role="status">
+        Loading job…
+      </div>
+    );
+  return (
+    <div className="admin-page">
+      <header className="admin-page-header">
+        <div>
+          <Link to="/admin/jobs" className="admin-back">
+            <ArrowLeft /> Jobs
+          </Link>
+          <span className="admin-kicker">Careers</span>
+          <h1>{id ? "Edit job" : "Create job"}</h1>
+          <p>
+            {id
+              ? "Update the production vacancy and its publishing metadata."
+              : "Create a real vacancy in the recruitment database."}
+          </p>
+        </div>
+      </header>
+      <form className="admin-form" onSubmit={(event) => void save(event)}>
+        <section className="admin-form-section">
+          <div>
+            <h2>Basic information</h2>
+            <p>How candidates and recruitment teams identify this role.</p>
+          </div>
+          <div className="admin-form-grid">
+            <label>
+              Job title *
+              <input
+                required
+                value={form.title}
+                onChange={(event) => field("title", event.target.value)}
+              />
+            </label>
+            <label>
+              Slug *
+              <input
+                required
+                pattern="[a-z0-9]+(?:-[a-z0-9]+)*"
+                value={form.slug}
+                onChange={(event) =>
+                  field(
+                    "slug",
+                    event.target.value
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]/g, "-"),
+                  )
+                }
+              />
+            </label>
+            <label>
+              Department *
+              <input
+                required
+                value={form.department}
+                onChange={(event) => field("department", event.target.value)}
+              />
+            </label>
+            <label>
+              Business unit
+              <input
+                value={form.business_unit}
+                onChange={(event) => field("business_unit", event.target.value)}
+              />
+            </label>
+            <label>
+              Primary location *
+              <input
+                required
+                value={form.location}
+                onChange={(event) => field("location", event.target.value)}
+              />
+            </label>
+            <label className="admin-field-wide">
+              Additional locations
+              <textarea
+                rows={3}
+                placeholder="One office or city per line"
+                value={form.additional_locations}
+                onChange={(event) =>
+                  field("additional_locations", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Work mode *
+              <select
+                value={form.work_mode}
+                onChange={(event) => field("work_mode", event.target.value)}
+              >
+                <option>ONSITE</option>
+                <option>HYBRID</option>
+                <option>REMOTE</option>
+              </select>
+            </label>
+            <label>
+              Employment type *
+              <select
+                value={form.employment_type}
+                onChange={(event) =>
+                  field("employment_type", event.target.value)
+                }
+              >
+                <option value="FULL_TIME">Full-time</option>
+                <option value="PART_TIME">Part-time</option>
+                <option value="CONTRACT">Contract</option>
+                <option value="INTERNSHIP">Internship</option>
+              </select>
+            </label>
+            <label>
+              Experience level
+              <input
+                value={form.experience_level}
+                onChange={(event) =>
+                  field("experience_level", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Minimum experience
+              <input
+                min="0"
+                type="number"
+                value={form.minimum_experience}
+                onChange={(event) =>
+                  field("minimum_experience", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Maximum experience
+              <input
+                min="0"
+                type="number"
+                value={form.maximum_experience}
+                onChange={(event) =>
+                  field("maximum_experience", event.target.value)
+                }
+              />
+            </label>
+          </div>
+        </section>
+        <section className="admin-form-section">
+          <div>
+            <h2>Job details</h2>
+            <p>Use one item per line for structured lists.</p>
+          </div>
+          <div className="admin-form-grid">
+            <label className="admin-field-wide">
+              Job overview *
+              <textarea
+                required
+                rows={7}
+                value={form.description}
+                onChange={(event) => field("description", event.target.value)}
+              />
+            </label>
+            {(
+              [
+                ["responsibilities", "What the candidate will do"],
+                ["required_skills", "Required capabilities"],
+                ["preferred_skills", "Preferred capabilities / We value"],
+                ["qualifications", "Qualifications"],
+                ["benefits", "Benefits"],
+              ] as const
+            ).map(([name, label]) => (
+              <label key={name}>
+                {label}{" "}
+                {name === "responsibilities" || name === "required_skills"
+                  ? "*"
+                  : ""}
+                <textarea
+                  required={
+                    name === "responsibilities" || name === "required_skills"
+                  }
+                  rows={5}
+                  value={form[name]}
+                  onChange={(event) => field(name, event.target.value)}
+                />
+              </label>
+            ))}
+            <label className="admin-field-wide">
+              About SENZOFT
+              <textarea
+                rows={6}
+                placeholder="Company context candidates should see on this posting"
+                value={form.about_company}
+                onChange={(event) => field("about_company", event.target.value)}
+              />
+            </label>
+          </div>
+        </section>
+        <section className="admin-form-section">
+          <div>
+            <h2>Recruitment</h2>
+            <p>Application window, reporting line, and candidate logistics.</p>
+          </div>
+          <div className="admin-form-grid">
+            <label>
+              Number of openings *
+              <input
+                required
+                min="1"
+                type="number"
+                value={form.number_of_openings}
+                onChange={(event) =>
+                  field("number_of_openings", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Application deadline
+              <input
+                type="date"
+                value={form.application_deadline}
+                onChange={(event) =>
+                  field("application_deadline", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Reports to
+              <input
+                placeholder="Example: Engineering Manager"
+                value={form.reporting_to}
+                onChange={(event) => field("reporting_to", event.target.value)}
+              />
+            </label>
+            <label>
+              Travel requirement
+              <input
+                placeholder="Example: Up to 20%"
+                value={form.travel_requirement}
+                onChange={(event) =>
+                  field("travel_requirement", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Hiring eligibility
+              <input
+                placeholder="Example: External and internal candidates"
+                value={form.hiring_eligibility}
+                onChange={(event) =>
+                  field("hiring_eligibility", event.target.value)
+                }
+              />
+            </label>
+            <label>
+              Relocation assistance
+              <input
+                placeholder="Example: Available / Not available"
+                value={form.relocation_assistance}
+                onChange={(event) =>
+                  field("relocation_assistance", event.target.value)
+                }
+              />
+            </label>
+          </div>
+        </section>
+        <section className="admin-form-section">
+          <div>
+            <h2>Search metadata</h2>
+            <p>Optional metadata for the future public job page.</p>
+          </div>
+          <div className="admin-form-grid">
+            <label>
+              SEO title
+              <input
+                maxLength={180}
+                value={form.seo_title}
+                onChange={(event) => field("seo_title", event.target.value)}
+              />
+            </label>
+            <label className="admin-field-wide">
+              SEO description
+              <textarea
+                maxLength={320}
+                rows={3}
+                value={form.seo_description}
+                onChange={(event) =>
+                  field("seo_description", event.target.value)
+                }
+              />
+            </label>
+          </div>
+        </section>
+        {error && (
+          <p className="admin-form-error" role="alert">
+            {error}
+          </p>
+        )}
+        {saved && (
+          <p className="admin-form-success" role="status">
+            <Check /> Job saved successfully.
+          </p>
+        )}
+        <div className="admin-form-actions">
+          <button
+            disabled={saving || !dirty}
+            className="admin-btn admin-btn-secondary"
+            type="submit"
+          >
+            {saving ? "Saving…" : "Save draft"}
+          </button>
+          <button
+            disabled={saving}
+            className="admin-btn admin-btn-primary"
+            type="button"
+            onClick={(event) => void save(event as unknown as FormEvent, true)}
+          >
+            {saving ? "Publishing…" : "Save and publish"}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
 }

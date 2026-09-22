@@ -1,7 +1,6 @@
 import { Outlet } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
-import { CookieConsent } from "../ui/CookieConsent";
 import { ScrollProgress } from "../ui/ScrollProgress";
 import { ScrollReveal } from "../ui/ScrollReveal";
 import { PageMotion } from "../ui/PageMotion";
@@ -18,7 +17,6 @@ export function AppLayout() {
         <Outlet />
       </main>
       <Footer />
-      <CookieConsent />
     </>
   );
 }

@@ -3,7 +3,7 @@ from rest_framework import generics, permissions, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.permissions import IsAdminRole
+from core.permissions import IsSuperAdminRole
 from audit.services import write_audit
 from .models import BlogPost
 from .serializers import BlogAdminSerializer, BlogPostSerializer, BlogScheduleSerializer
@@ -29,7 +29,7 @@ class PublicBlogDetailView(generics.RetrieveAPIView):
 class AdminBlogViewSet(viewsets.ModelViewSet):
     queryset = BlogPost.objects.all().order_by("-created_at")
     serializer_class = BlogAdminSerializer
-    permission_classes = [IsAdminRole]
+    permission_classes = [IsSuperAdminRole]
     lookup_field = "public_id"
     filterset_fields = ("status", "category", "author")
     search_fields = ("public_id", "title", "slug", "excerpt")

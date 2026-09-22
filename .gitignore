@@ -15,3 +15,7 @@ __pycache__/
 .venv/
 backend/staticfiles/
 backend/media/
+
+.vercel
+.env*
+debug.log

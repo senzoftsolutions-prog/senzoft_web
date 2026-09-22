@@ -16,7 +16,7 @@ export function ImageHoverCard({
 }) {
   return (
     <Link to={to} className={`image-hover-card ${className}`}>
-      <div className="image-hover-card-media" aria-hidden="true">
+      <div className="image-hover-card-media">
         <img src={image} alt={alt} loading="lazy" decoding="async" />
       </div>
       <div className="image-hover-card-panel">{children}</div>

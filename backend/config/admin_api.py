@@ -3,21 +3,23 @@ from django.db.models import Count, Max, OuterRef, Subquery
 from django.utils import timezone
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
+from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from accounts.models import User
 from accounts.serializers import AdminUserSerializer, UserRoleSerializer, UserStatusSerializer
-from applications.models import Application, BackgroundVerification, Document, Interview, Joining, Offer
-from applications.serializers import ApplicationAdminSerializer, BackgroundVerificationAdminSerializer, DocumentAdminSerializer, InterviewAdminSerializer, JoiningAdminSerializer, OfferAdminSerializer, TransitionSerializer
+from applications.models import Application, ApplicationAttachment, BackgroundVerification, Document, Interview, Joining, Offer
+from applications.serializers import ApplicationAdminSerializer, ApplicationAttachmentSerializer, BackgroundVerificationAdminSerializer, DocumentAdminSerializer, InterviewAdminSerializer, JoiningAdminSerializer, OfferAdminSerializer, TransitionSerializer
 from audit.services import write_audit
 from audit.models import AuditLog
 from audit.serializers import AuditLogSerializer
 from careers.models import CandidateProfile, Job
 from careers.serializers import CandidateAdminSerializer, JobAdminSerializer
-from core.permissions import HasModuleRole, IsAdminPanelUser, IsAdminRole
+from core.permissions import HasModuleRole, IsAdminPanelUser, IsSuperAdminRole
 from notifications.models import Notification
 from notifications.serializers import NotificationSerializer
+from notifications.email import send_application_attachment_notice, send_application_update
 
 
 def model_serializer(model, excluded=()):
@@ -25,9 +27,9 @@ def model_serializer(model, excluded=()):
     return type(f"{model.__name__}AdminSerializer", (serializers.ModelSerializer,), {"Meta": meta})
 
 
-RECRUITMENT_ROLES = ("RECRUITER", "HIRING_MANAGER", "HR", "ADMIN", "SUPER_ADMIN")
-INTERVIEW_ROLES = ("RECRUITER", "HIRING_MANAGER", "INTERVIEWER", "HR", "ADMIN", "SUPER_ADMIN")
-HR_ROLES = ("HR", "ADMIN", "SUPER_ADMIN")
+RECRUITMENT_ROLES = ("SUPER_ADMIN",)
+INTERVIEW_ROLES = ("SUPER_ADMIN",)
+HR_ROLES = ("SUPER_ADMIN",)
 
 
 class ProtectedModelViewSet(viewsets.ModelViewSet):
@@ -76,7 +78,33 @@ class ApplicationAdminViewSet(ProtectedModelViewSet):
         except DjangoValidationError as exc:
             raise serializers.ValidationError({"status": exc.messages}) from exc
         write_audit(actor=request.user, action="APPLICATION_STATUS_CHANGED", entity="Application", entity_id=application.public_id, metadata={"status": application.current_status})
+        send_application_update(application=application, status_label=application.get_current_status_display(), reason=serializer.validated_data.get("reason", ""))
         return Response(self.get_serializer(application).data)
+
+    @action(detail=True, methods=("post",), url_path="attachments", parser_classes=(MultiPartParser, FormParser, JSONParser))
+    def add_attachment(self, request, public_id=None):
+        application = self.get_object()
+        serializer = ApplicationAttachmentSerializer(data=request.data, context={"request": request})
+        serializer.is_valid(raise_exception=True)
+        attachment = serializer.save(application=application, uploaded_by=request.user)
+        access_url = attachment.url or request.build_absolute_uri(attachment.file.url)
+        try:
+            send_application_attachment_notice(attachment=attachment, access_url=access_url)
+        except Exception:
+            pass
+        write_audit(actor=request.user, action="APPLICATION_ATTACHMENT_ADDED", entity="Application", entity_id=application.public_id, metadata={"attachment_id": str(attachment.id), "type": attachment.attachment_type})
+        return Response(ApplicationAttachmentSerializer(attachment, context={"request": request}).data, status=201)
+
+    @action(detail=True, methods=("delete",), url_path=r"attachments/(?P<attachment_id>[^/.]+)")
+    def remove_attachment(self, request, public_id=None, attachment_id=None):
+        application = self.get_object()
+        try:
+            attachment = application.attachments.get(id=attachment_id)
+        except (ApplicationAttachment.DoesNotExist, ValueError):
+            return Response({"detail": "Attachment not found."}, status=404)
+        attachment.delete()
+        write_audit(actor=request.user, action="APPLICATION_ATTACHMENT_REMOVED", entity="Application", entity_id=application.public_id, metadata={"attachment_id": str(attachment_id)})
+        return Response(status=204)
 
 
 class InterviewAdminViewSet(ProtectedModelViewSet):
@@ -149,7 +177,7 @@ class NotificationAdminViewSet(ProtectedModelViewSet):
 class UserAdminViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = User.objects.all().order_by("username")
     serializer_class = AdminUserSerializer
-    permission_classes = [IsAdminRole]
+    permission_classes = [IsSuperAdminRole]
     lookup_field = "id"
     filterset_fields = ("role", "is_active", "is_email_verified")
     search_fields = ("username", "email", "first_name", "last_name")
@@ -160,6 +188,9 @@ class UserAdminViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.get_object()
         serializer = UserRoleSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        if user.is_superuser or serializer.validated_data["role"] == User.Role.SUPER_ADMIN:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({"role": "The single Super Admin account cannot be reassigned or duplicated."})
         previous = user.role
         user.role = serializer.validated_data["role"]
         user.save(update_fields=("role",))
@@ -171,6 +202,9 @@ class UserAdminViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.get_object()
         serializer = UserStatusSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+        if user.is_superuser and not serializer.validated_data["is_active"]:
+            from rest_framework.exceptions import ValidationError
+            raise ValidationError({"is_active": "The single Super Admin account cannot be deactivated."})
         user.is_active = serializer.validated_data["is_active"]
         user.save(update_fields=("is_active",))
         write_audit(actor=request.user, action="ADMIN_ACTION", entity="User", entity_id=user.id, metadata={"is_active": user.is_active})
@@ -180,7 +214,7 @@ class UserAdminViewSet(viewsets.ReadOnlyModelViewSet):
 class AuditAdminViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = AuditLog.objects.select_related("actor").all()
     serializer_class = AuditLogSerializer
-    permission_classes = [IsAdminRole]
+    permission_classes = [IsSuperAdminRole]
     lookup_field = "id"
     filterset_fields = ("actor", "action", "entity")
     search_fields = ("action", "entity", "entity_id", "actor__username", "actor__email")

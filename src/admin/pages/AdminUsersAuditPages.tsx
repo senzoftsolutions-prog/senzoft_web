@@ -6,7 +6,7 @@ import { useAdminList, useDebouncedValue } from "../useAdminList";
 
 type User = { id: string; username: string; name: string; email: string; role: string; is_active: boolean; is_email_verified: boolean; date_joined: string; last_login: string | null };
 type Audit = { id: string; timestamp: string; actor: string | null; action: string; entity: string; entity_id: string; metadata: Record<string, unknown> };
-const roles = ["CANDIDATE", "RECRUITER", "HIRING_MANAGER", "INTERVIEWER", "HR", "ADMIN", "SUPER_ADMIN"];
+const roles = ["CANDIDATE", "RECRUITER", "HIRING_MANAGER", "INTERVIEWER", "HR"];
 
 export function AdminUsersPage() {
   const [search, setSearch] = useState(""); const [role, setRole] = useState(""); const [pending, setPending] = useState<{ user: User; type: "status" | "role"; value: string | boolean } | null>(null); const query = useDebouncedValue(search); const list = useAdminList<User>("users", { search: query, role, ordering: "username" });

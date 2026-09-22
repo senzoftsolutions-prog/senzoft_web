@@ -2,7 +2,7 @@ from django.db import transaction
 from rest_framework import serializers
 
 from careers.models import Job
-from .models import Application, ApplicationStatusHistory, BackgroundVerification, Document, IntegrityEvent, Interview, InterviewEvaluation, InterviewQuestion, InterviewResponse, Joining, Offer
+from .models import Application, ApplicationAttachment, ApplicationStatusHistory, BackgroundVerification, Document, IntegrityEvent, Interview, InterviewEvaluation, InterviewQuestion, InterviewResponse, Joining, Offer
 
 
 class StatusHistorySerializer(serializers.ModelSerializer):
@@ -13,6 +13,31 @@ class StatusHistorySerializer(serializers.ModelSerializer):
         fields = ("previous_status", "new_status", "changed_by", "reason", "timestamp")
 
 
+class ApplicationAttachmentSerializer(serializers.ModelSerializer):
+    uploaded_by_name = serializers.CharField(source="uploaded_by.get_full_name", read_only=True)
+    file_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = ApplicationAttachment
+        fields = ("id", "attachment_type", "title", "url", "file", "file_url", "note", "visible_to_candidate", "uploaded_by_name", "created_at")
+        read_only_fields = ("id", "uploaded_by_name", "created_at", "file_url")
+        extra_kwargs = {"file": {"write_only": True, "required": False}}
+
+    def get_file_url(self, obj):
+        if not obj.file:
+            return ""
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.file.url) if request else obj.file.url
+
+    def validate(self, attrs):
+        if not attrs.get("url") and not attrs.get("file"):
+            raise serializers.ValidationError("Add either a meeting/web link or a document.")
+        uploaded = attrs.get("file")
+        if uploaded and uploaded.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError({"file": "Documents must be 10 MB or smaller."})
+        return attrs
+
+
 class ApplicationSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="public_id", read_only=True)
     job_id = serializers.CharField(write_only=True)
@@ -21,10 +46,15 @@ class ApplicationSerializer(serializers.ModelSerializer):
     status_history = StatusHistorySerializer(many=True, read_only=True)
     job_title = serializers.CharField(source="job.title", read_only=True)
     job_department = serializers.CharField(source="job.department", read_only=True)
+    attachments = serializers.SerializerMethodField()
+
+    def get_attachments(self, obj):
+        visible = obj.attachments.filter(visible_to_candidate=True)
+        return ApplicationAttachmentSerializer(visible, many=True, context=self.context).data
 
     class Meta:
         model = Application
-        fields = ("id", "candidate", "job", "job_id", "job_title", "job_department", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "status_history", "created_at", "updated_at")
+        fields = ("id", "candidate", "job", "job_id", "job_title", "job_department", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "status_history", "attachments", "created_at", "updated_at")
         read_only_fields = ("current_status", "applied_at", "created_at", "updated_at")
 
     def validate_job_id(self, value):
@@ -61,10 +91,11 @@ class ApplicationAdminSerializer(serializers.ModelSerializer):
     recruiter_name = serializers.CharField(source="recruiter.get_full_name", read_only=True, allow_null=True)
     hiring_manager_name = serializers.CharField(source="hiring_manager.get_full_name", read_only=True, allow_null=True)
     status_history = StatusHistorySerializer(many=True, read_only=True)
+    attachments = ApplicationAttachmentSerializer(many=True, read_only=True)
 
     class Meta:
         model = Application
-        fields = ("id", "candidate_id", "candidate_name", "candidate_email", "job_id", "job_title", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "recruiter", "recruiter_name", "hiring_manager", "hiring_manager_name", "status_history", "created_at", "updated_at")
+        fields = ("id", "candidate_id", "candidate_name", "candidate_email", "job_id", "job_title", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "recruiter", "recruiter_name", "hiring_manager", "hiring_manager_name", "status_history", "attachments", "created_at", "updated_at")
         read_only_fields = ("id", "candidate_id", "job_id", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "status_history", "created_at", "updated_at")
 
 

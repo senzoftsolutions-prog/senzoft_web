@@ -92,6 +92,35 @@ class ApplicationStatusHistory(models.Model):
         ordering = ("timestamp",)
 
 
+def application_attachment_path(instance, filename):
+    safe_name = filename.replace("/", "_").replace("\\", "_")
+    return f"recruitment/applications/{instance.application.public_id}/{safe_name}"
+
+
+class ApplicationAttachment(TimeStampedModel):
+    class Type(models.TextChoices):
+        MEETING_LINK = "MEETING_LINK", "Meeting link"
+        INTERVIEW_DOCUMENT = "INTERVIEW_DOCUMENT", "Interview document"
+        OFFER_LETTER = "OFFER_LETTER", "Offer letter"
+        OTHER = "OTHER", "Other"
+
+    application = models.ForeignKey(Application, on_delete=models.CASCADE, related_name="attachments")
+    attachment_type = models.CharField(max_length=32, choices=Type.choices)
+    title = models.CharField(max_length=160)
+    url = models.URLField(max_length=1000, blank=True)
+    file = models.FileField(upload_to=application_attachment_path, blank=True)
+    note = models.TextField(blank=True)
+    visible_to_candidate = models.BooleanField(default=True)
+    uploaded_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="application_attachments")
+
+    class Meta:
+        ordering = ("-created_at",)
+
+    def clean(self):
+        if not self.url and not self.file:
+            raise ValidationError("Add either a web link or a document.")
+
+
 class Interview(TimeStampedModel):
     class Type(models.TextChoices):
         AI_SCREENING = "AI_SCREENING", "AI screening"

@@ -115,7 +115,7 @@ const legal: Record<
       ],
       [
         "Your choices",
-        "You may contact SENZOFT to ask about your personal information. For enquiries about your information or to withdraw recruitment contact consent, email hello@senzoft.com.",
+        "You may contact SENZOFT to ask about your personal information. For enquiries about your information or to withdraw recruitment contact consent, email contact@senzoft.com.",
       ],
       [
         "Video playback",

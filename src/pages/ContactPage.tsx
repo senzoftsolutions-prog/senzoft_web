@@ -87,7 +87,7 @@ export default function ContactPage() {
       toast.error(
         error instanceof Error && error.message
           ? error.message
-          : "Your message was not sent. Please try again or email hello@senzoft.com.",
+          : "Your message was not sent. Please try again or email contact@senzoft.com.",
       );
     } finally {
       setBusy(false);
@@ -115,8 +115,8 @@ export default function ContactPage() {
                 Tell us what you want to achieve. We’ll connect your enquiry with
                 the right SENZOFT team.
               </p>
-              <a href="mailto:hello@senzoft.com">
-                <Mail className="text-brand-orange" /> hello@senzoft.com
+              <a href="mailto:contact@senzoft.com">
+                <Mail className="text-brand-orange" /> contact@senzoft.com
               </a>
               <address className="reference-location company-address">
                 <MapPin className="text-brand-orange" aria-hidden="true" />
