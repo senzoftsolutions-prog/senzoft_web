@@ -1,1 +1,20 @@
-{ "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }] }
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "frontend": {
+      "root": ".",
+      "framework": "vite"
+    },
+    "backend": {
+      "root": "backend",
+      "framework": "django"
+    }
+  },
+  "rewrites": [
+    { "source": "/api/:path*", "destination": { "service": "backend" } },
+    { "source": "/health/", "destination": { "service": "backend" } },
+    { "source": "/django-admin/:path*", "destination": { "service": "backend" } },
+    { "source": "/media/:path*", "destination": { "service": "backend" } },
+    { "source": "/:path*", "destination": { "service": "frontend", "path": "/index.html" } }
+  ]
+}
