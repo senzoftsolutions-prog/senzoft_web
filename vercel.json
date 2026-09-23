@@ -1,6 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "buildCommand": "npm run build",
+  "buildCommand": "python -m pip install -r requirements.txt && python backend/manage.py migrate --noinput --settings=config.settings.production && npm run build",
   "outputDirectory": "dist",
   "rewrites": [
     { "source": "/api/v1/(.*)", "destination": "/api/index.py" },

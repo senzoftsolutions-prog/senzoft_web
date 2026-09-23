@@ -11,6 +11,22 @@ from urllib.request import Request, urlopen
 from django.conf import settings
 
 
+STORAGE_ENVIRONMENT_VARIABLES = (
+    "AWS_ACCESS_KEY_ID",
+    "AWS_SECRET_ACCESS_KEY",
+    "AWS_REGION",
+    "AWS_ENDPOINT_URL_S3",
+)
+
+
+class StorageConfigurationError(RuntimeError):
+    pass
+
+
+def missing_storage_configuration():
+    return [name for name in STORAGE_ENVIRONMENT_VARIABLES if not os.environ.get(name, "").strip()]
+
+
 def bucket_name():
     return settings.CANDIDATE_DOCUMENTS_BUCKET
 
@@ -21,6 +37,11 @@ class NeonStorageClient:
     service = "s3"
 
     def __init__(self):
+        missing = missing_storage_configuration()
+        if missing:
+            raise StorageConfigurationError(
+                "Missing object-storage environment variables: " + ", ".join(missing)
+            )
         self.access_key = os.environ["AWS_ACCESS_KEY_ID"]
         self.secret_key = os.environ["AWS_SECRET_ACCESS_KEY"]
         self.region = os.environ["AWS_REGION"]

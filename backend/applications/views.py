@@ -1,3 +1,5 @@
+import logging
+
 from django.db import IntegrityError, transaction
 from django.utils import timezone
 from uuid import uuid4
@@ -9,8 +11,11 @@ from rest_framework.views import APIView
 from core.permissions import IsCandidate
 from .models import Application, BackgroundVerification, Document, Interview, Joining, Offer
 from .serializers import ApplicationSerializer, BackgroundVerificationSerializer, DocumentSerializer, InterviewSerializer, JoiningSerializer, OfferSerializer
-from .storage import bucket_name, storage_client
+from .storage import StorageConfigurationError, bucket_name, storage_client
 from audit.services import write_audit
+
+
+logger = logging.getLogger(__name__)
 
 
 class ApplicationCreateView(generics.CreateAPIView):
@@ -73,8 +78,13 @@ class CandidateResumeUploadRequestView(APIView):
                 Conditions=[{"Content-Type": mime_type}, ["content-length-range", 1, 10 * 1024 * 1024]],
                 ExpiresIn=600,
             )
+        except StorageConfigurationError as exc:
+            document.delete()
+            logger.error("Candidate resume storage is not configured: %s", exc)
+            raise serializers.ValidationError({"file": "Résumé storage is not configured for this deployment."}) from exc
         except Exception as exc:
             document.delete()
+            logger.exception("Could not create the candidate resume upload request")
             raise serializers.ValidationError({"file": "Résumé storage is temporarily unavailable."}) from exc
         return Response({"document_id": document.public_id, "upload_url": upload["url"], "upload_fields": upload["fields"], "expires_in": 600})
 
@@ -188,8 +198,13 @@ class CandidateBgvDocumentUploadRequestView(APIView):
                 Conditions=[{"Content-Type": mime_type}, ["content-length-range", 1, 10 * 1024 * 1024]],
                 ExpiresIn=600,
             )
+        except StorageConfigurationError as exc:
+            document.delete()
+            logger.error("Candidate BGV storage is not configured: %s", exc)
+            raise serializers.ValidationError({"file": "Document storage is not configured for this deployment."}) from exc
         except Exception as exc:
             document.delete()
+            logger.exception("Could not create the candidate BGV document upload request")
             raise serializers.ValidationError({"file": "Document storage is temporarily unavailable."}) from exc
         return Response({
             "document_id": document.public_id, "upload_url": upload["url"],

@@ -5,6 +5,8 @@ from django.http import JsonResponse
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 
+from applications.storage import missing_storage_configuration
+
 from blog.views import AdminBlogViewSet
 from careers.views import AdminJobViewSet
 from consent.views import AdminConsentOverviewView, AdminConsentPolicyViewSet, AdminCookieCategoryViewSet, AdminCookieDefinitionViewSet
@@ -30,7 +32,17 @@ router.register("consent-policies", AdminConsentPolicyViewSet, basename="admin-c
 
 
 def health(request):
-    return JsonResponse({"success": True, "data": {"status": "ok"}})
+    missing_storage = missing_storage_configuration()
+    return JsonResponse({
+        "success": True,
+        "data": {
+            "status": "ok" if not missing_storage else "degraded",
+            "object_storage": {
+                "configured": not missing_storage,
+                "missing_environment_variables": missing_storage,
+            },
+        },
+    })
 
 
 # The Django maintenance console is reserved for superusers. Recruitment staff
