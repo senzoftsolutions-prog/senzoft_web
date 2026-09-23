@@ -54,9 +54,14 @@ class RequestLoginCodeView(APIView):
         from .models import User
 
         user = User.objects.filter(email__iexact=serializer.validated_data["email"], is_active=True).first()
-        if not user or user.is_superuser or user.role == User.Role.SUPER_ADMIN or not user.is_email_verified:
-            raise ValidationError({"email": "OTP sign-in is unavailable for this account. Use first-time or Super Admin sign-in."})
         portal = serializer.validated_data["portal"]
+        if portal == "candidate":
+            if not user or user.is_superuser or user.role != User.Role.CANDIDATE:
+                raise ValidationError({"email": "This candidate account doesn't exist. Create a new account."})
+            if not user.is_email_verified:
+                raise ValidationError({"email": "This candidate account has not been verified. Please complete registration."})
+        elif not user or user.is_superuser or user.role == User.Role.SUPER_ADMIN or not user.is_email_verified:
+            raise ValidationError({"email": "OTP sign-in is unavailable for this account. Use first-time or Super Admin sign-in."})
         if (portal == "candidate") != (user.role == User.Role.CANDIDATE):
             raise ValidationError({"email": "This account cannot access the selected portal."})
         return Response(challenge_payload(issue_login_challenge(user, enforce_cooldown=True)))

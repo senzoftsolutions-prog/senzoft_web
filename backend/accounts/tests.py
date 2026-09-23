@@ -51,6 +51,12 @@ class AdminAuthenticationTests(TestCase):
         response = APIClient().post("/api/v1/auth/request-code/", {"email": self.superadmin.email, "portal": "admin"}, format="json")
         self.assertEqual(response.status_code, 400)
 
+    def test_missing_candidate_login_uses_candidate_only_message(self):
+        response = APIClient().post("/api/v1/auth/request-code/", {"email": "missing@example.com", "portal": "candidate"}, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["error"]["message"], "This candidate account doesn't exist. Create a new account.")
+        self.assertNotIn("Admin", response.data["error"]["message"])
+
     def test_superuser_bypasses_email_code(self):
         response = APIClient().post("/api/v1/auth/login/", {"username": self.superadmin.username, "password": "safe-test-password"}, format="json")
         self.assertIn("access", response.data)
