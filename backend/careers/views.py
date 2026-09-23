@@ -65,7 +65,8 @@ class CandidateDashboardView(APIView):
         latest = applications.select_related("job", "candidate").prefetch_related("status_history").order_by("-updated_at").first()
         next_interview = Interview.objects.filter(application__candidate=profile, status__in=[Interview.Status.CREATED, Interview.Status.READY, Interview.Status.SCHEDULED], scheduled_at__gte=timezone.now()).select_related("application__job").order_by("scheduled_at").first()
         bgv = BackgroundVerification.objects.filter(candidate=profile).select_related("application__job").order_by("-updated_at").first()
-        profile_values = [profile.name, profile.email, profile.phone, profile.location, profile.current_role,
+        profile_values = [profile.name, profile.email, profile.phone, profile.location,
+                          profile.address_line1, profile.city, profile.state, profile.postal_code, profile.country, profile.current_role,
                           profile.years_of_experience is not None, profile.skills, profile.professional_summary,
                           profile.education, profile.experience, profile.resume_metadata]
         completed = sum(bool(value) for value in profile_values)

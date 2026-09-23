@@ -66,7 +66,8 @@ class CandidateAdminSerializer(CandidateProfileSerializer):
     class Meta(CandidateProfileSerializer.Meta):
         exclude = None
         fields = (
-            "id", "name", "email", "phone", "location", "professional_summary",
+            "id", "name", "email", "phone", "location", "address_line1", "address_line2",
+            "city", "state", "postal_code", "country", "professional_summary",
             "skills", "experience", "education", "certifications", "resume_metadata",
             "linkedin_url", "portfolio_url", "applications_count", "latest_application_at",
             "latest_status", "created_at", "updated_at",

@@ -458,7 +458,9 @@ export function CandidateProfilePage() {
             </div>
             <ProfileSummary profile={state.data} />
             <ResumePanel profile={state.data} onChanged={state.load} />
-            {dashboard.data.documents_enabled && <BgvPanel dashboard={dashboard.data} />}
+            {dashboard.data.documents_enabled && (
+              <BgvPanel dashboard={dashboard.data} />
+            )}
             {editing && (
               <ProfileEditor
                 profile={state.data}
@@ -507,6 +509,22 @@ function ProfileSummary({ profile }: { profile: CandidateProfile }) {
             <p>No skills added.</p>
           )}
         </div>
+      </section>
+      <section className="candidate-card">
+        <h2>Postal address</h2>
+        <p>
+          {[
+            profile.address_line1,
+            profile.address_line2,
+            profile.city,
+            profile.state,
+            profile.postal_code,
+            profile.country,
+          ]
+            .filter(Boolean)
+            .join(", ") || "Not provided"}
+        </p>
+        <small>Used for approved offer-letter and welcome-kit delivery.</small>
       </section>
       <section className="candidate-card">
         <h2>Work experience</h2>
@@ -653,6 +671,12 @@ function ProfileEditor({
           name: draft.name,
           phone: draft.phone,
           location: draft.location,
+          address_line1: draft.address_line1,
+          address_line2: draft.address_line2,
+          city: draft.city,
+          state: draft.state,
+          postal_code: draft.postal_code,
+          country: draft.country,
           current_role: draft.current_role,
           years_of_experience: draft.years_of_experience,
           professional_summary: draft.professional_summary,
@@ -827,84 +851,143 @@ function ProfileFields({
   set: (key: keyof CandidateProfile, value: unknown) => void;
 }) {
   return (
-    <EditorSection title="Contact and professional information">
-      <div className="candidate-editor-grid">
-        <label>
-          Full name
-          <input
-            required
-            value={draft.name}
-            onChange={(e) => set("name", e.target.value)}
-          />
-        </label>
-        <label>
-          Email
-          <input disabled value={draft.email} />
-        </label>
-        <label>
-          Phone
-          <input
-            type="tel"
-            value={draft.phone}
-            onChange={(e) => set("phone", e.target.value)}
-          />
-        </label>
-        <label>
-          Location
-          <input
-            value={draft.location}
-            onChange={(e) => set("location", e.target.value)}
-          />
-        </label>
-        <label>
-          Current role
-          <input
-            value={draft.current_role}
-            onChange={(e) => set("current_role", e.target.value)}
-          />
-        </label>
-        <label>
-          Years of experience
-          <input
-            type="number"
-            min="0"
-            max="70"
-            step=".5"
-            value={draft.years_of_experience ?? ""}
-            onChange={(e) =>
-              set(
-                "years_of_experience",
-                e.target.value ? Number(e.target.value) : null,
-              )
-            }
-          />
-        </label>
-        <label className="wide">
-          Professional summary
-          <textarea
-            rows={4}
-            value={draft.professional_summary}
-            onChange={(e) => set("professional_summary", e.target.value)}
-          />
-        </label>
-        <label>
-          LinkedIn URL
-          <input
-            type="url"
-            value={draft.linkedin_url}
-            onChange={(e) => set("linkedin_url", e.target.value)}
-          />
-        </label>
-        <label>
-          Portfolio URL
-          <input
-            type="url"
-            value={draft.portfolio_url}
-            onChange={(e) => set("portfolio_url", e.target.value)}
-          />
-        </label>
-      </div>
-    </EditorSection>
+    <>
+      <EditorSection title="Contact and professional information">
+        <div className="candidate-editor-grid">
+          <label>
+            Full name
+            <input
+              required
+              value={draft.name}
+              onChange={(e) => set("name", e.target.value)}
+            />
+          </label>
+          <label>
+            Email
+            <input disabled value={draft.email} />
+          </label>
+          <label>
+            Phone
+            <input
+              type="tel"
+              value={draft.phone}
+              onChange={(e) => set("phone", e.target.value)}
+            />
+          </label>
+          <label>
+            Location
+            <input
+              value={draft.location}
+              onChange={(e) => set("location", e.target.value)}
+            />
+          </label>
+          <label>
+            Current role
+            <input
+              value={draft.current_role}
+              onChange={(e) => set("current_role", e.target.value)}
+            />
+          </label>
+          <label>
+            Years of experience
+            <input
+              type="number"
+              min="0"
+              max="70"
+              step=".5"
+              value={draft.years_of_experience ?? ""}
+              onChange={(e) =>
+                set(
+                  "years_of_experience",
+                  e.target.value ? Number(e.target.value) : null,
+                )
+              }
+            />
+          </label>
+          <label className="wide">
+            Professional summary
+            <textarea
+              rows={4}
+              value={draft.professional_summary}
+              onChange={(e) => set("professional_summary", e.target.value)}
+            />
+          </label>
+          <label>
+            LinkedIn URL
+            <input
+              type="url"
+              value={draft.linkedin_url}
+              onChange={(e) => set("linkedin_url", e.target.value)}
+            />
+          </label>
+          <label>
+            Portfolio URL
+            <input
+              type="url"
+              value={draft.portfolio_url}
+              onChange={(e) => set("portfolio_url", e.target.value)}
+            />
+          </label>
+        </div>
+      </EditorSection>
+      <EditorSection title="Postal address">
+        <div className="candidate-editor-grid">
+          <label className="wide">
+            Address line 1
+            <input
+              autoComplete="address-line1"
+              required
+              value={draft.address_line1}
+              onChange={(e) => set("address_line1", e.target.value)}
+            />
+          </label>
+          <label className="wide">
+            Address line 2
+            <input
+              autoComplete="address-line2"
+              value={draft.address_line2}
+              onChange={(e) => set("address_line2", e.target.value)}
+            />
+          </label>
+          <label>
+            City
+            <input
+              autoComplete="address-level2"
+              required
+              value={draft.city}
+              onChange={(e) => set("city", e.target.value)}
+            />
+          </label>
+          <label>
+            State / province
+            <input
+              autoComplete="address-level1"
+              required
+              value={draft.state}
+              onChange={(e) => set("state", e.target.value)}
+            />
+          </label>
+          <label>
+            Postal code
+            <input
+              autoComplete="postal-code"
+              required
+              value={draft.postal_code}
+              onChange={(e) => set("postal_code", e.target.value)}
+            />
+          </label>
+          <label>
+            Country
+            <input
+              autoComplete="country-name"
+              required
+              value={draft.country}
+              onChange={(e) => set("country", e.target.value)}
+            />
+          </label>
+        </div>
+      </EditorSection>
+    </>
   );
 }
 function HistoryEditor({
@@ -1041,12 +1124,12 @@ function ResumePanel({
             onClick={() => void download()}
           >
             <Download />
-            Download
+            Download résumé
           </button>
         )}
         <label className="candidate-btn primary">
           <Upload />
-          {busy ? "Working…" : exists ? "Replace résumé" : "Upload résumé"}
+          {busy ? "Working…" : exists ? "Upload new résumé" : "Upload résumé"}
           <input
             type="file"
             hidden
@@ -1088,7 +1171,9 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
       await documents.load();
       setMessage("Document uploaded successfully.");
     } catch (reason) {
-      setMessage(reason instanceof Error ? reason.message : "Unable to upload document.");
+      setMessage(
+        reason instanceof Error ? reason.message : "Unable to upload document.",
+      );
     } finally {
       setBusy(false);
     }
@@ -1099,7 +1184,11 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
       const result = await getBgvDocumentDownload(document.id);
       window.location.assign(result.download_url);
     } catch (reason) {
-      setMessage(reason instanceof Error ? reason.message : "Unable to download document.");
+      setMessage(
+        reason instanceof Error
+          ? reason.message
+          : "Unable to download document.",
+      );
     } finally {
       setBusy(false);
     }
@@ -1112,7 +1201,9 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
       await documents.load();
       setMessage("Document removed.");
     } catch (reason) {
-      setMessage(reason instanceof Error ? reason.message : "Unable to remove document.");
+      setMessage(
+        reason instanceof Error ? reason.message : "Unable to remove document.",
+      );
     } finally {
       setBusy(false);
     }
@@ -1125,14 +1216,23 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
       </div>
       <CandidateStatus value={dashboard.bgv_status || "REQUESTED"} />
       <p>
-        Upload only the documents requested by the recruitment team. For questions,
-        contact <a href={`mailto:${dashboard.recruitment_email}`}>{dashboard.recruitment_email}</a>.
+        Upload only the documents requested by the recruitment team. For
+        questions, contact{" "}
+        <a href={`mailto:${dashboard.recruitment_email}`}>
+          {dashboard.recruitment_email}
+        </a>
+        .
       </p>
       {!completed && (
         <div className="candidate-bgv-upload">
           <label>
             Document category
-            <select value={documentType} onChange={(event) => setDocumentType(event.target.value as BgvDocumentType)}>
+            <select
+              value={documentType}
+              onChange={(event) =>
+                setDocumentType(event.target.value as BgvDocumentType)
+              }
+            >
               <option value="IDENTITY">Identity document</option>
               <option value="ADDRESS_PROOF">Address proof</option>
               <option value="EDUCATION">Education document</option>
@@ -1143,7 +1243,13 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
           <label className="candidate-btn primary">
             <Upload />
             {busy ? "Uploading…" : "Upload document"}
-            <input type="file" hidden disabled={busy} accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={(event) => void upload(event.target.files?.[0])} />
+            <input
+              type="file"
+              hidden
+              disabled={busy}
+              accept=".pdf,.jpg,.jpeg,.png,.doc,.docx"
+              onChange={(event) => void upload(event.target.files?.[0])}
+            />
           </label>
           <small>PDF, JPG, PNG, DOC, or DOCX; maximum 10 MB.</small>
         </div>
@@ -1155,12 +1261,38 @@ function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
         {rows.map((document) => (
           <article key={document.id} className="candidate-document-row">
             <FileText />
-            <div><strong>{document.file_name}</strong><span>{label(document.document_type)} · {label(document.upload_status)}</span></div>
-            <button type="button" className="candidate-btn secondary" disabled={busy} onClick={() => void download(document)}><Download />Download</button>
-            {!completed && <button type="button" className="candidate-btn danger" disabled={busy} onClick={() => void remove(document)}><Trash2 />Remove</button>}
+            <div>
+              <strong>{document.file_name}</strong>
+              <span>
+                {label(document.document_type)} ·{" "}
+                {label(document.upload_status)}
+              </span>
+            </div>
+            <button
+              type="button"
+              className="candidate-btn secondary"
+              disabled={busy}
+              onClick={() => void download(document)}
+            >
+              <Download />
+              Download
+            </button>
+            {!completed && (
+              <button
+                type="button"
+                className="candidate-btn danger"
+                disabled={busy}
+                onClick={() => void remove(document)}
+              >
+                <Trash2 />
+                Remove
+              </button>
+            )}
           </article>
         ))}
-        {!documents.loading && rows.length === 0 && <p>No background verification documents uploaded yet.</p>}
+        {!documents.loading && rows.length === 0 && (
+          <p>No background verification documents uploaded yet.</p>
+        )}
       </div>
     </section>
   );

@@ -85,7 +85,11 @@ class ApplicationSerializer(serializers.ModelSerializer):
         job = validated_data.pop("job_id")
         snapshot = validated_data.get("profile_snapshot") or {
             "name": candidate.name, "email": candidate.email, "phone": candidate.phone,
-            "location": candidate.location, "skills": candidate.skills,
+            "location": candidate.location,
+            "address": {"line1": candidate.address_line1, "line2": candidate.address_line2,
+                        "city": candidate.city, "state": candidate.state,
+                        "postal_code": candidate.postal_code, "country": candidate.country},
+            "skills": candidate.skills,
             "experience": candidate.experience, "education": candidate.education,
         }
         with transaction.atomic():
