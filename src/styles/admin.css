@@ -2,6 +2,7 @@
 .admin-topbar { position: fixed; inset: 0 0 auto 0; z-index: 80; height: 4.5rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 0 1.5rem; color: #fff; background: #172034; border-bottom: 1px solid #ffffff18; }
 .admin-brand { display: inline-flex; align-items: center; gap: .75rem; color: #fff; font-size: .85rem; letter-spacing: .08em; }
 .admin-brand span, .admin-login-brand span { display: grid; place-items: center; width: 2rem; height: 2rem; color: #fff; background: #f0520b; border-radius: .55rem; font-family: var(--font-display); font-weight: 700; }
+.admin-topbar .portal-brand { margin-right:auto;padding:.25rem .65rem .25rem .35rem;border-radius:.65rem;background:#fff; }
 .admin-user { display: flex; align-items: center; gap: 1rem; }
 .admin-user div { display: grid; text-align: right; }
 .admin-user span { color: #b9c0cf; font-size: .7rem; letter-spacing: .08em; }

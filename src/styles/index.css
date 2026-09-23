@@ -3134,6 +3134,12 @@ section,
 
 /* Mobile-first responsive foundation — final cascade authority. */
 html, body, #root { width: 100%; max-width: 100%; }
+.portal-brand { display:inline-flex;align-items:center;gap:.65rem;color:#14213a;text-decoration:none;font-weight:800;white-space:nowrap; }
+.portal-brand-symbol { width:2.25rem;height:2.25rem;object-fit:contain; }
+.portal-brand-wordmark { width:7.2rem;height:2rem;object-fit:contain; }
+.portal-brand>span { padding-left:.65rem;border-left:1px solid #d7dde6;font-size:.8rem;letter-spacing:.04em; }
+.portal-brand-dark { color:#fff; }.portal-brand-dark .portal-brand-wordmark { filter:brightness(0) invert(1); }.portal-brand-dark>span{border-color:#ffffff40}
+@media(max-width:560px){.portal-brand-wordmark{width:5.7rem}.portal-brand>span{display:none}}
 body { min-width: 0; }
 main { min-width: 0; padding-top: calc(var(--header-height) + env(safe-area-inset-top)); }
 section, article, div, nav, aside { min-width: 0; }

@@ -28,6 +28,35 @@ class CandidateProfileSerializer(serializers.ModelSerializer):
         exclude = ("user",)
         read_only_fields = ("created_at", "updated_at")
 
+    def validate_skills(self, value):
+        if not isinstance(value, list):
+            raise serializers.ValidationError("Skills must be a list.")
+        cleaned = []
+        for skill in value:
+            item = str(skill).strip()
+            if item and item.casefold() not in {existing.casefold() for existing in cleaned}:
+                cleaned.append(item[:80])
+        return cleaned[:50]
+
+    def _validate_history(self, value, required, label):
+        if not isinstance(value, list):
+            raise serializers.ValidationError(f"{label} must be a list.")
+        cleaned = []
+        for row in value:
+            if not isinstance(row, dict):
+                raise serializers.ValidationError(f"Each {label.lower()} entry must be an object.")
+            missing = [field for field in required if not str(row.get(field, "")).strip()]
+            if missing:
+                raise serializers.ValidationError(f"Each {label.lower()} entry requires {', '.join(missing)}.")
+            cleaned.append({str(key): value for key, value in row.items() if value not in (None, "")})
+        return cleaned
+
+    def validate_experience(self, value):
+        return self._validate_history(value, ("company", "role"), "Experience")
+
+    def validate_education(self, value):
+        return self._validate_history(value, ("degree", "institution"), "Education")
+
 
 class CandidateAdminSerializer(CandidateProfileSerializer):
     applications_count = serializers.IntegerField(read_only=True)

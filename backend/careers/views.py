@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Count
 from django.utils import timezone
 from rest_framework import generics, permissions, viewsets
@@ -56,12 +57,14 @@ class CandidateDashboardView(APIView):
     permission_classes = [IsCandidate]
 
     def get(self, request):
-        from applications.models import Application, Document, Interview
+        from applications.models import Application, BackgroundVerification, Document, Interview
         from notifications.models import Notification
 
         profile = request.user.candidate_profile
         applications = Application.objects.filter(candidate=profile)
         latest = applications.select_related("job", "candidate").prefetch_related("status_history").order_by("-updated_at").first()
+        next_interview = Interview.objects.filter(application__candidate=profile, status__in=[Interview.Status.CREATED, Interview.Status.READY, Interview.Status.SCHEDULED], scheduled_at__gte=timezone.now()).select_related("application__job").order_by("scheduled_at").first()
+        bgv = BackgroundVerification.objects.filter(candidate=profile).select_related("application__job").order_by("-updated_at").first()
         profile_values = [profile.name, profile.email, profile.phone, profile.location, profile.current_role,
                           profile.years_of_experience is not None, profile.skills, profile.professional_summary,
                           profile.education, profile.experience, profile.resume_metadata]
@@ -73,6 +76,11 @@ class CandidateDashboardView(APIView):
             "pending_documents": Document.objects.filter(candidate=profile, upload_status__in=[Document.UploadStatus.PENDING, Document.UploadStatus.REJECTED]).count(),
             "unread_notifications": Notification.objects.filter(candidate=profile, read_at__isnull=True).count(),
             "latest_application": ApplicationSerializer(latest).data if latest else None,
+            "next_interview": ({"id": next_interview.public_id, "job_title": next_interview.application.job.title, "interview_type": next_interview.interview_type, "status": next_interview.status, "scheduled_at": next_interview.scheduled_at} if next_interview else None),
+            "documents_enabled": bool(bgv and bgv.status != BackgroundVerification.Status.NOT_STARTED),
+            "bgv_status": bgv.status if bgv else None,
+            "recruitment_email": settings.RECRUITMENT_EMAIL,
+            "recent_updates": list(applications.select_related("job").order_by("-updated_at").values("public_id", "job__title", "current_status", "updated_at")[:5]),
         })
 
 

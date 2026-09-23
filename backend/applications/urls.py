@@ -4,7 +4,7 @@ from .views import (
     CandidateBackgroundVerificationListView, CandidateDocumentListView,
     CandidateInterviewDetailView, CandidateInterviewListView,
     CandidateJoiningListView, CandidateOfferAcceptView, CandidateOfferDeclineView,
-    CandidateOfferDetailView, CandidateOfferListView,
+    CandidateOfferDetailView, CandidateOfferListView, CandidateResumeUploadRequestView, CandidateResumeView,
 )
 from .interview_views import CandidateInterviewCompleteView, CandidateInterviewIntegrityView, CandidateInterviewResponseView, CandidateInterviewSessionView, CandidateInterviewStartView
 
@@ -20,6 +20,10 @@ urlpatterns = [
     path("candidates/me/interviews/<str:interview_id>/integrity-events/", CandidateInterviewIntegrityView.as_view(), name="candidate-interview-integrity"),
     path("candidates/me/interviews/<str:interview_id>/complete/", CandidateInterviewCompleteView.as_view(), name="candidate-interview-complete"),
     path("candidates/me/documents/", CandidateDocumentListView.as_view(), name="candidate-documents"),
+    path("candidates/me/resume/upload-request/", CandidateResumeUploadRequestView.as_view(), name="candidate-resume-upload-request"),
+    path("candidates/me/resume/complete/", CandidateResumeView.as_view(), name="candidate-resume-complete"),
+    path("candidates/me/resume/download/", CandidateResumeView.as_view(), name="candidate-resume-download"),
+    path("candidates/me/resume/", CandidateResumeView.as_view(), name="candidate-resume"),
     path("candidates/me/background-verifications/", CandidateBackgroundVerificationListView.as_view(), name="candidate-background-verifications"),
     path("candidates/me/offers/", CandidateOfferListView.as_view(), name="candidate-offers"),
     path("candidates/me/offers/<str:offer_id>/", CandidateOfferDetailView.as_view(), name="candidate-offer-detail"),

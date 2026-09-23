@@ -2,7 +2,7 @@ from django.test import TestCase
 from rest_framework.test import APIClient
 
 from accounts.models import User
-from .models import Job
+from .models import CandidateProfile, Job
 
 
 class JobApiTests(TestCase):
@@ -41,3 +41,14 @@ class JobApiTests(TestCase):
         self.assertEqual(client.post(f"/api/v1/admin/jobs/{job.public_id}/archive/").status_code, 200)
         job.refresh_from_db()
         self.assertEqual(job.status, Job.Status.ARCHIVED)
+
+    def test_candidate_profile_normalizes_skills_and_validates_history(self):
+        candidate_user = User.objects.create_user(username="profile", email="profile@example.com", password="safe-test-password")
+        CandidateProfile.objects.create(user=candidate_user, name="Profile Candidate", email=candidate_user.email)
+        client = APIClient()
+        client.force_authenticate(candidate_user)
+        valid = client.patch("/api/v1/candidates/me/", {"skills": ["Python", " python ", "Django"], "experience": [{"company": "SENZOFT", "role": "Engineer"}], "education": [{"degree": "B.Tech", "institution": "University"}]}, format="json")
+        self.assertEqual(valid.status_code, 200)
+        self.assertEqual(valid.data["skills"], ["Python", "Django"])
+        invalid = client.patch("/api/v1/candidates/me/", {"experience": [{"company": "SENZOFT"}]}, format="json")
+        self.assertEqual(invalid.status_code, 400)

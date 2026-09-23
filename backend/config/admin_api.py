@@ -19,7 +19,7 @@ from careers.serializers import CandidateAdminSerializer, JobAdminSerializer
 from core.permissions import HasModuleRole, IsAdminPanelUser, IsSuperAdminRole
 from notifications.models import Notification
 from notifications.serializers import NotificationSerializer
-from notifications.email import send_application_attachment_notice, send_application_update
+from notifications.email import send_application_attachment_notice, send_application_update, send_interview_update
 
 
 def model_serializer(model, excluded=()):
@@ -126,10 +126,12 @@ class InterviewAdminViewSet(ProtectedModelViewSet):
     def perform_create(self, serializer):
         interview = serializer.save(status=Interview.Status.CREATED)
         write_audit(actor=self.request.user, action="INTERVIEW_CREATED", entity="Interview", entity_id=interview.public_id)
+        send_interview_update(interview=interview)
 
     def perform_update(self, serializer):
         interview = serializer.save()
         write_audit(actor=self.request.user, action="INTERVIEW_CONFIGURED", entity="Interview", entity_id=interview.public_id)
+        send_interview_update(interview=interview)
 
 
 class DocumentAdminViewSet(ProtectedModelViewSet):

@@ -1,13 +1,13 @@
-import { useState } from "react";
 import { NavLink, Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Bell, BriefcaseBusiness, CalendarDays, FileCheck2, FileText, LayoutDashboard, LogOut, Menu, ShieldCheck, UserRound, UsersRound, X } from "lucide-react";
+import { Bell, BriefcaseBusiness, CalendarDays, LayoutDashboard, LogOut, UserRound } from "lucide-react";
+import { PortalBrand } from "../components/ui/PortalBrand";
 import { useCandidateAuth } from "./CandidateAuth";
 
-const nav = [
-  ["/candidate/dashboard", "Dashboard", LayoutDashboard], ["/candidate/profile", "My Profile", UserRound],
-  ["/candidate/applications", "My Applications", BriefcaseBusiness], ["/candidate/interviews", "Interviews", CalendarDays],
-  ["/candidate/documents", "Documents", FileText], ["/candidate/background-verification", "Background Verification", ShieldCheck],
-  ["/candidate/offers", "Offers", FileCheck2], ["/candidate/joining", "Joining", UsersRound], ["/candidate/notifications", "Notifications", Bell],
+const tabs = [
+  ["/candidate/dashboard", "Overview", LayoutDashboard],
+  ["/candidate/applications", "Applications", BriefcaseBusiness],
+  ["/candidate/events", "Events", CalendarDays],
+  ["/candidate/profile", "Profile", UserRound],
 ] as const;
 
 export function CandidateProtected() {
@@ -19,6 +19,20 @@ export function CandidateProtected() {
 }
 
 function CandidateLayout() {
-  const { user, logout } = useCandidateAuth(); const navigate = useNavigate(); const [open, setOpen] = useState(false);
-  return <div className="candidate-shell"><header className="candidate-topbar"><button className="candidate-icon mobile-only" onClick={() => setOpen(true)} aria-label="Open navigation"><Menu /></button><NavLink className="candidate-brand" to="/candidate/dashboard"><span>S</span><strong>SENZOFT Careers</strong></NavLink><div className="candidate-user"><span>{user?.first_name || user?.email}</span><button className="candidate-icon" aria-label="Log out" onClick={() => { logout(); navigate("/candidate/login", { replace: true }); }}><LogOut /></button></div></header>{open && <button className="candidate-backdrop" aria-label="Close navigation" onClick={() => setOpen(false)} />}<aside className={`candidate-sidebar ${open ? "open" : ""}`}><div className="candidate-drawer-title"><strong>Candidate portal</strong><button className="candidate-icon" onClick={() => setOpen(false)} aria-label="Close navigation"><X /></button></div><nav>{nav.map(([to, text, Icon]) => <NavLink key={to} to={to} onClick={() => setOpen(false)} className={({ isActive }) => isActive ? "active" : ""}><Icon /><span>{text}</span></NavLink>)}</nav><NavLink to="/careers/openings" className="browse-link">Browse open positions</NavLink></aside><main className="candidate-main"><Outlet /></main></div>;
+  const { user, logout } = useCandidateAuth();
+  const navigate = useNavigate();
+  return <div className="candidate-shell candidate-portal-shell">
+    <header className="candidate-topbar candidate-portal-topbar">
+      <PortalBrand to="/candidate/dashboard" label="SENZOFT Careers" />
+      <div className="candidate-user">
+        <NavLink className="candidate-notification-link" to="/candidate/notifications" aria-label="Notifications"><Bell /></NavLink>
+        <span>{user?.first_name || user?.email}</span>
+        <button className="candidate-icon" aria-label="Sign out" onClick={() => { logout(); navigate("/candidate/login", { replace: true }); }}><LogOut /></button>
+      </div>
+    </header>
+    <nav className="candidate-tabbar" aria-label="Candidate portal">
+      {tabs.map(([to,text,Icon])=><NavLink key={to} to={to} className={({isActive})=>isActive?"active":""}><Icon/><span>{text}</span></NavLink>)}
+    </nav>
+    <main className="candidate-main candidate-portal-main"><Outlet /></main>
+  </div>;
 }

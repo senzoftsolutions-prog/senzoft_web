@@ -47,14 +47,27 @@ class ApplicationSerializer(serializers.ModelSerializer):
     job_title = serializers.CharField(source="job.title", read_only=True)
     job_department = serializers.CharField(source="job.department", read_only=True)
     attachments = serializers.SerializerMethodField()
+    latest_interview = serializers.SerializerMethodField()
 
     def get_attachments(self, obj):
         visible = obj.attachments.filter(visible_to_candidate=True)
         return ApplicationAttachmentSerializer(visible, many=True, context=self.context).data
 
+    def get_latest_interview(self, obj):
+        interview = obj.interviews.order_by("-updated_at").first()
+        if not interview:
+            return None
+        return {
+            "id": interview.public_id,
+            "interview_type": interview.interview_type,
+            "status": interview.status,
+            "scheduled_at": interview.scheduled_at,
+            "updated_at": interview.updated_at,
+        }
+
     class Meta:
         model = Application
-        fields = ("id", "candidate", "job", "job_id", "job_title", "job_department", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "status_history", "attachments", "created_at", "updated_at")
+        fields = ("id", "candidate", "job", "job_id", "job_title", "job_department", "applied_at", "current_status", "source", "resume_version", "profile_snapshot", "status_history", "attachments", "latest_interview", "created_at", "updated_at")
         read_only_fields = ("current_status", "applied_at", "created_at", "updated_at")
 
     def validate_job_id(self, value):

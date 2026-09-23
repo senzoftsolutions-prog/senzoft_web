@@ -137,6 +137,8 @@ SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "15"))
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BACKEND_DIR / "media"
+CANDIDATE_DOCUMENTS_BUCKET = os.getenv("CANDIDATE_DOCUMENTS_BUCKET", "candidate-documents")
+RECRUITMENT_EMAIL = os.getenv("RECRUITMENT_EMAIL", os.getenv("CONTACT_RECIPIENT_EMAIL", "careers@senzoft.com"))
 AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
 AI_INTERVIEW_DEFAULTS = {
     "minimum_questions": 3,

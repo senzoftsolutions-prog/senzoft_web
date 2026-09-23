@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
 import { BriefcaseBusiness, ChartNoAxesCombined, ClipboardList, Cookie, FileCheck2, FileText, LogOut, Menu, MessageSquareText, ShieldCheck, UserRoundCog, UsersRound, Video, X } from "lucide-react";
 import { useAdminAuth } from "./AdminAuth";
+import { PortalBrand } from "../components/ui/PortalBrand";
 
 const navigation = [
   { to: "/admin/dashboard", label: "Dashboard", icon: ChartNoAxesCombined, roles: ["SUPER_ADMIN"] },
@@ -39,7 +40,7 @@ function AdminLayout() {
   if (!user) return null;
   const visible = navigation.filter((item) => item.roles.includes(user.role));
   return <div className="admin-shell">
-    <header className="admin-topbar"><button className="admin-icon-btn admin-menu-toggle" onClick={() => setOpen(true)} aria-label="Open admin navigation"><Menu /></button><NavLink to="/admin/dashboard" className="admin-brand"><span>S</span><strong>SENZOFT ADMIN</strong></NavLink><div className="admin-user"><div><strong>{user.first_name || user.username}</strong><span>{user.role.replaceAll("_", " ")}</span></div><button className="admin-icon-btn" aria-label="Log out" onClick={() => { logout(); navigate("/admin/login", { replace: true }); }}><LogOut /></button></div></header>
+    <header className="admin-topbar"><button className="admin-icon-btn admin-menu-toggle" onClick={() => setOpen(true)} aria-label="Open admin navigation"><Menu /></button><PortalBrand to="/admin/dashboard" label="SENZOFT Admin" /><div className="admin-user"><div><strong>{user.first_name || user.username}</strong><span>{user.role.replaceAll("_", " ")}</span></div><button className="admin-icon-btn" aria-label="Log out" onClick={() => { logout(); navigate("/admin/login", { replace: true }); }}><LogOut /></button></div></header>
     {open && <button className="admin-drawer-backdrop" aria-label="Close admin navigation" onClick={() => setOpen(false)} />}
     <aside className={`admin-sidebar ${open ? "is-open" : ""}`} aria-label="Admin navigation"><div className="admin-sidebar-mobile"><strong>Navigation</strong><button className="admin-icon-btn" onClick={() => setOpen(false)} aria-label="Close navigation"><X /></button></div><nav>{visible.map(({ to, label: itemLabel, icon: Icon }) => <NavLink key={to} to={to} onClick={() => setOpen(false)} className={({ isActive }) => isActive ? "active" : ""}><Icon /><span>{itemLabel}</span></NavLink>)}</nav></aside>
     <main className="admin-main" id="admin-main"><Outlet /></main>

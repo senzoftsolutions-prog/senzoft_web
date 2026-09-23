@@ -58,7 +58,7 @@ def send_application_update(*, application, status_label: str, reason: str = "")
         "ON_HOLD": "Your application is currently on hold while our hiring team completes its review.",
         "REJECTED": "Thank you for your interest. After careful review, we will not be moving forward with this application.",
         "SHORTLISTED": "Your application has been shortlisted and will move to the next stage.",
-        "OFFER_ISSUED": "An offer has been issued for your application. Please sign in to your candidate portal to review the details.",
+        "OFFER_ISSUED": "An offer has been issued for your application. Please check your registered email for the offer letter and response instructions.",
     }
     message = messages.get(application.current_status, f"Your application has moved to the {status_label} stage.")
     if reason:
@@ -82,6 +82,27 @@ def send_application_update(*, application, status_label: str, reason: str = "")
         notification.failure_reason = str(exc)[:2000]
     notification.save(update_fields=("status", "sent_at", "attempts", "failure_reason"))
     return 1 if notification.status == Notification.Status.SENT else 0
+
+
+def send_interview_update(*, interview) -> int:
+    from .models import Notification
+
+    candidate = interview.application.candidate
+    status_label = interview.get_status_display()
+    type_label = interview.get_interview_type_display()
+    schedule = interview.scheduled_at.strftime("%d %b %Y, %I:%M %p %Z") if interview.scheduled_at else "To be confirmed"
+    message = f"Your {type_label} interview for {interview.application.job.title} is {status_label.lower()}.\n\nScheduled time: {schedule}.\n\nSign in to your candidate portal to see the latest status."
+    notification = Notification.objects.create(candidate=candidate, application=interview.application, notification_type="INTERVIEW_STATUS_CHANGED", channel=Notification.Channel.EMAIL, recipient=candidate.email, payload={"title": f"Interview update: {interview.application.job.title}", "message": message, "interview_id": interview.public_id, "status": interview.status})
+    try:
+        sent = send_transactional_email(recipient=candidate.email, subject=f"Interview update – {interview.application.job.title}", heading=f"Interview status: {status_label}", message=message)
+        notification.status = Notification.Status.SENT if sent else Notification.Status.FAILED
+        notification.sent_at = timezone.now() if sent else None
+    except Exception as exc:
+        notification.status = Notification.Status.FAILED
+        notification.failure_reason = str(exc)[:2000]
+    notification.attempts = 1
+    notification.save(update_fields=("status", "sent_at", "attempts", "failure_reason"))
+    return int(notification.status == Notification.Status.SENT)
 
 
 def send_application_attachment_notice(*, attachment, access_url: str) -> int:

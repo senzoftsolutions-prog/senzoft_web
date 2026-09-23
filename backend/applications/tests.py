@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
 from rest_framework.test import APIClient
+from unittest.mock import MagicMock, patch
 
 from accounts.models import User
 from careers.models import CandidateProfile, Job
@@ -95,6 +96,54 @@ class RecruitmentFoundationTests(TestCase):
         self.assertEqual(client.post(f"/api/v1/candidates/me/notifications/{notification.public_id}/read/").status_code, 200)
         notification.refresh_from_db()
         self.assertIsNotNone(notification.read_at)
+
+    def test_dashboard_enables_documents_only_after_bgv_starts(self):
+        application = Application.objects.create(candidate=self.candidate, job=self.job)
+        bgv = BackgroundVerification.objects.create(candidate=self.candidate, application=application)
+        client = APIClient()
+        client.force_authenticate(self.candidate_user)
+        self.assertFalse(client.get("/api/v1/candidates/me/dashboard/").data["documents_enabled"])
+        bgv.status = BackgroundVerification.Status.REQUESTED
+        bgv.save(update_fields=("status", "updated_at"))
+        response = client.get("/api/v1/candidates/me/dashboard/")
+        self.assertTrue(response.data["documents_enabled"])
+        self.assertEqual(response.data["bgv_status"], BackgroundVerification.Status.REQUESTED)
+
+    def test_application_list_includes_latest_interview(self):
+        application = Application.objects.create(candidate=self.candidate, job=self.job)
+        interview = Interview.objects.create(application=application, interview_type=Interview.Type.HR, status=Interview.Status.SCHEDULED)
+        client = APIClient()
+        client.force_authenticate(self.candidate_user)
+        item = client.get("/api/v1/candidates/me/applications/").data["results"][0]
+        self.assertEqual(item["latest_interview"]["id"], interview.public_id)
+        self.assertEqual(item["latest_interview"]["status"], Interview.Status.SCHEDULED)
+
+    @patch("applications.views.storage_client")
+    def test_candidate_resume_upload_request_and_completion(self, storage_client):
+        storage = MagicMock()
+        storage.generate_presigned_post.return_value = {"url": "https://storage.example/upload", "fields": {"key": "test"}}
+        storage.head_object.return_value = {"ContentLength": 512}
+        storage_client.return_value = storage
+        client = APIClient()
+        client.force_authenticate(self.candidate_user)
+        requested = client.post("/api/v1/candidates/me/resume/upload-request/", {"file_name": "resume.pdf", "file_size": 512, "mime_type": "application/pdf"}, format="json")
+        self.assertEqual(requested.status_code, 200)
+        completed = client.post("/api/v1/candidates/me/resume/complete/", {"document_id": requested.data["document_id"]}, format="json")
+        self.assertEqual(completed.status_code, 200)
+        self.candidate.refresh_from_db()
+        self.assertEqual(self.candidate.resume_metadata["file_name"], "resume.pdf")
+
+    @patch("applications.views.storage_client")
+    def test_resume_upload_rejects_invalid_type_and_is_owner_scoped(self, storage_client):
+        client = APIClient()
+        client.force_authenticate(self.candidate_user)
+        invalid = client.post("/api/v1/candidates/me/resume/upload-request/", {"file_name": "resume.exe", "file_size": 50, "mime_type": "application/octet-stream"}, format="json")
+        self.assertEqual(invalid.status_code, 400)
+        other = User.objects.create_user(username="resume-other", email="resume-other@example.com", password="safe-test-password")
+        other_profile = CandidateProfile.objects.create(user=other, name="Other", email=other.email)
+        document = Document.objects.create(candidate=other_profile, document_type=Document.Type.RESUME, file_name="other.pdf", file_size=10, mime_type="application/pdf", storage_key="other/resume.pdf")
+        denied = client.post("/api/v1/candidates/me/resume/complete/", {"document_id": document.public_id}, format="json")
+        self.assertEqual(denied.status_code, 404)
 
     def test_candidate_cannot_access_another_candidates_resources(self):
         application = Application.objects.create(candidate=self.candidate, job=self.job)

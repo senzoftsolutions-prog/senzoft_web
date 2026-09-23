@@ -12,6 +12,7 @@ from core.permissions import IsCandidate
 from .ai import get_ai_provider, get_speech_provider
 from .models import IntegrityEvent, Interview, InterviewEvaluation, InterviewQuestion, InterviewResponse
 from .serializers import IntegrityEventCreateSerializer, IntegrityEventSerializer, InterviewQuestionSerializer, InterviewResponseSubmitSerializer, InterviewSessionSerializer
+from notifications.email import send_interview_update
 
 
 def candidate_interviews(user):
@@ -61,6 +62,7 @@ class CandidateInterviewStartView(APIView):
                 interview.configuration = config
                 interview.transition_to(Interview.Status.IN_PROGRESS)
                 write_audit(actor=request.user, action="INTERVIEW_STARTED", entity="Interview", entity_id=interview.public_id)
+                send_interview_update(interview=interview)
             elif interview.status != Interview.Status.IN_PROGRESS:
                 return Response({"detail": f"Interview cannot start from {interview.status}."}, status=status.HTTP_409_CONFLICT)
         return Response(InterviewSessionSerializer(interview).data)
@@ -132,4 +134,5 @@ class CandidateInterviewCompleteView(APIView):
             interview.final_result = summary
             interview.transition_to(Interview.Status.COMPLETED)
             write_audit(actor=request.user, action="INTERVIEW_COMPLETED", entity="Interview", entity_id=interview.public_id, metadata={"requires_human_review": True})
+            send_interview_update(interview=interview)
         return Response(InterviewSessionSerializer(interview).data)
