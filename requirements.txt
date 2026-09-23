@@ -7,4 +7,3 @@ psycopg[binary]==3.3.6
 djangorestframework-simplejwt==5.5.1
 bleach==6.4.0
 phonenumbers==9.0.39
-boto3>=1.35,<2
