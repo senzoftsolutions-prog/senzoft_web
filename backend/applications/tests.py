@@ -89,7 +89,7 @@ class RecruitmentFoundationTests(TestCase):
         client.force_authenticate(self.candidate_user)
         self.assertEqual(client.get("/api/v1/candidates/me/dashboard/").data["active_applications"], 1)
         self.assertEqual(client.get("/api/v1/candidates/me/interviews/").data["count"], 1)
-        self.assertEqual(client.get("/api/v1/candidates/me/documents/").data["count"], 1)
+        self.assertEqual(client.get("/api/v1/candidates/me/documents/").data["count"], 0)
         self.assertEqual(client.get("/api/v1/candidates/me/background-verifications/").data["count"], 1)
         self.assertEqual(client.get("/api/v1/candidates/me/offers/").data["count"], 1)
         self.assertEqual(client.get("/api/v1/candidates/me/joining/").data["count"], 1)
@@ -117,6 +117,27 @@ class RecruitmentFoundationTests(TestCase):
         item = client.get("/api/v1/candidates/me/applications/").data["results"][0]
         self.assertEqual(item["latest_interview"]["id"], interview.public_id)
         self.assertEqual(item["latest_interview"]["status"], Interview.Status.SCHEDULED)
+
+    @patch("applications.views.storage_client")
+    def test_bgv_documents_are_hidden_until_requested_and_can_be_uploaded(self, storage_client):
+        application = Application.objects.create(candidate=self.candidate, job=self.job)
+        bgv = BackgroundVerification.objects.create(candidate=self.candidate, application=application)
+        storage = MagicMock()
+        storage.generate_presigned_post.return_value = {"url": "https://storage.example/upload", "fields": {"key": "test"}}
+        storage.head_object.return_value = {"ContentLength": 1024}
+        storage_client.return_value = storage
+        client = APIClient()
+        client.force_authenticate(self.candidate_user)
+        payload = {"file_name": "identity.pdf", "file_size": 1024, "mime_type": "application/pdf", "document_type": "IDENTITY"}
+        self.assertEqual(client.post("/api/v1/candidates/me/bgv-documents/upload-request/", payload, format="json").status_code, 403)
+        self.assertEqual(client.get("/api/v1/candidates/me/documents/").data["count"], 0)
+        bgv.status = BackgroundVerification.Status.REQUESTED
+        bgv.save(update_fields=("status", "updated_at"))
+        requested = client.post("/api/v1/candidates/me/bgv-documents/upload-request/", payload, format="json")
+        self.assertEqual(requested.status_code, 200)
+        completed = client.post("/api/v1/candidates/me/bgv-documents/complete/", {"document_id": requested.data["document_id"]}, format="json")
+        self.assertEqual(completed.status_code, 200)
+        self.assertEqual(client.get("/api/v1/candidates/me/documents/").data["count"], 1)
 
     @patch("applications.views.storage_client")
     def test_candidate_resume_upload_request_and_completion(self, storage_client):

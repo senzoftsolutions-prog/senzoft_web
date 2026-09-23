@@ -5,6 +5,7 @@ from .views import (
     CandidateInterviewDetailView, CandidateInterviewListView,
     CandidateJoiningListView, CandidateOfferAcceptView, CandidateOfferDeclineView,
     CandidateOfferDetailView, CandidateOfferListView, CandidateResumeUploadRequestView, CandidateResumeView,
+    CandidateBgvDocumentUploadRequestView, CandidateBgvDocumentCompleteView, CandidateBgvDocumentView,
 )
 from .interview_views import CandidateInterviewCompleteView, CandidateInterviewIntegrityView, CandidateInterviewResponseView, CandidateInterviewSessionView, CandidateInterviewStartView
 
@@ -20,6 +21,10 @@ urlpatterns = [
     path("candidates/me/interviews/<str:interview_id>/integrity-events/", CandidateInterviewIntegrityView.as_view(), name="candidate-interview-integrity"),
     path("candidates/me/interviews/<str:interview_id>/complete/", CandidateInterviewCompleteView.as_view(), name="candidate-interview-complete"),
     path("candidates/me/documents/", CandidateDocumentListView.as_view(), name="candidate-documents"),
+    path("candidates/me/bgv-documents/upload-request/", CandidateBgvDocumentUploadRequestView.as_view(), name="candidate-bgv-document-upload-request"),
+    path("candidates/me/bgv-documents/complete/", CandidateBgvDocumentCompleteView.as_view(), name="candidate-bgv-document-complete"),
+    path("candidates/me/bgv-documents/<str:document_id>/download/", CandidateBgvDocumentView.as_view(), name="candidate-bgv-document-download"),
+    path("candidates/me/bgv-documents/<str:document_id>/", CandidateBgvDocumentView.as_view(), name="candidate-bgv-document"),
     path("candidates/me/resume/upload-request/", CandidateResumeUploadRequestView.as_view(), name="candidate-resume-upload-request"),
     path("candidates/me/resume/complete/", CandidateResumeView.as_view(), name="candidate-resume-complete"),
     path("candidates/me/resume/download/", CandidateResumeView.as_view(), name="candidate-resume-download"),

@@ -2,6 +2,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 from uuid import uuid4
 from rest_framework import generics, serializers, status
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -130,6 +131,128 @@ class CandidateResumeView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+def _candidate_bgv(request, allow_completed=False):
+    statuses = [
+        BackgroundVerification.Status.REQUESTED,
+        BackgroundVerification.Status.IN_PROGRESS,
+        BackgroundVerification.Status.VERIFICATION_REQUIRED,
+    ]
+    if allow_completed:
+        statuses.append(BackgroundVerification.Status.COMPLETED)
+    bgv = BackgroundVerification.objects.filter(
+        candidate__user=request.user, status__in=statuses,
+    ).select_related("application").order_by("-updated_at").first()
+    if not bgv:
+        raise PermissionDenied("Background verification documents are not enabled for this account.")
+    return bgv
+
+
+class CandidateBgvDocumentUploadRequestView(APIView):
+    permission_classes = [IsCandidate]
+    allowed_types = {
+        "application/pdf": (Document.Type.OTHER, ".pdf"),
+        "image/jpeg": (Document.Type.OTHER, ".jpg"),
+        "image/png": (Document.Type.OTHER, ".png"),
+        "application/msword": (Document.Type.OTHER, ".doc"),
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document": (Document.Type.OTHER, ".docx"),
+    }
+
+    def post(self, request):
+        bgv = _candidate_bgv(request)
+        file_name = str(request.data.get("file_name", "")).strip()
+        mime_type = str(request.data.get("mime_type", "")).strip().lower()
+        requested_type = str(request.data.get("document_type", Document.Type.OTHER)).upper()
+        document_type = requested_type if requested_type in {
+            Document.Type.IDENTITY, Document.Type.EDUCATION, Document.Type.EXPERIENCE,
+            Document.Type.ADDRESS_PROOF, Document.Type.OTHER,
+        } else Document.Type.OTHER
+        try:
+            file_size = int(request.data.get("file_size", 0))
+        except (TypeError, ValueError):
+            file_size = 0
+        type_info = self.allowed_types.get(mime_type)
+        suffix = type_info[1] if type_info else None
+        valid_suffixes = {".jpg", ".jpeg"} if suffix == ".jpg" else {suffix}
+        if not suffix or not any(file_name.lower().endswith(item) for item in valid_suffixes):
+            raise serializers.ValidationError({"file": "Upload a PDF, JPG, PNG, DOC, or DOCX file."})
+        if file_size < 1 or file_size > 10 * 1024 * 1024:
+            raise serializers.ValidationError({"file": "Documents must be 10 MB or smaller."})
+        key = f"candidates/{bgv.candidate.public_id}/bgv/{bgv.public_id}/{uuid4().hex}{suffix}"
+        document = Document.objects.create(
+            candidate=bgv.candidate, application=bgv.application, document_type=document_type,
+            file_name=file_name[:255], file_size=file_size, mime_type=mime_type, storage_key=key,
+        )
+        try:
+            upload = storage_client().generate_presigned_post(
+                Bucket=bucket_name(), Key=key, Fields={"Content-Type": mime_type},
+                Conditions=[{"Content-Type": mime_type}, ["content-length-range", 1, 10 * 1024 * 1024]],
+                ExpiresIn=600,
+            )
+        except Exception as exc:
+            document.delete()
+            raise serializers.ValidationError({"file": "Document storage is temporarily unavailable."}) from exc
+        return Response({
+            "document_id": document.public_id, "upload_url": upload["url"],
+            "upload_fields": upload["fields"], "expires_in": 600,
+        })
+
+
+class CandidateBgvDocumentCompleteView(APIView):
+    permission_classes = [IsCandidate]
+
+    def post(self, request):
+        bgv = _candidate_bgv(request)
+        document = generics.get_object_or_404(
+            Document, candidate=bgv.candidate, application=bgv.application,
+            public_id=request.data.get("document_id"), upload_status=Document.UploadStatus.PENDING,
+        )
+        try:
+            stored = storage_client().head_object(Bucket=bucket_name(), Key=document.storage_key)
+        except Exception as exc:
+            raise serializers.ValidationError({"file": "The uploaded document could not be verified."}) from exc
+        actual_size = int(stored.get("ContentLength", 0))
+        if actual_size < 1 or actual_size > 10 * 1024 * 1024:
+            raise serializers.ValidationError({"file": "The uploaded document has an invalid size."})
+        document.file_size = actual_size
+        document.upload_status = Document.UploadStatus.UPLOADED
+        document.uploaded_at = timezone.now()
+        document.save(update_fields=("file_size", "upload_status", "uploaded_at", "updated_at"))
+        return Response(DocumentSerializer(document).data)
+
+
+class CandidateBgvDocumentView(APIView):
+    permission_classes = [IsCandidate]
+
+    def _document(self, request, document_id):
+        bgv = _candidate_bgv(request, allow_completed=True)
+        document = generics.get_object_or_404(
+            Document, candidate=bgv.candidate, application=bgv.application,
+            public_id=document_id,
+        )
+        return bgv, document
+
+    def get(self, request, document_id):
+        _, document = self._document(request, document_id)
+        url = storage_client().generate_presigned_url(
+            "get_object", Params={
+                "Bucket": bucket_name(), "Key": document.storage_key,
+                "ResponseContentDisposition": f'attachment; filename="{document.file_name}"',
+            }, ExpiresIn=300,
+        )
+        return Response({"download_url": url, "expires_in": 300})
+
+    def delete(self, request, document_id):
+        bgv, document = self._document(request, document_id)
+        if bgv.status == BackgroundVerification.Status.COMPLETED:
+            raise PermissionDenied("Completed verification documents cannot be removed.")
+        try:
+            storage_client().delete_object(Bucket=bucket_name(), Key=document.storage_key)
+        except Exception:
+            pass
+        document.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class CandidateInterviewListView(generics.ListAPIView):
     serializer_class = InterviewSerializer
     permission_classes = [IsCandidate]
@@ -151,7 +274,14 @@ class CandidateDocumentListView(generics.ListAPIView):
     serializer_class = DocumentSerializer
     permission_classes = [IsCandidate]
     def get_queryset(self):
-        return Document.objects.filter(candidate__user=self.request.user).order_by("-created_at")
+        bgv = BackgroundVerification.objects.filter(
+            candidate__user=self.request.user,
+        ).exclude(status=BackgroundVerification.Status.NOT_STARTED).order_by("-updated_at").first()
+        if not bgv:
+            return Document.objects.none()
+        return Document.objects.filter(
+            candidate__user=self.request.user, application=bgv.application,
+        ).exclude(document_type=Document.Type.RESUME).order_by("-created_at")
 
 
 class CandidateBackgroundVerificationListView(generics.ListAPIView):

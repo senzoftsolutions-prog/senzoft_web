@@ -16,25 +16,33 @@ import {
 } from "lucide-react";
 import {
   completeResumeUpload,
+  completeBgvDocumentUpload,
+  deleteBgvDocument,
   deleteResume,
   getCandidateApplication,
   getCandidateDashboard,
   getOffer,
   getProfile,
   getResumeDownload,
+  getBgvDocumentDownload,
   listApplications,
   listInterviews,
   listJoining,
   listNotifications,
+  listDocuments,
   listOffers,
   markNotificationRead,
   requestResumeUpload,
+  requestBgvDocumentUpload,
   updateProfile,
   uploadResumeObject,
+  uploadBgvDocumentObject,
   type CandidateApplication,
   type CandidateDashboard,
   type CandidateNotification,
   type CandidateProfile,
+  type BgvDocumentType,
+  type CandidateDocument,
 } from "../../services/api/candidate";
 import {
   CandidateState,
@@ -450,7 +458,7 @@ export function CandidateProfilePage() {
             </div>
             <ProfileSummary profile={state.data} />
             <ResumePanel profile={state.data} onChanged={state.load} />
-            <BgvPanel dashboard={dashboard.data} />
+            {dashboard.data.documents_enabled && <BgvPanel dashboard={dashboard.data} />}
             {editing && (
               <ProfileEditor
                 profile={state.data}
@@ -1062,32 +1070,98 @@ function ResumePanel({
   );
 }
 function BgvPanel({ dashboard }: { dashboard: CandidateDashboard }) {
+  const documents = useLoad(listDocuments);
+  const [documentType, setDocumentType] = useState<BgvDocumentType>("IDENTITY");
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState("");
+  const completed = dashboard.bgv_status === "COMPLETED";
+  const rows = documents.data?.results || [];
+
+  const upload = async (file?: File) => {
+    if (!file) return;
+    setBusy(true);
+    setMessage("");
+    try {
+      const request = await requestBgvDocumentUpload(file, documentType);
+      await uploadBgvDocumentObject(request, file);
+      await completeBgvDocumentUpload(request.document_id);
+      await documents.load();
+      setMessage("Document uploaded successfully.");
+    } catch (reason) {
+      setMessage(reason instanceof Error ? reason.message : "Unable to upload document.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const download = async (document: CandidateDocument) => {
+    setBusy(true);
+    try {
+      const result = await getBgvDocumentDownload(document.id);
+      window.location.assign(result.download_url);
+    } catch (reason) {
+      setMessage(reason instanceof Error ? reason.message : "Unable to download document.");
+    } finally {
+      setBusy(false);
+    }
+  };
+  const remove = async (document: CandidateDocument) => {
+    if (!window.confirm(`Remove ${document.file_name}?`)) return;
+    setBusy(true);
+    try {
+      await deleteBgvDocument(document.id);
+      await documents.load();
+      setMessage("Document removed.");
+    } catch (reason) {
+      setMessage(reason instanceof Error ? reason.message : "Unable to remove document.");
+    } finally {
+      setBusy(false);
+    }
+  };
   return (
-    <section
-      className={`candidate-card candidate-bgv-panel ${dashboard.documents_enabled ? "enabled" : "disabled"}`}
-    >
+    <section className="candidate-card candidate-bgv-panel enabled">
       <div>
         <p className="candidate-kicker">Background verification</p>
         <h2>Documents</h2>
       </div>
-      {dashboard.documents_enabled ? (
-        <>
-          <CandidateStatus value={dashboard.bgv_status || "REQUESTED"} />
-          <p>
-            The recruitment team will email the required document list. Send
-            requested files only to{" "}
-            <a href={`mailto:${dashboard.recruitment_email}`}>
-              {dashboard.recruitment_email}
-            </a>
-            .
-          </p>
-        </>
-      ) : (
-        <p>
-          Document instructions will become available when the recruitment team
-          starts background verification.
-        </p>
+      <CandidateStatus value={dashboard.bgv_status || "REQUESTED"} />
+      <p>
+        Upload only the documents requested by the recruitment team. For questions,
+        contact <a href={`mailto:${dashboard.recruitment_email}`}>{dashboard.recruitment_email}</a>.
+      </p>
+      {!completed && (
+        <div className="candidate-bgv-upload">
+          <label>
+            Document category
+            <select value={documentType} onChange={(event) => setDocumentType(event.target.value as BgvDocumentType)}>
+              <option value="IDENTITY">Identity document</option>
+              <option value="ADDRESS_PROOF">Address proof</option>
+              <option value="EDUCATION">Education document</option>
+              <option value="EXPERIENCE">Experience document</option>
+              <option value="OTHER">Other requested document</option>
+            </select>
+          </label>
+          <label className="candidate-btn primary">
+            <Upload />
+            {busy ? "Uploading…" : "Upload document"}
+            <input type="file" hidden disabled={busy} accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" onChange={(event) => void upload(event.target.files?.[0])} />
+          </label>
+          <small>PDF, JPG, PNG, DOC, or DOCX; maximum 10 MB.</small>
+        </div>
       )}
+      {message && <p role="status">{message}</p>}
+      {documents.loading && <p>Loading documents…</p>}
+      {documents.error && <p role="alert">{documents.error}</p>}
+      <div className="candidate-bgv-documents">
+        {rows.map((document) => (
+          <article key={document.id} className="candidate-document-row">
+            <FileText />
+            <div><strong>{document.file_name}</strong><span>{label(document.document_type)} · {label(document.upload_status)}</span></div>
+            <button type="button" className="candidate-btn secondary" disabled={busy} onClick={() => void download(document)}><Download />Download</button>
+            {!completed && <button type="button" className="candidate-btn danger" disabled={busy} onClick={() => void remove(document)}><Trash2 />Remove</button>}
+          </article>
+        ))}
+        {!documents.loading && rows.length === 0 && <p>No background verification documents uploaded yet.</p>}
+      </div>
     </section>
   );
 }

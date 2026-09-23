@@ -78,6 +78,7 @@ class CandidateDashboardView(APIView):
             "latest_application": ApplicationSerializer(latest).data if latest else None,
             "next_interview": ({"id": next_interview.public_id, "job_title": next_interview.application.job.title, "interview_type": next_interview.interview_type, "status": next_interview.status, "scheduled_at": next_interview.scheduled_at} if next_interview else None),
             "documents_enabled": bool(bgv and bgv.status != BackgroundVerification.Status.NOT_STARTED),
+            "bgv_id": bgv.public_id if bgv and bgv.status != BackgroundVerification.Status.NOT_STARTED else None,
             "bgv_status": bgv.status if bgv else None,
             "recruitment_email": settings.RECRUITMENT_EMAIL,
             "recent_updates": list(applications.select_related("job").order_by("-updated_at").values("public_id", "job__title", "current_status", "updated_at")[:5]),
