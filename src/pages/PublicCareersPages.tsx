@@ -6,6 +6,7 @@ import {
   BriefcaseBusiness,
   Building2,
   CalendarDays,
+  ChevronDown,
   Clock3,
   MapPin,
   Search,
@@ -39,10 +40,7 @@ export function PublicJobOpeningsPage() {
   const initial = useMemo(() => new URLSearchParams(location.search), []);
   const [search, setSearch] = useState(initial.get("search") || "");
   const [filters, setFilters] = useState({
-    department: initial.get("department") || "",
     location: initial.get("location") || "",
-    work_mode: initial.get("workMode") || "",
-    employment_type: initial.get("employmentType") || "",
     experience_level: initial.get("experience") || "",
     ordering: initial.get("ordering") || "-published_at",
   });
@@ -51,6 +49,7 @@ export function PublicJobOpeningsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [debounced, setDebounced] = useState(search);
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
   useEffect(() => {
     const timer = window.setTimeout(() => setDebounced(search), 350);
     return () => window.clearTimeout(timer);
@@ -58,26 +57,16 @@ export function PublicJobOpeningsPage() {
   useEffect(() => {
     const params = new URLSearchParams();
     if (debounced) params.set("search", debounced);
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value)
-        params.set(
-          key === "work_mode"
-            ? "workMode"
-            : key === "employment_type"
-              ? "employmentType"
-              : key === "experience_level"
-                ? "experience"
-                : key,
-          value,
-        );
-    });
+    if (filters.location) params.set("location", filters.location);
+    if (filters.experience_level) params.set("experience", filters.experience_level);
+    if (filters.ordering !== "-published_at") params.set("ordering", filters.ordering);
     if (page > 1) params.set("page", String(page));
     navigate({ search: params.toString() }, { replace: true });
     const api = new URLSearchParams();
     if (debounced) api.set("search", debounced);
-    Object.entries(filters).forEach(([key, value]) => {
-      if (value) api.set(key, value);
-    });
+    if (filters.location) api.set("location", filters.location);
+    if (filters.experience_level) api.set("experience_level", filters.experience_level);
+    api.set("ordering", filters.ordering);
     api.set("page", String(page));
     setLoading(true);
     setError("");
@@ -95,23 +84,11 @@ export function PublicJobOpeningsPage() {
     setPage(1);
   };
   const hasFilters = Boolean(
-    search ||
-    filters.department ||
-    filters.location ||
-    filters.work_mode ||
-    filters.employment_type ||
-    filters.experience_level,
+    search || filters.location || filters.experience_level || filters.ordering !== "-published_at",
   );
   const clearFilters = () => {
     setSearch("");
-    setFilters((current) => ({
-      ...current,
-      department: "",
-      location: "",
-      work_mode: "",
-      employment_type: "",
-      experience_level: "",
-    }));
+    setFilters({ location: "", experience_level: "", ordering: "-published_at" });
     setPage(1);
   };
   return (
@@ -132,23 +109,21 @@ export function PublicJobOpeningsPage() {
       <main className="career-openings-main">
         <div className="container-shell">
           <section
-            className="career-job-filters"
+            className={`career-job-filters ${filtersExpanded ? "is-expanded" : ""}`}
             aria-label="Filter open positions"
           >
             <div className="career-filter-heading">
-              <div>
-                <SlidersHorizontal aria-hidden="true" />
-                <div>
-                  <strong>Find your opportunity</strong>
-                  <span>Search and refine current openings</span>
-                </div>
-              </div>
-              {hasFilters && (
-                <button type="button" onClick={clearFilters}>
-                  <X aria-hidden="true" />
-                  Clear filters
+              <div><div><strong>Find your opportunity</strong><span>Search open roles by title, skill, or keyword</span></div></div>
+              <div className="career-filter-actions">
+                {hasFilters && (
+                  <button type="button" onClick={clearFilters}>
+                    <X aria-hidden="true" /> Clear
+                  </button>
+                )}
+                <button className="career-mobile-filter-toggle" type="button" aria-expanded={filtersExpanded} aria-controls="career-advanced-filters" onClick={() => setFiltersExpanded((value) => !value)}>
+                  <SlidersHorizontal aria-hidden="true" /> Filters <ChevronDown aria-hidden="true" />
                 </button>
-              )}
+              </div>
             </div>
             <label className="career-search">
               <span>Search</span>
@@ -164,25 +139,15 @@ export function PublicJobOpeningsPage() {
                 />
               </div>
             </label>
-            <div className="career-filter-grid">
-              {(
-                [
-                  "department",
-                  "location",
-                  "work_mode",
-                  "employment_type",
-                  "experience_level",
-                ] as const
-              ).map((key) => (
-                <label key={key}>
-                  <span>{show(key)}</span>
-                  <input
-                    value={filters[key]}
-                    onChange={(e) => setFilter(key, e.target.value)}
-                    placeholder={`Any ${show(key).toLowerCase()}`}
-                  />
-                </label>
-              ))}
+            <div className="career-filter-grid" id="career-advanced-filters">
+              <label>
+                <span>Location</span>
+                <input value={filters.location} onChange={(e) => setFilter("location", e.target.value)} placeholder="Any location" />
+              </label>
+              <label>
+                <span>Experience level</span>
+                <input value={filters.experience_level} onChange={(e) => setFilter("experience_level", e.target.value)} placeholder="Any experience" />
+              </label>
               <label>
                 <span>Sort by</span>
                 <select
@@ -463,15 +428,15 @@ export function PublicJobDetailPage() {
             </section>
           </article>
           <aside className="career-application-info">
-            <p>Role information</p>
-            <h2>At a glance</h2>
-            <dl>
+            <div className="career-glance-heading"><p>Role snapshot</p><h2>At a glance</h2><span>Everything you need before applying.</span></div>
+            <div className="career-glance-primary">
+              <JobFact icon={<MapPin />} label="Location" value={locations.join(" · ")} />
+              <JobFact icon={<Clock3 />} label="Experience" value={experience} />
+              <JobFact icon={<BriefcaseBusiness />} label="Schedule" value={show(job.employment_type)} />
+            </div>
+            <dl className="career-glance-secondary">
               <JobFact icon={<Building2 />} label="Job ID" value={job.id} />
-              <JobFact
-                icon={<BriefcaseBusiness />}
-                label="Category"
-                value={job.department}
-              />
+              <JobFact icon={<BriefcaseBusiness />} label="Category" value={job.department} />
               {job.business_unit && (
                 <JobFact
                   icon={<Building2 />}
@@ -480,19 +445,9 @@ export function PublicJobDetailPage() {
                 />
               )}
               <JobFact
-                icon={<Clock3 />}
-                label="Schedule"
-                value={show(job.employment_type)}
-              />
-              <JobFact
                 icon={<MapPin />}
                 label="Work arrangement"
                 value={show(job.work_mode)}
-              />
-              <JobFact
-                icon={<MapPin />}
-                label="Location"
-                value={locations.join("; ")}
               />
               {job.reporting_to && (
                 <JobFact
@@ -538,9 +493,9 @@ export function PublicJobDetailPage() {
                 value={String(job.number_of_openings)}
               />
             </dl>
-            <Link onClick={apply} to={applyTo}>
+            <div className="career-glance-footer"><span>Ready to apply?</span><Link onClick={apply} to={applyTo}>
               Apply for this role <ArrowRight />
-            </Link>
+            </Link></div>
           </aside>
         </div>
         {similar.length > 0 && (
@@ -566,13 +521,15 @@ function JobFact({
   icon,
   label,
   value,
+  featured,
 }: {
   icon: ReactNode;
   label: string;
   value: string;
+  featured?: boolean;
 }) {
   return (
-    <div>
+    <div className={featured ? "is-featured" : undefined}>
       <span>{icon}</span>
       <div>
         <dt>{label}</dt>
