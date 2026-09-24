@@ -1,9 +1,8 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
-import { SampleNotice, StatsCounter } from "../components/careers/CareersUI";
-import { jobs } from "../data/jobs";
+import { StatsCounter } from "../components/careers/CareersUI";
 import "../styles/careers.css";
 
 const chapters = [
@@ -101,13 +100,7 @@ export default function CareersPage() {
         </div>
       </section>
 
-      <section className="career-editorial-stats" aria-label="Career pathways at Senzoft"><div className="container-shell career-editorial-stats-grid"><StatsCounter target={3} label="Career pathways" /><StatsCounter target={jobs.length} label="Illustrative role profiles" /><StatsCounter target={4} label="Ways to explore" /></div></section>
-
-      <section className="career-editorial-opportunities" aria-labelledby="career-opportunities-title"><div className="container-shell">
-        <div className="career-editorial-section-head"><div><p className="career-editorial-kicker">Featured opportunities</p><h2 id="career-opportunities-title">Find a path that fits your ambition.</h2></div><Link to="/careers/openings" className="career-editorial-link">View all roles <ArrowUpRight size={20} /></Link></div>
-        <SampleNotice />
-        <div className="career-editorial-job-grid">{jobs.slice(0, 4).map((job, index) => <Reveal key={job.id} delay={index * .08}><article className="career-editorial-job"><Link to={`/careers/openings/${job.id}`} className="career-editorial-job-image" aria-label={`View ${job.title}`}><img src={chapters[index].image} alt="Illustrative professional technology workplace" loading="lazy" /></Link><div className="career-editorial-job-copy"><span>{job.department} · {job.location}</span><h3>{job.title}</h3><p>{job.summary}</p><Link to={`/careers/openings/${job.id}`} className="career-editorial-link">Explore role <ArrowRight size={18} /></Link></div></article></Reveal>)}</div>
-      </div></section>
+      <section className="career-editorial-stats" aria-label="Career pathways at Senzoft"><div className="container-shell career-editorial-stats-grid"><StatsCounter target={3} label="Career pathways" /><StatsCounter target={4} label="Ways to explore" /></div></section>
 
       <section className="career-editorial-final" aria-label="Careers next steps"><div className="container-shell career-editorial-final-grid"><div><p className="career-editorial-kicker">Your next step</p><h2>Explore a role that moves you.</h2><Link to="/careers/openings" className="career-editorial-link">Browse roles <ArrowRight size={20} /></Link></div><div><p className="career-editorial-kicker">Stay connected</p><h2>Keep the conversation open.</h2><a href="mailto:careers@senzoft.com?subject=Talent%20Network%20Interest" className="career-editorial-link">Join the talent network <ArrowRight size={20} /></a></div></div></section>
     </>
