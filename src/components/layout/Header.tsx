@@ -1,5 +1,5 @@
 import { ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import logo from "../../assets/senzoft-wordmark-transparent.png";
 import symbol from "../../assets/senzoft-symbol.png";
@@ -133,7 +133,13 @@ export function Header() {
         <button ref={menuButton} type="button" className="mobile-nav-trigger" aria-label="Open navigation" aria-expanded={drawerOpen} aria-controls="mobile-navigation" onClick={() => setDrawerOpen(true)}><Menu size={22} /></button>
       </div>
       <div id="desktop-mega-menu" className={`enterprise-mega-menu pointer-events-auto ${activeMenu ? "is-open" : intentMenu ? "is-pending" : ""}`} aria-hidden={!activeMenu} onPointerEnter={cancelClose}>
-        {menu && <div className="enterprise-mega-inner" key={renderedMenu}><div className="mega-intro"><span>{menu.eyebrow}</span><h2>{navigation.find((item) => item.menu === renderedMenu)?.label}</h2><p>{menu.description}</p><Link to={`/${renderedMenu}`} tabIndex={activeMenu ? 0 : -1}>Explore all <ArrowRight size={16} /></Link></div><div className="enterprise-mega-grid">{menu.items.map((item, index) => <Link to={item.href} key={item.href} tabIndex={activeMenu ? 0 : -1} style={{ "--menu-index": index } as CSSProperties}><span>{String(index + 1).padStart(2, "0")}</span><div><strong>{item.title}</strong><small>{item.summary}</small></div><ArrowRight size={16} aria-hidden="true" /></Link>)}</div></div>}
+        {menu && <div className="enterprise-mega-inner" key={renderedMenu}>
+          <div className="enterprise-mega-heading">
+            <div><span>{menu.eyebrow}</span><h2>{navigation.find((item) => item.menu === renderedMenu)?.label}</h2></div>
+            <Link to={`/${renderedMenu}`} tabIndex={activeMenu ? 0 : -1}>View all <ArrowRight size={16} /></Link>
+          </div>
+          <div className="enterprise-mega-grid">{menu.items.map((item) => <Link to={item.href} key={item.href} tabIndex={activeMenu ? 0 : -1}><strong>{item.title}</strong><ArrowRight size={16} aria-hidden="true" /></Link>)}</div>
+        </div>}
       </div>
     </div>
     <button className={`desktop-menu-backdrop ${activeMenu ? "is-open" : ""}`} type="button" aria-label="Close menu" tabIndex={activeMenu ? 0 : -1} onClick={() => closeNavigation()} />
