@@ -2,7 +2,6 @@ import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Reveal } from "../components/ui/Reveal";
 import { Seo } from "../components/ui/Seo";
-import { StatsCounter } from "../components/careers/CareersUI";
 import "../styles/careers.css";
 
 const chapters = [
@@ -54,7 +53,6 @@ export default function CareersPage() {
         </div>
         <div className="career-editorial-hero-image">
           <img src="/media/careers-hero-professional.webp" alt="Illustrative portrait of a technology professional in a modern office" fetchPriority="high" />
-          <span className="career-editorial-image-note">Illustrative imagery</span>
         </div>
       </section>
 
@@ -99,8 +97,6 @@ export default function CareersPage() {
           ))}
         </div>
       </section>
-
-      <section className="career-editorial-stats" aria-label="Career pathways at Senzoft"><div className="container-shell career-editorial-stats-grid"><StatsCounter target={3} label="Career pathways" /><StatsCounter target={4} label="Ways to explore" /></div></section>
 
       <section className="career-editorial-final" aria-label="Careers next steps"><div className="container-shell career-editorial-final-grid"><div><p className="career-editorial-kicker">Your next step</p><h2>Explore a role that moves you.</h2><Link to="/careers/openings" className="career-editorial-link">Browse roles <ArrowRight size={20} /></Link></div><div><p className="career-editorial-kicker">Stay connected</p><h2>Keep the conversation open.</h2><a href="mailto:careers@senzoft.com?subject=Talent%20Network%20Interest" className="career-editorial-link">Join the talent network <ArrowRight size={20} /></a></div></div></section>
     </>
