@@ -1,4 +1,4 @@
-import { ArrowUpRight, Facebook, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
+import { ArrowUpRight, Instagram, Linkedin, Mail, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import symbol from "../../assets/senzoft-symbol.png";
 import { companyAddress } from "../../content/company";
@@ -6,7 +6,6 @@ import { CookieSettingsButton } from "../../features/consent/CookieSettingsButto
 
 const socials = [
   { label: "X", icon: <span aria-hidden="true">X</span>, href: "https://x.com/" },
-  { label: "Facebook", icon: <Facebook size={19}/>, href: "https://facebook.com/" },
   { label: "LinkedIn", icon: <Linkedin size={19}/>, href: "https://linkedin.com/" },
   { label: "Instagram", icon: <Instagram size={19}/>, href: "https://instagram.com/" },
 ];
