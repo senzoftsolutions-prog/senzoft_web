@@ -1685,6 +1685,69 @@ html[data-effects="paused"] .product-layer {
   .mobile-nav-submenu a:first-child { border-top: 1px solid rgba(23,32,52,.1) !important; }
 }
 
+/* Site-wide responsive density pass: content-led height, less unused space. */
+:root {
+  --section-space: clamp(2.75rem, 4.5vw, 5rem);
+  --content-space: clamp(1.25rem, 2.8vw, 2.75rem);
+  --card-space: clamp(.9rem, 1.6vw, 1.5rem);
+}
+.section-heading { margin-bottom:clamp(1.25rem,2.5vw,2.5rem); }
+.section-intro { gap:clamp(1rem,2vw,2rem); margin-bottom:clamp(1.5rem,3vw,3rem); }
+.page-hero { min-height:0; padding-block:clamp(3.25rem,6vw,6rem); }
+.reference-page-hero { min-height:0; padding:clamp(3.25rem,5.5vw,5.5rem) 0; }
+.reference-details { padding:clamp(2.75rem,5vw,5rem) 0; }
+.reference-value-card { min-height:0; }
+.reference-listing-points article,
+.industry-directory>a { padding-block:clamp(1rem,1.8vw,1.5rem); }
+.footer-lead { padding-block:clamp(2rem,4vw,3.75rem); }
+.footer-main { gap:clamp(2rem,5vw,5rem); padding-block:clamp(2.25rem,4vw,3.75rem); }
+.cta-section { padding-block:clamp(2rem,4vw,4rem); }
+.cta-card { min-height:clamp(20rem,31vw,26rem); }
+
+@media(max-width:1023px){
+  :root { --section-space:clamp(2.5rem,6vw,3.75rem); --content-space:clamp(1.15rem,3vw,2rem); }
+  .container-shell { width:calc(100% - 2rem); max-width:calc(100% - 2rem); }
+  .reference-page-hero { padding-block:2.5rem; }
+  .reference-page-hero>.container-shell,
+  .reference-hero-content { gap:1.5rem; }
+  .reference-hero-visual { min-height:15rem; }
+  .reference-page-image,.reference-page-hero .video-panel { max-height:28rem; }
+  .reference-story-copy,.priority-narrative,.priority-evidence { padding:clamp(1.25rem,3vw,2rem); }
+}
+@media(max-width:767px){
+  :root { --page-padding:.75rem; --section-space:clamp(2rem,8vw,2.75rem); --content-space:1.15rem; --card-space:1rem; --radius-card:.9rem; }
+  main { padding-top:4.85rem; }
+  .container-shell { width:calc(100% - 1.25rem); max-width:calc(100% - 1.25rem); }
+  .section { padding-block:var(--section-space); }
+  .section-heading { margin-bottom:1.25rem; font-size:clamp(1.8rem,8.5vw,2.65rem); line-height:1.04; }
+  .section-intro { gap:.75rem; margin-bottom:1.35rem; }
+  .page-hero,.reference-page-hero { padding-block:2rem 2.35rem; }
+  .reference-page-title { margin-top:.65rem; font-size:clamp(2.05rem,10vw,3rem); }
+  .reference-page-description { margin-top:.8rem; font-size:.94rem; line-height:1.5; }
+  .reference-hero-actions { gap:.65rem; margin-top:1.25rem; }
+  .reference-hero-visual { min-height:12rem; }
+  .reference-page-image,.reference-page-hero .video-panel { max-height:19rem; aspect-ratio:16/9; }
+  .solution-grid,.insight-grid,.offering-grid,.reference-card-grid,.reference-impact-grid,.reference-value-grid,.outcomes-grid { gap:.75rem; }
+  .card,.offering-card,.reference-value-card,.reference-columns,.career-info-card,.career-job-card,.career-explore-card,.career-quote { padding:1rem; border-radius:.85rem; }
+  .priority-narrative,.priority-evidence,.reference-story-copy { padding:1rem; }
+  .reference-listing-points article,.industry-directory>a { padding-block:.9rem; }
+  .btn { min-height:2.75rem; padding:.65rem 1rem; }
+  .cta-section { padding-block:1.5rem; }
+  .cta-card { min-height:0; padding:1.25rem; border-radius:1rem; }
+  .cta-card-content { min-height:25rem; }
+  .footer-lead { gap:1rem; padding-block:1.75rem; }
+  .footer-main { gap:1.5rem; padding-block:2rem; }
+  footer>.container-shell { gap:1.5rem; padding-block:2rem; }
+  footer>.container-shell>div:last-child { gap:1.25rem; }
+}
+@media(max-width:380px){
+  :root { --page-padding:.625rem; --section-space:1.85rem; }
+  .container-shell { width:calc(100% - 1rem); max-width:calc(100% - 1rem); }
+  .section-heading { font-size:1.75rem; }
+  .reference-page-title { font-size:1.95rem; }
+  .btn { width:100%; }
+}
+
 /* SENZOFT motion language: precise orange signals, never decorative bubbles. */
 .tech-orb,
 .canvas-orbit,
@@ -4317,4 +4380,44 @@ main > section.career-stats::after { content: none; }
   .mobile-nav-submenu { padding-left: 1rem; }
   .mobile-nav-submenu a { min-height: 3rem !important; padding-inline: .75rem !important; border-bottom: 1px solid rgba(23,32,52,.1) !important; background: rgba(255,255,255,.58); font-size: .9rem !important; }
   .mobile-nav-submenu a:first-child { border-top: 1px solid rgba(23,32,52,.1) !important; }
+}
+
+/* Final density cascade kept last so page-specific legacy spacing cannot override it. */
+:root { --section-space:clamp(2.75rem,4.5vw,5rem); --content-space:clamp(1.25rem,2.8vw,2.75rem); --card-space:clamp(.9rem,1.6vw,1.5rem); }
+.section { padding-block:var(--section-space); }
+.page-hero { min-height:0; padding-block:clamp(3.25rem,6vw,6rem); }
+.reference-page-hero { min-height:0; padding:clamp(3.25rem,5.5vw,5.5rem) 0; }
+.reference-details { padding:clamp(2.75rem,5vw,5rem) 0; }
+.reference-value-card { min-height:0; }
+.footer-lead { padding-block:clamp(2rem,4vw,3.75rem); }
+.footer-main { gap:clamp(2rem,5vw,5rem); padding-block:clamp(2.25rem,4vw,3.75rem); }
+.cta-section { padding-block:clamp(2rem,4vw,4rem); }
+.cta-card { min-height:clamp(20rem,31vw,26rem); }
+@media(max-width:1023px){
+  :root { --section-space:clamp(2.5rem,6vw,3.75rem); --content-space:clamp(1.15rem,3vw,2rem); }
+  .reference-page-hero { padding-block:2.5rem; }
+  .reference-hero-visual { min-height:15rem; }
+}
+@media(max-width:767px){
+  :root { --page-padding:.75rem; --section-space:clamp(2rem,8vw,2.75rem); --content-space:1.15rem; --card-space:1rem; --radius-card:.9rem; }
+  main { padding-top:4.85rem; }
+  .container-shell { width:calc(100% - 1.25rem); max-width:calc(100% - 1.25rem); }
+  .section-heading { margin-bottom:1.25rem; font-size:clamp(1.8rem,8.5vw,2.65rem); line-height:1.04; }
+  .page-hero,.reference-page-hero { padding-block:2rem 2.35rem; }
+  .reference-page-title { margin-top:.65rem; font-size:clamp(2.05rem,10vw,3rem); }
+  .reference-page-description { margin-top:.8rem; font-size:.94rem; line-height:1.5; }
+  .reference-hero-visual { min-height:12rem; }
+  .reference-page-image,.reference-page-hero .video-panel { max-height:19rem; aspect-ratio:16/9; }
+  .card,.offering-card,.reference-value-card,.reference-columns,.career-info-card,.career-job-card,.career-explore-card,.career-quote { padding:1rem; border-radius:.85rem; }
+  .btn { min-height:2.75rem; padding:.65rem 1rem; }
+  .cta-section { padding-block:1.5rem; }
+  .cta-card { min-height:0; padding:1.25rem; border-radius:1rem; }
+  .footer-lead { padding-block:1.75rem; }
+  .footer-main,footer>.container-shell { gap:1.5rem; padding-block:2rem; }
+}
+@media(max-width:380px){
+  :root { --page-padding:.625rem; --section-space:1.85rem; }
+  .container-shell { width:calc(100% - 1rem); max-width:calc(100% - 1rem); }
+  .section-heading { font-size:1.75rem; }
+  .reference-page-title { font-size:1.95rem; }
 }
