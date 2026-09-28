@@ -47,6 +47,21 @@ class AdminAuthenticationTests(TestCase):
         self.assertEqual(response.status_code, 200)
         issue_challenge.assert_called_once_with(self.candidate, enforce_cooldown=True)
 
+    @patch("accounts.verification.send_login_verification_code", side_effect=RuntimeError("provider rejected sender"))
+    def test_email_delivery_failure_rolls_back_challenge(self, _send_email):
+        self.candidate.is_email_verified = True
+        self.candidate.save(update_fields=("is_email_verified",))
+
+        response = APIClient().post(
+            "/api/v1/auth/request-code/",
+            {"email": self.candidate.email, "portal": "candidate"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 503)
+        self.assertEqual(response.data["error"]["code"], "EMAIL_DELIVERY_UNAVAILABLE")
+        self.assertFalse(LoginVerification.objects.filter(user=self.candidate).exists())
+
     def test_superadmin_cannot_use_passwordless_code(self):
         response = APIClient().post("/api/v1/auth/request-code/", {"email": self.superadmin.email, "portal": "admin"}, format="json")
         self.assertEqual(response.status_code, 400)

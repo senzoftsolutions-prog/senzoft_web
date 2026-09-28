@@ -33,13 +33,15 @@ router.register("consent-policies", AdminConsentPolicyViewSet, basename="admin-c
 
 def health(request):
     missing_storage = missing_storage_configuration()
+    local_private_fallback = bool(missing_storage and settings.DEBUG)
     return JsonResponse({
         "success": True,
         "data": {
-            "status": "ok" if not missing_storage else "degraded",
+            "status": "ok" if not missing_storage or local_private_fallback else "degraded",
             "object_storage": {
                 "configured": not missing_storage,
                 "missing_environment_variables": missing_storage,
+                "mode": "local_private" if local_private_fallback else "neon_s3",
             },
         },
     })

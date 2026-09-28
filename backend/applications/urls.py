@@ -4,7 +4,7 @@ from .views import (
     CandidateBackgroundVerificationListView, CandidateDocumentListView,
     CandidateInterviewDetailView, CandidateInterviewListView,
     CandidateJoiningListView, CandidateOfferAcceptView, CandidateOfferDeclineView,
-    CandidateOfferDetailView, CandidateOfferListView, CandidateResumeUploadRequestView, CandidateResumeView,
+    CandidateOfferDetailView, CandidateOfferListView, CandidateResumeObjectUploadView, CandidateResumeUploadRequestView, CandidateResumeView, PrivateResumeDownloadView,
     CandidateBgvDocumentUploadRequestView, CandidateBgvDocumentCompleteView, CandidateBgvDocumentView,
 )
 from .interview_views import CandidateInterviewCompleteView, CandidateInterviewIntegrityView, CandidateInterviewResponseView, CandidateInterviewSessionView, CandidateInterviewStartView
@@ -26,9 +26,11 @@ urlpatterns = [
     path("candidates/me/bgv-documents/<str:document_id>/download/", CandidateBgvDocumentView.as_view(), name="candidate-bgv-document-download"),
     path("candidates/me/bgv-documents/<str:document_id>/", CandidateBgvDocumentView.as_view(), name="candidate-bgv-document"),
     path("candidates/me/resume/upload-request/", CandidateResumeUploadRequestView.as_view(), name="candidate-resume-upload-request"),
+    path("candidates/me/resume/upload-object/", CandidateResumeObjectUploadView.as_view(), name="candidate-resume-upload-object"),
     path("candidates/me/resume/complete/", CandidateResumeView.as_view(), name="candidate-resume-complete"),
     path("candidates/me/resume/download/", CandidateResumeView.as_view(), name="candidate-resume-download"),
     path("candidates/me/resume/", CandidateResumeView.as_view(), name="candidate-resume"),
+    path("private-resumes/<str:token>/", PrivateResumeDownloadView.as_view(), name="private-resume-download"),
     path("candidates/me/background-verifications/", CandidateBackgroundVerificationListView.as_view(), name="candidate-background-verifications"),
     path("candidates/me/offers/", CandidateOfferListView.as_view(), name="candidate-offers"),
     path("candidates/me/offers/<str:offer_id>/", CandidateOfferDetailView.as_view(), name="candidate-offer-detail"),

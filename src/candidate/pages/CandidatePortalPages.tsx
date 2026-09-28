@@ -366,9 +366,16 @@ export function CandidateEventsPage() {
                   >
                     <CalendarDays />
                     <div>
-                      <strong>{label(item.interview_type)} interview</strong>
+                      <strong>
+                        {item.interview_type === "AI_SCREENING"
+                          ? "First-round AI pre-screening"
+                          : `${label(item.interview_type)} interview`}
+                      </strong>
                       <span>
-                        {item.job_title} · {formatDate(item.scheduled_at)}
+                        {item.job_title} ·{" "}
+                        {item.scheduled_at
+                          ? formatDate(item.scheduled_at)
+                          : "Available now"}
                       </span>
                     </div>
                     <CandidateStatus value={item.status} />
@@ -1329,6 +1336,29 @@ export function CandidateApplicationDetailPage() {
                 <CandidateStatus value={state.data.current_status} />
               </div>
             </article>
+            {state.data.latest_interview &&
+              ["READY", "SCHEDULED", "CREATED", "IN_PROGRESS"].includes(
+                state.data.latest_interview.status,
+              ) && (
+                <section className="candidate-card candidate-screening-callout">
+                  <div>
+                    <p className="candidate-kicker">First round</p>
+                    <h2>AI pre-screening</h2>
+                    <p>
+                      Complete the role-related questions for human recruiter
+                      review.
+                    </p>
+                  </div>
+                  <Link
+                    className="candidate-btn primary"
+                    to={`/candidate/interviews/${state.data.latest_interview.id}`}
+                  >
+                    {state.data.latest_interview.status === "IN_PROGRESS"
+                      ? "Continue screening"
+                      : "Start screening"}
+                  </Link>
+                </section>
+              )}
             <section className="candidate-card">
               <h2>Recruitment timeline</h2>
               <ol className="candidate-timeline">

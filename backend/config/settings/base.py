@@ -20,7 +20,10 @@ def load_env_file(path: Path) -> None:
         os.environ.setdefault(key.strip(), value.strip().strip('"').strip("'"))
 
 
+# Explicit process variables win. A local override wins over the shared .env
+# because load_env_file uses setdefault rather than replacing existing values.
 load_env_file(ROOT_DIR / ".env.local")
+load_env_file(ROOT_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key-change-me")
 DEBUG = os.getenv("DJANGO_DEBUG", "false").lower() == "true"
@@ -118,28 +121,43 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
 SESSION_COOKIE_HTTPONLY = True
 CSRF_COOKIE_HTTPONLY = True
-RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
-if RESEND_API_KEY:
+EMAIL_PROVIDER = os.getenv("EMAIL_PROVIDER", "console").strip().lower()
+if EMAIL_PROVIDER in {"zeptomail", "smtp"}:
     EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-    EMAIL_HOST = "smtp.resend.com"
-    EMAIL_PORT = 587
-    EMAIL_HOST_USER = "resend"
-    EMAIL_HOST_PASSWORD = RESEND_API_KEY
-    EMAIL_USE_TLS = True
+    EMAIL_HOST = os.getenv("EMAIL_HOST", "smtp.zeptomail.in")
+    EMAIL_PORT = int(os.getenv("EMAIL_PORT", "587"))
+    EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "emailapikey")
+    EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "")
+    EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "true").lower() == "true"
+    EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", "false").lower() == "true"
+    if EMAIL_USE_TLS and EMAIL_USE_SSL:
+        raise RuntimeError("EMAIL_USE_TLS and EMAIL_USE_SSL cannot both be enabled")
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    "SENZOFT Careers <careers@senzoft.com>",
+    "Senzoft Software Solutions <careers@senzoft.com>",
 )
 SERVER_EMAIL = DEFAULT_FROM_EMAIL
 EMAIL_TIMEOUT = int(os.getenv("EMAIL_TIMEOUT", "15"))
+EMAIL_LOGO_URL = os.getenv(
+    "EMAIL_LOGO_URL",
+    "https://www.senzoft.com/media/senzoftweblogo-transparent.png",
+)
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BACKEND_DIR / "media"
+PRIVATE_UPLOAD_ROOT = BACKEND_DIR / "private_uploads"
 CANDIDATE_DOCUMENTS_BUCKET = os.getenv("CANDIDATE_DOCUMENTS_BUCKET", "candidate-documents")
 RECRUITMENT_EMAIL = os.getenv("RECRUITMENT_EMAIL", os.getenv("CONTACT_RECIPIENT_EMAIL", "careers@senzoft.com"))
-AI_PROVIDER = os.getenv("AI_PROVIDER", "mock")
+AI_PROVIDER = os.getenv("AI_PROVIDER", "native")
+AI_MODEL = os.getenv("AI_MODEL", "gpt-5-mini")
+AI_SERVICE_URL = os.getenv("AI_SERVICE_URL", os.getenv("NEON_AI_GATEWAY_BASE_URL", ""))
+AI_SERVICE_TOKEN = os.getenv("AI_SERVICE_TOKEN", os.getenv("NEON_AI_GATEWAY_TOKEN", ""))
+OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434/v1")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
+AUTO_CREATE_AI_SCREENING = os.getenv("AUTO_CREATE_AI_SCREENING", "false").lower() == "true"
+AI_INTERVIEW_EXPIRY_DAYS = int(os.getenv("AI_INTERVIEW_EXPIRY_DAYS", "7"))
 AI_INTERVIEW_DEFAULTS = {
     "minimum_questions": 3,
     "maximum_questions": 5,

@@ -14,6 +14,6 @@ The existing React/Vite application remains the web frontend. `backend/` is a Dj
 
 The public React careers and insights pages still use their clearly labelled illustrative repositories. They are not copied into production. `src/services/api/` is the integration boundary for later frontend phases.
 
-## Deferred integrations
+## Integration boundaries
 
-Object storage, external email, BGV providers, offer generation, and AI execution are intentionally absent. `MockAIInterviewProvider` defines the future AI contract and always requires human review.
+The application uses configured object storage and email providers. External BGV providers and offer generation remain integration boundaries. `NativeInterviewProvider` supplies the no-API interview agent, while the optional Ollama adapter keeps generative execution on the backend host. Every interview result requires human review.

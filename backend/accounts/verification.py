@@ -1,12 +1,13 @@
 import hashlib
 import hmac
+import logging
 import secrets
 from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from rest_framework.exceptions import AuthenticationFailed, Throttled, ValidationError
+from rest_framework.exceptions import APIException, AuthenticationFailed, Throttled, ValidationError
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from notifications.email import send_login_verification_code
@@ -17,6 +18,13 @@ from .models import LoginVerification, User
 CODE_TTL_MINUTES = 10
 RESEND_COOLDOWN_SECONDS = 60
 MAX_ATTEMPTS = 5
+logger = logging.getLogger(__name__)
+
+
+class EmailDeliveryUnavailable(APIException):
+    status_code = 503
+    default_detail = "We could not send the verification code. Please try again shortly or contact careers@senzoft.com."
+    default_code = "EMAIL_DELIVERY_UNAVAILABLE"
 
 
 def _digest(challenge_id, code: str) -> str:
@@ -39,6 +47,7 @@ def challenge_payload(challenge: LoginVerification) -> dict:
     }
 
 
+@transaction.atomic
 def issue_login_challenge(user: User, *, enforce_cooldown: bool = False) -> LoginVerification:
     now = timezone.now()
     latest = LoginVerification.objects.filter(user=user, consumed_at__isnull=True).first()
@@ -56,11 +65,16 @@ def issue_login_challenge(user: User, *, enforce_cooldown: bool = False) -> Logi
     )
     challenge.code_digest = _digest(challenge.id, code)
     challenge.save(update_fields=("code_digest",))
-    send_login_verification_code(
-        recipient=user.email,
-        code=code,
-        expires_minutes=CODE_TTL_MINUTES,
-    )
+    try:
+        send_login_verification_code(
+            recipient=user.email,
+            recipient_name=user.get_full_name().strip() or user.first_name.strip() or user.username,
+            code=code,
+            expires_minutes=CODE_TTL_MINUTES,
+        )
+    except Exception as exc:
+        logger.exception("Verification email delivery failed for user %s", user.pk)
+        raise EmailDeliveryUnavailable() from exc
     return challenge
 
 

@@ -1,6 +1,11 @@
 import logging
+from pathlib import Path
 
 from django.db import IntegrityError, transaction
+from django.conf import settings
+from django.core import signing
+from django.http import FileResponse
+from django.urls import reverse
 from django.utils import timezone
 from uuid import uuid4
 from rest_framework import generics, serializers, status
@@ -11,7 +16,8 @@ from rest_framework.views import APIView
 from core.permissions import IsCandidate
 from .models import Application, BackgroundVerification, Document, Interview, Joining, Offer
 from .serializers import ApplicationSerializer, BackgroundVerificationSerializer, DocumentSerializer, InterviewSerializer, JoiningSerializer, OfferSerializer
-from .storage import StorageConfigurationError, bucket_name, storage_client
+from .storage import StorageConfigurationError, bucket_name, delete_local_file, is_local_key, local_file_size, local_storage_path, missing_storage_configuration, save_local_file, storage_client
+from notifications.email import send_application_submitted, send_application_update
 from audit.services import write_audit
 
 
@@ -26,6 +32,7 @@ class ApplicationCreateView(generics.CreateAPIView):
         try:
             application = serializer.save()
             write_audit(actor=self.request.user, action="APPLICATION_CREATED", entity="Application", entity_id=application.public_id)
+            send_application_submitted(application=application)
         except IntegrityError as exc:
             raise serializers.ValidationError({"job_id": "You have already applied for this job."}) from exc
 
@@ -71,6 +78,10 @@ class CandidateResumeUploadRequestView(APIView):
         profile = request.user.candidate_profile
         key = f"candidates/{profile.public_id}/resumes/{uuid4().hex}{suffix}"
         document = Document.objects.create(candidate=profile, document_type=Document.Type.RESUME, file_name=file_name[:255], file_size=file_size, mime_type=mime_type, storage_key=key)
+        if missing_storage_configuration() and settings.DEBUG:
+            document.storage_key = f"local:{key}"
+            document.save(update_fields=("storage_key", "updated_at"))
+            return Response({"document_id": document.public_id, "upload_mode": "api", "upload_url": "", "upload_fields": {}, "expires_in": 600})
         try:
             upload = storage_client().generate_presigned_post(
                 Bucket=bucket_name(), Key=key,
@@ -103,7 +114,7 @@ class CandidateResumeView(APIView):
         profile = request.user.candidate_profile
         document = self._document(request, request.data.get("document_id"))
         try:
-            stored = storage_client().head_object(Bucket=bucket_name(), Key=document.storage_key)
+            stored = {"ContentLength": local_file_size(document.storage_key)} if is_local_key(document.storage_key) else storage_client().head_object(Bucket=bucket_name(), Key=document.storage_key)
         except Exception as exc:
             raise serializers.ValidationError({"resume": "The uploaded résumé could not be verified."}) from exc
         actual_size = int(stored.get("ContentLength", 0))
@@ -119,26 +130,85 @@ class CandidateResumeView(APIView):
             profile.save(update_fields=("resume_metadata", "updated_at"))
         if old_id and old_id != document.public_id:
             old = Document.objects.filter(candidate=profile, public_id=old_id).first()
-            if old:
-                try: storage_client().delete_object(Bucket=bucket_name(), Key=old.storage_key)
+            if old and not Application.objects.filter(resume_version__document_id=old.public_id).exists():
+                try:
+                    if is_local_key(old.storage_key): delete_local_file(old.storage_key)
+                    else: storage_client().delete_object(Bucket=bucket_name(), Key=old.storage_key)
                 except Exception: pass
                 old.delete()
         return Response(profile.resume_metadata)
 
     def get(self, request):
         document = self._document(request)
-        url = storage_client().generate_presigned_url("get_object", Params={"Bucket": bucket_name(), "Key": document.storage_key, "ResponseContentDisposition": f'attachment; filename="{document.file_name}"'}, ExpiresIn=300)
+        if is_local_key(document.storage_key):
+            token = signing.dumps({"document_id": document.public_id}, salt="private-resume-download")
+            url = request.build_absolute_uri(reverse("private-resume-download", kwargs={"token": token}))
+        else:
+            url = storage_client().generate_presigned_url("get_object", Params={"Bucket": bucket_name(), "Key": document.storage_key, "ResponseContentDisposition": f'attachment; filename="{document.file_name}"'}, ExpiresIn=300)
         return Response({"download_url": url, "expires_in": 300})
 
     def delete(self, request):
         profile = request.user.candidate_profile
         document = self._document(request)
-        try: storage_client().delete_object(Bucket=bucket_name(), Key=document.storage_key)
+        if Application.objects.filter(resume_version__document_id=document.public_id).exists():
+            raise serializers.ValidationError({"resume": "This resume is attached to a submitted application and cannot be deleted."})
+        try:
+            if is_local_key(document.storage_key): delete_local_file(document.storage_key)
+            else: storage_client().delete_object(Bucket=bucket_name(), Key=document.storage_key)
         except Exception: pass
         document.delete()
         profile.resume_metadata = {}
         profile.save(update_fields=("resume_metadata", "updated_at"))
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class CandidateResumeObjectUploadView(APIView):
+    permission_classes = [IsCandidate]
+
+    def post(self, request):
+        profile = request.user.candidate_profile
+        document = generics.get_object_or_404(
+            Document,
+            public_id=request.data.get("document_id"),
+            candidate=profile,
+            document_type=Document.Type.RESUME,
+            upload_status=Document.UploadStatus.PENDING,
+        )
+        if not is_local_key(document.storage_key):
+            raise serializers.ValidationError({"file": "This upload must use the provided object-storage form."})
+        uploaded = request.FILES.get("file")
+        if not uploaded:
+            raise serializers.ValidationError({"file": "Choose a resume file."})
+        if uploaded.size < 1 or uploaded.size > 10 * 1024 * 1024:
+            raise serializers.ValidationError({"file": "Resumes must be 10 MB or smaller."})
+        if uploaded.content_type != document.mime_type:
+            raise serializers.ValidationError({"file": "The uploaded file type does not match the request."})
+        save_local_file(document.storage_key, uploaded)
+        return Response({"uploaded": True})
+
+
+class PrivateResumeDownloadView(APIView):
+    permission_classes = []
+    authentication_classes = []
+
+    def get(self, request, token):
+        try:
+            payload = signing.loads(token, salt="private-resume-download", max_age=300)
+            document = Document.objects.get(
+                public_id=payload["document_id"],
+                document_type=Document.Type.RESUME,
+                upload_status=Document.UploadStatus.UPLOADED,
+            )
+            if not is_local_key(document.storage_key):
+                raise Document.DoesNotExist
+            return FileResponse(
+                local_storage_path(document.storage_key).open("rb"),
+                as_attachment=True,
+                filename=Path(document.file_name).name,
+                content_type=document.mime_type,
+            )
+        except (signing.BadSignature, signing.SignatureExpired, Document.DoesNotExist, KeyError, OSError):
+            return Response({"detail": "This resume download link is invalid or expired."}, status=404)
 
 
 def _candidate_bgv(request, allow_completed=False):
@@ -349,6 +419,11 @@ class CandidateOfferDecisionView(APIView):
         offer.save()
         if application_status in Application.TRANSITIONS.get(offer.application.current_status, set()):
             offer.application.transition_to(application_status, request.user, f"Candidate chose to {self.decision} the offer")
+            send_application_update(
+                application=offer.application,
+                status_label=offer.application.get_current_status_display(),
+                reason=f"You chose to {self.decision} the offer.",
+            )
         write_audit(actor=request.user, action=action, entity="Offer", entity_id=offer.public_id)
         return Response(OfferSerializer(offer).data)
 

@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-Copy `.env.example` to `.env.local` for local configuration. The contact form posts to the Vercel `/api/contact` function and delivers through Resend. Configure `RESEND_API_KEY`, `CONTACT_RECIPIENT_EMAIL`, and `CONTACT_FROM_EMAIL` in the deployment environment. Other legacy interest forms still use Netlify Forms.
+Copy `.env.example` to `.env.local` for local configuration. The contact form posts to the Vercel `/api/contact` function and delivers through Zoho ZeptoMail/CPaaS. Configure `ZEPTOMAIL_API_KEY`, `ZEPTOMAIL_API_URL`, `CONTACT_RECIPIENT_EMAIL`, and `CONTACT_FROM_EMAIL` in the deployment environment. Django transactional mail uses the ZeptoMail SMTP variables from `.env.example`. Other legacy interest forms still use Netlify Forms.
 
 The redesigned `/careers` experience uses local sample data in `src/data` for its role listing, benefits and illustrative quotes. Sample roles are explicitly marked as unverified, not live vacancies. The `/careers/apply/:jobId` preview prepares a `mailto:` message; a selected resume must be attached manually in the mail app. No careers listing fetch or application upload is performed on those new routes. Replace the sample content with approved company information before publishing it as real opportunities.
 
@@ -38,7 +38,7 @@ Career discipline pages accept expressions of interest and are not advertised va
 
 ## Deployment
 
-Vercel and Netlify SPA route rewrites are included. Set `VITE_SITE_URL` in the deployment environment. On Vercel, configure the contact email variables above and verify the sending domain in Resend. Preview `development`; deploy production from the configured production branch.
+The Vercel configuration deploys the Vite frontend, Django API, and contact-email function as one project. Set `VITE_API_BASE_URL=/api/v1`, configure the pooled Neon database connection, private resume object storage, Django secret, and ZeptoMail credentials before releasing. Apply Django migrations separately with `DATABASE_URL_UNPOOLED`; do not run migrations in the Vercel build command. The complete environment-variable list and verification checklist are in [docs/backend/DEPLOYMENT.md](docs/backend/DEPLOYMENT.md).
 
 ## Brand asset
 

@@ -9,6 +9,59 @@ import {
 } from "../../services/api/admin";
 import { AdminState, formatDate, label, StatusBadge } from "../AdminUI";
 
+const displayValue = (value: unknown): string => {
+  if (value === null || value === undefined || value === "") return "—";
+  if (Array.isArray(value)) return value.map(displayValue).join(", ");
+  if (typeof value === "object") {
+    return Object.entries(value as Record<string, unknown>)
+      .filter(([, nested]) => nested !== null && nested !== undefined && nested !== "")
+      .map(([key, nested]) => `${label(key)}: ${displayValue(nested)}`)
+      .join(" · ");
+  }
+  return String(value);
+};
+
+function ProfileEntries({
+  title,
+  entries,
+}: {
+  title: string;
+  entries: unknown[];
+}) {
+  return (
+    <div className="admin-profile-block">
+      <h3>{title}</h3>
+      {entries.length ? (
+        <div className="admin-profile-entry-list">
+          {entries.map((entry, index) => {
+            if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+              return <article className="admin-profile-entry" key={`${title}-${index}`}><strong>{displayValue(entry)}</strong></article>;
+            }
+            const values = entry as Record<string, unknown>;
+            const headingKey = ["role", "degree", "name", "title", "certification"].find((key) => values[key]);
+            const subheadingKey = ["company", "institution", "issuer"].find((key) => values[key]);
+            return (
+              <article className="admin-profile-entry" key={`${title}-${index}`}>
+                <header>
+                  <strong>{headingKey ? displayValue(values[headingKey]) : `${title} ${index + 1}`}</strong>
+                  {subheadingKey && <span>{displayValue(values[subheadingKey])}</span>}
+                </header>
+                <dl>
+                  {Object.entries(values)
+                    .filter(([key, value]) => key !== headingKey && key !== subheadingKey && value !== "" && value !== null && value !== undefined)
+                    .map(([key, value]) => <div key={key}><dt>{label(key)}</dt><dd>{displayValue(value)}</dd></div>)}
+                </dl>
+              </article>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="admin-empty-inline">No {title.toLowerCase()} added.</p>
+      )}
+    </div>
+  );
+}
+
 export default function AdminCandidateDetailPage() {
   const { id = "" } = useParams();
   const [candidate, setCandidate] = useState<AdminCandidate | null>(null);
@@ -113,18 +166,9 @@ export default function AdminCandidateDetailPage() {
               <div className="admin-card-header">
                 <h2>Experience and education</h2>
               </div>
-              {(["experience", "education", "certifications"] as const).map(
-                (key) => (
-                  <div className="admin-profile-block" key={key}>
-                    <h3>{label(key)}</h3>
-                    <pre>
-                      {candidate[key].length
-                        ? JSON.stringify(candidate[key], null, 2)
-                        : "No data available"}
-                    </pre>
-                  </div>
-                ),
-              )}
+              <ProfileEntries title="Experience" entries={candidate.experience} />
+              <ProfileEntries title="Education" entries={candidate.education} />
+              <ProfileEntries title="Certifications" entries={candidate.certifications} />
             </section>
             <section className="admin-card admin-card-full">
               <div className="admin-card-header">

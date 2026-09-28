@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.utils import timezone
 from rest_framework import serializers
 
 from careers.models import Job
@@ -76,6 +77,32 @@ class ApplicationSerializer(serializers.ModelSerializer):
         except Job.DoesNotExist as exc:
             raise serializers.ValidationError("Published job could not be found.") from exc
 
+    def validate(self, attrs):
+        request = self.context["request"]
+        try:
+            candidate = request.user.candidate_profile
+        except Exception as exc:
+            raise serializers.ValidationError("A candidate profile is required.") from exc
+        document_id = candidate.resume_metadata.get("document_id")
+        resume = Document.objects.filter(
+            public_id=document_id,
+            candidate=candidate,
+            document_type=Document.Type.RESUME,
+            upload_status=Document.UploadStatus.UPLOADED,
+        ).first()
+        if not resume:
+            raise serializers.ValidationError({
+                "resume_version": "Upload and verify your resume before submitting this application."
+            })
+        attrs["resume_version"] = {
+            "document_id": resume.public_id,
+            "file_name": resume.file_name,
+            "file_size": resume.file_size,
+            "mime_type": resume.mime_type,
+            "uploaded_at": resume.uploaded_at.isoformat() if resume.uploaded_at else None,
+        }
+        return attrs
+
     def create(self, validated_data):
         request = self.context["request"]
         try:
@@ -121,11 +148,26 @@ class TransitionSerializer(serializers.Serializer):
     reason = serializers.CharField(required=False, allow_blank=True, max_length=2000)
 
 
+class InterviewScheduleSerializer(serializers.Serializer):
+    interview_type = serializers.ChoiceField(choices=(Interview.Type.AI_SCREENING, Interview.Type.TECHNICAL))
+    scheduled_at = serializers.DateTimeField()
+    expires_at = serializers.DateTimeField(required=False, allow_null=True)
+    notes = serializers.CharField(required=False, allow_blank=True, max_length=4000)
+
+    def validate(self, attrs):
+        if attrs["scheduled_at"] <= timezone.now():
+            raise serializers.ValidationError({"scheduled_at": "Choose a future interview time."})
+        if attrs.get("expires_at") and attrs["expires_at"] <= attrs["scheduled_at"]:
+            raise serializers.ValidationError({"expires_at": "The expiry must be after the scheduled time."})
+        return attrs
+
+
 class InterviewSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="public_id", read_only=True)
     application_id = serializers.CharField(source="application.public_id", read_only=True)
     job_id = serializers.CharField(source="application.job.public_id", read_only=True)
     job_title = serializers.CharField(source="application.job.title", read_only=True)
+    candidate_name = serializers.CharField(source="application.candidate.name", read_only=True)
     instructions = serializers.SerializerMethodField()
 
     def get_instructions(self, obj):
@@ -133,7 +175,7 @@ class InterviewSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Interview
-        fields = ("id", "application_id", "job_id", "job_title", "interview_type", "status", "scheduled_at", "started_at", "completed_at", "expires_at", "configuration", "instructions", "created_at", "updated_at")
+        fields = ("id", "application_id", "job_id", "job_title", "candidate_name", "interview_type", "status", "scheduled_at", "started_at", "completed_at", "expires_at", "configuration", "instructions", "created_at", "updated_at")
 
 
 class InterviewQuestionSerializer(serializers.ModelSerializer):

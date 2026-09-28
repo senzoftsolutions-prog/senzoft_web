@@ -12,7 +12,7 @@ from core.permissions import IsCandidate
 from .ai import get_ai_provider, get_speech_provider
 from .models import IntegrityEvent, Interview, InterviewEvaluation, InterviewQuestion, InterviewResponse
 from .serializers import IntegrityEventCreateSerializer, IntegrityEventSerializer, InterviewQuestionSerializer, InterviewResponseSubmitSerializer, InterviewSessionSerializer
-from notifications.email import send_interview_update
+from notifications.email import send_application_update, send_interview_update
 
 
 def candidate_interviews(user):
@@ -25,6 +25,38 @@ def interview_context(interview):
         "job": {"title": job.title, "description": job.description, "responsibilities": job.responsibilities, "required_skills": job.required_skills, "preferred_skills": job.preferred_skills, "qualifications": job.qualifications, "experience": [job.minimum_experience, job.maximum_experience]},
         "candidate": {"skills": candidate.skills, "experience": candidate.experience, "education": candidate.education, "summary": candidate.professional_summary, "resume": candidate.resume_metadata},
     }
+
+
+def finalize_interview(interview, actor):
+    """Build the recruiter-facing result. AI output remains advisory and requires human review."""
+    responses = list(interview.responses.all())
+    events = list(interview.integrity_events.values("event_type", "severity", "occurred_at"))
+    response_data = [{"score": item.score, "evaluation": item.evaluation} for item in responses]
+    summary = get_ai_provider().summarize_interview(responses=response_data, integrity_events=events)
+    avg = lambda key: round(sum(float(item.evaluation.get(key, 0)) for item in responses) / len(responses), 2)
+    InterviewEvaluation.objects.update_or_create(
+        interview=interview,
+        defaults={
+            "technical_score": avg("technical_score"),
+            "communication_score": avg("communication_score"),
+            "relevance_score": avg("relevance_score"),
+            "overall_score": summary["overall_score"],
+            "integrity_summary": {"event_count": len(events), "signals_are_not_proof": True},
+            "structured_result": summary,
+        },
+    )
+    interview.final_result = {**interview.final_result, **summary, "requires_human_review": True}
+    interview.transition_to(Interview.Status.COMPLETED)
+    application = interview.application
+    if application.current_status == application.Status.AI_INTERVIEW_IN_PROGRESS:
+        application.transition_to(application.Status.AI_INTERVIEW_COMPLETED, actor, "Candidate completed the first-round AI pre-screening; recruiter review is required.")
+        send_application_update(
+            application=application,
+            status_label=application.get_current_status_display(),
+            reason="Your AI pre-screening was submitted for recruiter review.",
+        )
+    write_audit(actor=actor, action="INTERVIEW_COMPLETED", entity="Interview", entity_id=interview.public_id, metadata={"requires_human_review": True})
+    send_interview_update(interview=interview)
 
 
 class CandidateInterviewSessionView(generics.RetrieveAPIView):
@@ -48,11 +80,18 @@ class CandidateInterviewStartView(APIView):
                     interview.status = Interview.Status.EXPIRED
                     interview.save(update_fields=("status", "updated_at"))
                 return Response({"detail": "This interview has expired."}, status=status.HTTP_410_GONE)
+            if interview.scheduled_at and interview.scheduled_at > timezone.now():
+                return Response(
+                    {"detail": f"This interview is scheduled for {interview.scheduled_at.isoformat()}."},
+                    status=status.HTTP_409_CONFLICT,
+                )
             if interview.status == Interview.Status.SCHEDULED:
                 interview.transition_to(Interview.Status.READY)
             if interview.status == Interview.Status.CREATED:
                 interview.transition_to(Interview.Status.READY)
             if interview.status == Interview.Status.READY:
+                if request.data.get("consent") is not True:
+                    raise serializers.ValidationError({"consent": "Confirm the AI screening disclosure before starting."})
                 config = {**settings.AI_INTERVIEW_DEFAULTS, **interview.configuration}
                 if not interview.questions.exists():
                     context = interview_context(interview)
@@ -61,7 +100,15 @@ class CandidateInterviewStartView(APIView):
                     interview._prefetched_objects_cache = {}
                 interview.configuration = config
                 interview.transition_to(Interview.Status.IN_PROGRESS)
-                write_audit(actor=request.user, action="INTERVIEW_STARTED", entity="Interview", entity_id=interview.public_id)
+                application = interview.application
+                if application.current_status == application.Status.AI_INTERVIEW_INVITED:
+                    application.transition_to(application.Status.AI_INTERVIEW_IN_PROGRESS, request.user, "Candidate started the first-round AI pre-screening.")
+                    send_application_update(
+                        application=application,
+                        status_label=application.get_current_status_display(),
+                        reason="Your scheduled AI pre-screening has started.",
+                    )
+                write_audit(actor=request.user, action="INTERVIEW_STARTED", entity="Interview", entity_id=interview.public_id, metadata={"ai_screening_consent": True, "round": config.get("round", 1)})
                 send_interview_update(interview=interview)
             elif interview.status != Interview.Status.IN_PROGRESS:
                 return Response({"detail": f"Interview cannot start from {interview.status}."}, status=status.HTTP_409_CONFLICT)
@@ -126,13 +173,5 @@ class CandidateInterviewCompleteView(APIView):
             minimum = interview.configuration.get("minimum_questions", 3)
             if len(responses) < minimum:
                 return Response({"detail": f"Answer at least {minimum} questions before completing."}, status=status.HTTP_409_CONFLICT)
-            events = list(interview.integrity_events.values("event_type", "severity", "occurred_at"))
-            response_data = [{"score": item.score, "evaluation": item.evaluation} for item in responses]
-            summary = get_ai_provider().summarize_interview(responses=response_data, integrity_events=events)
-            avg = lambda key: round(sum(float(item.evaluation.get(key, 0)) for item in responses) / len(responses), 2)
-            InterviewEvaluation.objects.update_or_create(interview=interview, defaults={"technical_score": avg("technical_score"), "communication_score": avg("communication_score"), "relevance_score": avg("relevance_score"), "overall_score": summary["overall_score"], "integrity_summary": {"event_count": len(events), "signals_are_not_proof": True}, "structured_result": summary})
-            interview.final_result = summary
-            interview.transition_to(Interview.Status.COMPLETED)
-            write_audit(actor=request.user, action="INTERVIEW_COMPLETED", entity="Interview", entity_id=interview.public_id, metadata={"requires_human_review": True})
-            send_interview_update(interview=interview)
+            finalize_interview(interview, request.user)
         return Response(InterviewSessionSerializer(interview).data)

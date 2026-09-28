@@ -1,7 +1,10 @@
 import { expect, test } from "@playwright/test";
 
+test.setTimeout(120_000);
+
 const widths = [320, 360, 375, 390, 414, 430, 480, 768, 820, 834, 912, 1024, 1280, 1366, 1440, 1600, 1920, 2560];
 const routes = ["/", "/services", "/industries", "/technology", "/solutions", "/who-we-are", "/insights", "/careers", "/contact"];
+const portalRoutes = ["/candidate/login", "/candidate/register", "/candidate/forgot-password", "/admin/login"];
 
 test("shared shell remains visible and overflow-free at every specified width", async ({ page }) => {
   for (const width of widths) {
@@ -35,6 +38,29 @@ test("major journeys do not clip at phone, tablet, desktop, or ultra-wide", asyn
       const overflow = await page.evaluate(() => Math.max(document.documentElement.scrollWidth, document.body.scrollWidth) - document.documentElement.clientWidth);
       expect(overflow, `${route} overflows at ${width}px`).toBeLessThanOrEqual(1);
       await expect(page.locator("main")).toBeVisible();
+    }
+  }
+});
+
+test("candidate and admin entry screens remain usable at every device width", async ({ page }) => {
+  for (const width of widths) {
+    await page.setViewportSize({ width, height: Math.min(1200, Math.max(720, Math.round(width * .75))) });
+    for (const route of portalRoutes) {
+      await page.goto(route);
+      await page.waitForLoadState("domcontentloaded");
+      const metrics = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        documentWidth: document.documentElement.scrollWidth,
+        bodyWidth: document.body.scrollWidth,
+      }));
+      expect(metrics.documentWidth, `${route} document overflow at ${width}px`).toBeLessThanOrEqual(metrics.viewport + 1);
+      expect(metrics.bodyWidth, `${route} body overflow at ${width}px`).toBeLessThanOrEqual(metrics.viewport + 1);
+      await expect(page.locator("main")).toBeVisible();
+      if (route === "/candidate/forgot-password") {
+        await expect(page.getByRole("link", { name: "Back to sign in" })).toBeVisible();
+      } else {
+        await expect(page.locator('main input:not([type="hidden"])').first()).toBeVisible();
+      }
     }
   }
 });

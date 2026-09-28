@@ -169,6 +169,10 @@ export const runAdminAction = <T>(
     method: "POST",
     body: JSON.stringify(body),
   });
+export const getAdminApplicationResume = (applicationId: string) =>
+  apiRequest<{ download_url: string; expires_in: number; file_name: string }>(
+    `admin/applications/${encodeURIComponent(applicationId)}/resume-download/`,
+  );
 export const uploadApplicationAttachment = (
   applicationId: string,
   body: FormData,

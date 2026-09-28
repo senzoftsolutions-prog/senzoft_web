@@ -1,49 +1,341 @@
 import { apiRequest } from "./client";
 import type { Paginated } from "./jobs";
 
-export type CandidateProfile = { id: string; name: string; email: string; phone: string; location: string; address_line1:string; address_line2:string; city:string; state:string; postal_code:string; country:string; current_role: string; years_of_experience: number | null; professional_summary: string; skills: string[]; experience: Array<Record<string, string>>; education: Array<Record<string, string>>; certifications: unknown[]; resume_metadata: Record<string, unknown>; linkedin_url: string; portfolio_url: string; updated_at: string };
-export type InterviewSummary = { id:string; interview_type:string; status:string; scheduled_at:string|null; updated_at:string };
-export type CandidateApplication = { id: string; job: string; job_title: string; job_department: string; applied_at: string; current_status: string; resume_version: Record<string, unknown>; profile_snapshot: Record<string, unknown>; status_history: Array<{ previous_status: string; new_status: string; reason: string; timestamp: string }>; latest_interview:InterviewSummary|null; updated_at: string };
-export type CandidateDashboard = { profile_completion: number; active_applications: number; upcoming_interviews: number; pending_documents: number; unread_notifications: number; latest_application: CandidateApplication | null; next_interview:({id:string;job_title:string;interview_type:string;status:string;scheduled_at:string|null})|null; documents_enabled:boolean; bgv_id:string|null; bgv_status:string|null; recruitment_email:string; recent_updates:Array<{public_id:string;job__title:string;current_status:string;updated_at:string}> };
-export type CandidateInterview = { id: string; application_id: string; job_id: string; job_title: string; interview_type: string; status: string; scheduled_at: string | null; instructions: string };
-export type InterviewQuestion = { id: string; sequence: number; question: string; category: string; difficulty: string; answered: boolean };
-export type InterviewSession = CandidateInterview & { expires_at: string | null; configuration: Record<string, number | string>; questions: InterviewQuestion[]; responses: Array<{ id:string; question_id:string; transcript:string; created_at:string }>; integrity_events: Array<{ id:string; event_type:string; severity:string; occurred_at:string }>; final_result: Record<string, unknown> };
-export type CandidateDocument = { id: string; application_id: string | null; document_type: string; file_name: string; file_size: number; mime_type: string; upload_status: string; uploaded_at: string | null; reviewed_at: string | null };
-export type CandidateBgv = { id: string; application_id: string; job_title: string; status: string; requested_at: string | null; started_at: string | null; completed_at: string | null };
-export type CandidateOffer = { id: string; application_id: string; job_id: string; job_title: string; status: string; issued_at: string | null; expires_at: string | null; accepted_at: string | null; declined_at: string | null; joining_date: string | null };
-export type CandidateJoining = { id: string; application_id: string; job_id: string; job_title: string; joining_date: string; status: string; location: string; department: string };
-export type CandidateNotification = { id: string; application_id: string | null; notification_type: string; channel: string; status: string; title: string; message: string; is_read: boolean; read_at: string | null; created_at: string };
+export type CandidateProfile = {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  location: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  current_role: string;
+  years_of_experience: number | null;
+  professional_summary: string;
+  skills: string[];
+  experience: Array<Record<string, string>>;
+  education: Array<Record<string, string>>;
+  certifications: unknown[];
+  resume_metadata: Record<string, unknown>;
+  linkedin_url: string;
+  portfolio_url: string;
+  updated_at: string;
+};
+export type InterviewSummary = {
+  id: string;
+  interview_type: string;
+  status: string;
+  scheduled_at: string | null;
+  updated_at: string;
+};
+export type CandidateApplication = {
+  id: string;
+  job: string;
+  job_title: string;
+  job_department: string;
+  applied_at: string;
+  current_status: string;
+  resume_version: Record<string, unknown>;
+  profile_snapshot: Record<string, unknown>;
+  status_history: Array<{
+    previous_status: string;
+    new_status: string;
+    reason: string;
+    timestamp: string;
+  }>;
+  latest_interview: InterviewSummary | null;
+  updated_at: string;
+};
+export type CandidateDashboard = {
+  profile_completion: number;
+  active_applications: number;
+  upcoming_interviews: number;
+  pending_documents: number;
+  unread_notifications: number;
+  latest_application: CandidateApplication | null;
+  next_interview: {
+    id: string;
+    job_title: string;
+    interview_type: string;
+    status: string;
+    scheduled_at: string | null;
+  } | null;
+  documents_enabled: boolean;
+  bgv_id: string | null;
+  bgv_status: string | null;
+  recruitment_email: string;
+  recent_updates: Array<{
+    public_id: string;
+    job__title: string;
+    current_status: string;
+    updated_at: string;
+  }>;
+};
+export type CandidateInterview = {
+  id: string;
+  application_id: string;
+  job_id: string;
+  job_title: string;
+  candidate_name: string;
+  interview_type: string;
+  status: string;
+  scheduled_at: string | null;
+  instructions: string;
+};
+export type InterviewQuestion = {
+  id: string;
+  sequence: number;
+  question: string;
+  category: string;
+  difficulty: string;
+  answered: boolean;
+};
+export type InterviewSession = CandidateInterview & {
+  expires_at: string | null;
+  configuration: Record<string, number | string>;
+  questions: InterviewQuestion[];
+  responses: Array<{
+    id: string;
+    question_id: string;
+    transcript: string;
+    created_at: string;
+  }>;
+  integrity_events: Array<{
+    id: string;
+    event_type: string;
+    severity: string;
+    occurred_at: string;
+  }>;
+  final_result: Record<string, unknown>;
+};
+export type CandidateDocument = {
+  id: string;
+  application_id: string | null;
+  document_type: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string;
+  upload_status: string;
+  uploaded_at: string | null;
+  reviewed_at: string | null;
+};
+export type CandidateBgv = {
+  id: string;
+  application_id: string;
+  job_title: string;
+  status: string;
+  requested_at: string | null;
+  started_at: string | null;
+  completed_at: string | null;
+};
+export type CandidateOffer = {
+  id: string;
+  application_id: string;
+  job_id: string;
+  job_title: string;
+  status: string;
+  issued_at: string | null;
+  expires_at: string | null;
+  accepted_at: string | null;
+  declined_at: string | null;
+  joining_date: string | null;
+};
+export type CandidateJoining = {
+  id: string;
+  application_id: string;
+  job_id: string;
+  job_title: string;
+  joining_date: string;
+  status: string;
+  location: string;
+  department: string;
+};
+export type CandidateNotification = {
+  id: string;
+  application_id: string | null;
+  notification_type: string;
+  channel: string;
+  status: string;
+  title: string;
+  message: string;
+  is_read: boolean;
+  read_at: string | null;
+  created_at: string;
+};
 
-export const getCandidateDashboard = () => apiRequest<CandidateDashboard>("candidates/me/dashboard/");
+export const getCandidateDashboard = () =>
+  apiRequest<CandidateDashboard>("candidates/me/dashboard/");
 export const getProfile = () => apiRequest<CandidateProfile>("candidates/me/");
-export const updateProfile = (payload: Partial<CandidateProfile>) => apiRequest<CandidateProfile>("candidates/me/", { method: "PATCH", body: JSON.stringify(payload) });
-export const listApplications = () => apiRequest<Paginated<CandidateApplication>>("candidates/me/applications/");
-export const getCandidateApplication = (id: string) => apiRequest<CandidateApplication>(`applications/${encodeURIComponent(id)}/`);
-export const submitApplication = (jobId: string, resume: Record<string, unknown>) => apiRequest<CandidateApplication>("applications/", { method: "POST", body: JSON.stringify({ job_id: jobId, resume_version: resume }) });
-export const listInterviews = () => apiRequest<Paginated<CandidateInterview>>("candidates/me/interviews/");
-export const getInterview = (id: string) => apiRequest<CandidateInterview>(`candidates/me/interviews/${encodeURIComponent(id)}/`);
-export const getInterviewSession = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/session/`);
-export const startInterview = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/start/`, { method: "POST", body: "{}" });
-export const submitInterviewResponse = (id: string, questionId: string, transcript: string) => apiRequest<{ response_id:string; evaluation_recorded:boolean; next_question:InterviewQuestion|null }>(`candidates/me/interviews/${encodeURIComponent(id)}/responses/`, { method:"POST", body:JSON.stringify({ question_id:questionId, transcript }) });
-export const recordIntegrityEvent = (id: string, event_type: string, severity="INFO", metadata:Record<string,unknown>={}) => apiRequest(`candidates/me/interviews/${encodeURIComponent(id)}/integrity-events/`, { method:"POST", body:JSON.stringify({ event_type, severity, metadata }) });
-export const completeInterview = (id: string) => apiRequest<InterviewSession>(`candidates/me/interviews/${encodeURIComponent(id)}/complete/`, { method:"POST", body:"{}" });
-export const listDocuments = () => apiRequest<Paginated<CandidateDocument>>("candidates/me/documents/");
-export const listBgv = () => apiRequest<Paginated<CandidateBgv>>("candidates/me/background-verifications/");
-export const listOffers = () => apiRequest<Paginated<CandidateOffer>>("candidates/me/offers/");
-export const getOffer = (id: string) => apiRequest<CandidateOffer>(`candidates/me/offers/${encodeURIComponent(id)}/`);
-export const decideOffer = (id: string, decision: "accept" | "decline") => apiRequest<CandidateOffer>(`candidates/me/offers/${encodeURIComponent(id)}/${decision}/`, { method: "POST", body: "{}" });
-export const listJoining = () => apiRequest<Paginated<CandidateJoining>>("candidates/me/joining/");
-export const listNotifications = () => apiRequest<Paginated<CandidateNotification>>("candidates/me/notifications/");
-export const markNotificationRead = (id: string) => apiRequest<CandidateNotification>(`candidates/me/notifications/${encodeURIComponent(id)}/read/`, { method: "POST", body: "{}" });
-export type ResumeUploadRequest = { document_id:string; upload_url:string; upload_fields:Record<string,string>; expires_in:number };
-export const requestResumeUpload = (file:File) => apiRequest<ResumeUploadRequest>("candidates/me/resume/upload-request/", { method:"POST", body:JSON.stringify({file_name:file.name,file_size:file.size,mime_type:file.type}) });
-export const uploadResumeObject = async (request:ResumeUploadRequest,file:File) => { const body=new FormData(); Object.entries(request.upload_fields).forEach(([key,value])=>body.append(key,value)); body.append("file",file); const response=await fetch(request.upload_url,{method:"POST",body}); if(!response.ok) throw new Error("The résumé upload could not be completed."); };
-export const completeResumeUpload = (document_id:string) => apiRequest<Record<string,unknown>>("candidates/me/resume/complete/",{method:"POST",body:JSON.stringify({document_id})});
-export const getResumeDownload = () => apiRequest<{download_url:string;expires_in:number}>("candidates/me/resume/download/");
-export const deleteResume = () => apiRequest<void>("candidates/me/resume/",{method:"DELETE"});
-export type BgvDocumentType = "IDENTITY"|"EDUCATION"|"EXPERIENCE"|"ADDRESS_PROOF"|"OTHER";
-export const requestBgvDocumentUpload = (file:File,document_type:BgvDocumentType) => apiRequest<ResumeUploadRequest>("candidates/me/bgv-documents/upload-request/", { method:"POST", body:JSON.stringify({file_name:file.name,file_size:file.size,mime_type:file.type,document_type}) });
+export const updateProfile = (payload: Partial<CandidateProfile>) =>
+  apiRequest<CandidateProfile>("candidates/me/", {
+    method: "PATCH",
+    body: JSON.stringify(payload),
+  });
+export const listApplications = () =>
+  apiRequest<Paginated<CandidateApplication>>("candidates/me/applications/");
+export const getCandidateApplication = (id: string) =>
+  apiRequest<CandidateApplication>(`applications/${encodeURIComponent(id)}/`);
+export const submitApplication = (
+  jobId: string,
+  resume: Record<string, unknown>,
+) =>
+  apiRequest<CandidateApplication>("applications/", {
+    method: "POST",
+    body: JSON.stringify({ job_id: jobId, resume_version: resume }),
+  });
+export const listInterviews = () =>
+  apiRequest<Paginated<CandidateInterview>>("candidates/me/interviews/");
+export const getInterview = (id: string) =>
+  apiRequest<CandidateInterview>(
+    `candidates/me/interviews/${encodeURIComponent(id)}/`,
+  );
+export const getInterviewSession = (id: string) =>
+  apiRequest<InterviewSession>(
+    `candidates/me/interviews/${encodeURIComponent(id)}/session/`,
+  );
+export const startInterview = (id: string) =>
+  apiRequest<InterviewSession>(
+    `candidates/me/interviews/${encodeURIComponent(id)}/start/`,
+    { method: "POST", body: JSON.stringify({ consent: true }) },
+  );
+export const submitInterviewResponse = (
+  id: string,
+  questionId: string,
+  transcript: string,
+) =>
+  apiRequest<{
+    response_id: string;
+    evaluation_recorded: boolean;
+    next_question: InterviewQuestion | null;
+  }>(`candidates/me/interviews/${encodeURIComponent(id)}/responses/`, {
+    method: "POST",
+    body: JSON.stringify({ question_id: questionId, transcript }),
+  });
+export const recordIntegrityEvent = (
+  id: string,
+  event_type: string,
+  severity = "INFO",
+  metadata: Record<string, unknown> = {},
+) =>
+  apiRequest(
+    `candidates/me/interviews/${encodeURIComponent(id)}/integrity-events/`,
+    {
+      method: "POST",
+      body: JSON.stringify({ event_type, severity, metadata }),
+    },
+  );
+export const completeInterview = (id: string) =>
+  apiRequest<InterviewSession>(
+    `candidates/me/interviews/${encodeURIComponent(id)}/complete/`,
+    { method: "POST", body: "{}" },
+  );
+export const listDocuments = () =>
+  apiRequest<Paginated<CandidateDocument>>("candidates/me/documents/");
+export const listBgv = () =>
+  apiRequest<Paginated<CandidateBgv>>(
+    "candidates/me/background-verifications/",
+  );
+export const listOffers = () =>
+  apiRequest<Paginated<CandidateOffer>>("candidates/me/offers/");
+export const getOffer = (id: string) =>
+  apiRequest<CandidateOffer>(`candidates/me/offers/${encodeURIComponent(id)}/`);
+export const decideOffer = (id: string, decision: "accept" | "decline") =>
+  apiRequest<CandidateOffer>(
+    `candidates/me/offers/${encodeURIComponent(id)}/${decision}/`,
+    { method: "POST", body: "{}" },
+  );
+export const listJoining = () =>
+  apiRequest<Paginated<CandidateJoining>>("candidates/me/joining/");
+export const listNotifications = () =>
+  apiRequest<Paginated<CandidateNotification>>("candidates/me/notifications/");
+export const markNotificationRead = (id: string) =>
+  apiRequest<CandidateNotification>(
+    `candidates/me/notifications/${encodeURIComponent(id)}/read/`,
+    { method: "POST", body: "{}" },
+  );
+export type ResumeUploadRequest = {
+  document_id: string;
+  upload_url: string;
+  upload_fields: Record<string, string>;
+  expires_in: number;
+  upload_mode?: "presigned" | "api";
+};
+export const requestResumeUpload = (file: File) =>
+  apiRequest<ResumeUploadRequest>("candidates/me/resume/upload-request/", {
+    method: "POST",
+    body: JSON.stringify({
+      file_name: file.name,
+      file_size: file.size,
+      mime_type: file.type,
+    }),
+  });
+export const uploadResumeObject = async (
+  request: ResumeUploadRequest,
+  file: File,
+) => {
+  const body = new FormData();
+  if (request.upload_mode === "api") {
+    body.append("document_id", request.document_id);
+    body.append("file", file);
+    await apiRequest<{ uploaded: boolean }>("candidates/me/resume/upload-object/", {
+      method: "POST",
+      body,
+    });
+    return;
+  }
+  Object.entries(request.upload_fields).forEach(([key, value]) =>
+    body.append(key, value),
+  );
+  body.append("file", file);
+  const response = await fetch(request.upload_url, { method: "POST", body });
+  if (!response.ok)
+    throw new Error("The résumé upload could not be completed.");
+};
+export const completeResumeUpload = (document_id: string) =>
+  apiRequest<Record<string, unknown>>("candidates/me/resume/complete/", {
+    method: "POST",
+    body: JSON.stringify({ document_id }),
+  });
+export const getResumeDownload = () =>
+  apiRequest<{ download_url: string; expires_in: number }>(
+    "candidates/me/resume/download/",
+  );
+export const deleteResume = () =>
+  apiRequest<void>("candidates/me/resume/", { method: "DELETE" });
+export type BgvDocumentType =
+  "IDENTITY" | "EDUCATION" | "EXPERIENCE" | "ADDRESS_PROOF" | "OTHER";
+export const requestBgvDocumentUpload = (
+  file: File,
+  document_type: BgvDocumentType,
+) =>
+  apiRequest<ResumeUploadRequest>(
+    "candidates/me/bgv-documents/upload-request/",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        file_name: file.name,
+        file_size: file.size,
+        mime_type: file.type,
+        document_type,
+      }),
+    },
+  );
 export const uploadBgvDocumentObject = uploadResumeObject;
-export const completeBgvDocumentUpload = (document_id:string) => apiRequest<CandidateDocument>("candidates/me/bgv-documents/complete/",{method:"POST",body:JSON.stringify({document_id})});
-export const getBgvDocumentDownload = (document_id:string) => apiRequest<{download_url:string;expires_in:number}>(`candidates/me/bgv-documents/${encodeURIComponent(document_id)}/download/`);
-export const deleteBgvDocument = (document_id:string) => apiRequest<void>(`candidates/me/bgv-documents/${encodeURIComponent(document_id)}/`,{method:"DELETE"});
+export const completeBgvDocumentUpload = (document_id: string) =>
+  apiRequest<CandidateDocument>("candidates/me/bgv-documents/complete/", {
+    method: "POST",
+    body: JSON.stringify({ document_id }),
+  });
+export const getBgvDocumentDownload = (document_id: string) =>
+  apiRequest<{ download_url: string; expires_in: number }>(
+    `candidates/me/bgv-documents/${encodeURIComponent(document_id)}/download/`,
+  );
+export const deleteBgvDocument = (document_id: string) =>
+  apiRequest<void>(
+    `candidates/me/bgv-documents/${encodeURIComponent(document_id)}/`,
+    { method: "DELETE" },
+  );

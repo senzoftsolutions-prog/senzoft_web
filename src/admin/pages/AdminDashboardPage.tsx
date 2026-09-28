@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BriefcaseBusiness, ClipboardList, FileCheck2, ShieldCheck, UsersRound, Video } from "lucide-react";
+import { BriefcaseBusiness, ClipboardList, UsersRound, Video } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getDashboard, type DashboardData } from "../../services/api/admin";
 import { AdminState, formatDate, StatusBadge } from "../AdminUI";
@@ -7,7 +7,6 @@ import { AdminState, formatDate, StatusBadge } from "../AdminUI";
 const cards = [
   ["jobs", "Jobs", BriefcaseBusiness, "/admin/jobs"], ["applications", "Applications", ClipboardList, "/admin/applications"],
   ["candidates", "Candidates", UsersRound, "/admin/candidates"], ["interviews", "Interviews", Video, "/admin/interviews"],
-  ["pending_bgv", "Pending BGV", ShieldCheck, "/admin/bgv"], ["offers", "Offers", FileCheck2, "/admin/offers"],
 ] as const;
 
 export default function AdminDashboardPage() {

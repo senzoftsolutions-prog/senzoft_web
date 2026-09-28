@@ -12,7 +12,7 @@ import AdminCandidatesPage from "./pages/AdminCandidatesPage";
 import AdminCandidateDetailPage from "./pages/AdminCandidateDetailPage";
 import { AdminResourceDetailPage, AdminResourceListPage } from "./pages/AdminResourcePages";
 import { AdminBlogFormPage, AdminBlogPage } from "./pages/AdminBlogPages";
-import { AdminAuditPage, AdminUsersPage } from "./pages/AdminUsersAuditPages";
+import { AdminUsersPage } from "./pages/AdminUsersAuditPages";
 import AdminCookieManagementPage from "./pages/AdminCookieManagementPage";
 import "../styles/admin.css";
 
@@ -34,10 +34,9 @@ export default function AdminApp() {
     <Route path="applications" element={gate(<AdminApplicationsPage />)} /><Route path="applications/:id" element={gate(<AdminApplicationDetailPage />)} />
     <Route path="candidates" element={gate(<AdminCandidatesPage />)} /><Route path="candidates/:id" element={gate(<AdminCandidateDetailPage />)} />
     <Route path="interviews" element={gate(<AdminResourceListPage resource="interviews" />)} /><Route path="interviews/:id" element={gate(<AdminResourceDetailPage resource="interviews" />)} />
-    <Route path="documents" element={gate(<AdminResourceListPage resource="documents" />)} /><Route path="bgv" element={gate(<AdminResourceListPage resource="bgv" />)} /><Route path="bgv/:id" element={gate(<AdminResourceDetailPage resource="bgv" />)} />
-    <Route path="offers" element={gate(<AdminResourceListPage resource="offers" />)} /><Route path="offers/:id" element={gate(<AdminResourceDetailPage resource="offers" />)} /><Route path="joining" element={gate(<AdminResourceListPage resource="joining" />)} />
+    <Route path="documents" element={gate(<AdminResourceListPage resource="documents" />)} />
     <Route path="blog" element={gate(<AdminBlogPage />)} /><Route path="blog/new" element={gate(<AdminBlogFormPage />)} /><Route path="blog/:id" element={gate(<AdminBlogFormPage />)} />
-    <Route path="cookies" element={gate(<AdminCookieManagementPage />)} /><Route path="users" element={gate(<AdminUsersPage />)} /><Route path="audit-logs" element={gate(<AdminAuditPage />)} />
+    <Route path="cookies" element={gate(<AdminCookieManagementPage />)} /><Route path="users" element={gate(<AdminUsersPage />)} />
     <Route path="*" element={<Navigate to="dashboard" replace />} />
   </Route></Routes></AdminAuthProvider>;
 }

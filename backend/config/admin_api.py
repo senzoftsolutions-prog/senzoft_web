@@ -1,5 +1,8 @@
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import transaction
 from django.db.models import Count, Max, OuterRef, Subquery
+from datetime import timedelta
+
 from django.utils import timezone
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
@@ -10,7 +13,10 @@ from rest_framework.views import APIView
 from accounts.models import User
 from accounts.serializers import AdminUserSerializer, UserRoleSerializer, UserStatusSerializer
 from applications.models import Application, ApplicationAttachment, BackgroundVerification, Document, Interview, Joining, Offer
-from applications.serializers import ApplicationAdminSerializer, ApplicationAttachmentSerializer, BackgroundVerificationAdminSerializer, DocumentAdminSerializer, InterviewAdminSerializer, JoiningAdminSerializer, OfferAdminSerializer, TransitionSerializer
+from applications.serializers import ApplicationAdminSerializer, ApplicationAttachmentSerializer, BackgroundVerificationAdminSerializer, DocumentAdminSerializer, InterviewAdminSerializer, InterviewScheduleSerializer, JoiningAdminSerializer, OfferAdminSerializer, TransitionSerializer
+from applications.storage import bucket_name, is_local_key, storage_client
+from django.core import signing
+from django.urls import reverse
 from audit.services import write_audit
 from audit.models import AuditLog
 from audit.serializers import AuditLogSerializer
@@ -80,6 +86,106 @@ class ApplicationAdminViewSet(ProtectedModelViewSet):
         write_audit(actor=request.user, action="APPLICATION_STATUS_CHANGED", entity="Application", entity_id=application.public_id, metadata={"status": application.current_status})
         send_application_update(application=application, status_label=application.get_current_status_display(), reason=serializer.validated_data.get("reason", ""))
         return Response(self.get_serializer(application).data)
+
+    @action(detail=True, methods=("post",), url_path="schedule-interview")
+    def schedule_interview(self, request, public_id=None):
+        application = self.get_object()
+        submitted = InterviewScheduleSerializer(data=request.data)
+        submitted.is_valid(raise_exception=True)
+        interview_type = submitted.validated_data["interview_type"]
+        target_status = (
+            Application.Status.AI_INTERVIEW_INVITED
+            if interview_type == Interview.Type.AI_SCREENING
+            else Application.Status.TECHNICAL_INTERVIEW
+        )
+        active_statuses = {
+            Interview.Status.CREATED,
+            Interview.Status.READY,
+            Interview.Status.SCHEDULED,
+            Interview.Status.IN_PROGRESS,
+        }
+        if application.interviews.filter(interview_type=interview_type, status__in=active_statuses).exists():
+            raise serializers.ValidationError({"interview_type": "An active interview of this type already exists."})
+        try:
+            with transaction.atomic():
+                application.transition_to(
+                    target_status,
+                    request.user,
+                    f"{Interview.Type(interview_type).label} interview scheduled.",
+                )
+                scheduled_at = submitted.validated_data["scheduled_at"]
+                expires_at = submitted.validated_data.get("expires_at")
+                if interview_type == Interview.Type.AI_SCREENING and not expires_at:
+                    expires_at = scheduled_at + timedelta(days=7)
+                configuration = {}
+                if interview_type == Interview.Type.AI_SCREENING:
+                    configuration = {
+                        "round": 1,
+                        "stage": "FIRST_ROUND_PRE_SCREENING",
+                        "human_review_required": True,
+                        "microphone_only": True,
+                    }
+                interview = Interview.objects.create(
+                    application=application,
+                    interview_type=interview_type,
+                    status=Interview.Status.SCHEDULED,
+                    scheduled_at=scheduled_at,
+                    expires_at=expires_at,
+                    notes=submitted.validated_data.get("notes", ""),
+                    configuration=configuration,
+                )
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError({"interview_type": exc.messages}) from exc
+        write_audit(
+            actor=request.user,
+            action="INTERVIEW_SCHEDULED",
+            entity="Interview",
+            entity_id=interview.public_id,
+            metadata={"application_id": application.public_id, "type": interview_type},
+        )
+        send_application_update(
+            application=application,
+            status_label=application.get_current_status_display(),
+            reason=f"Your {interview.get_interview_type_display()} interview has been scheduled.",
+        )
+        send_interview_update(interview=interview)
+        return Response(InterviewAdminSerializer(interview).data, status=201)
+
+    @action(detail=True, methods=("get",), url_path="resume-download")
+    def resume_download(self, request, public_id=None):
+        application = self.get_object()
+        document_id = application.resume_version.get("document_id")
+        if not document_id:
+            return Response({"detail": "No resume is attached to this application."}, status=404)
+        document = Document.objects.filter(
+            public_id=document_id,
+            candidate=application.candidate,
+            document_type=Document.Type.RESUME,
+            upload_status=Document.UploadStatus.UPLOADED,
+        ).first()
+        if not document:
+            return Response({"detail": "The attached resume is unavailable."}, status=404)
+        if is_local_key(document.storage_key):
+            token = signing.dumps({"document_id": document.public_id}, salt="private-resume-download")
+            url = request.build_absolute_uri(reverse("private-resume-download", kwargs={"token": token}))
+        else:
+            url = storage_client().generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": bucket_name(),
+                    "Key": document.storage_key,
+                    "ResponseContentDisposition": f'attachment; filename="{document.file_name}"',
+                },
+                ExpiresIn=300,
+            )
+        write_audit(
+            actor=request.user,
+            action="APPLICATION_RESUME_ACCESSED",
+            entity="Application",
+            entity_id=application.public_id,
+            metadata={"document_id": document.public_id},
+        )
+        return Response({"download_url": url, "expires_in": 300, "file_name": document.file_name})
 
     @action(detail=True, methods=("post",), url_path="attachments", parser_classes=(MultiPartParser, FormParser, JSONParser))
     def add_attachment(self, request, public_id=None):

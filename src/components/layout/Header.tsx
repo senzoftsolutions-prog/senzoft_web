@@ -1,10 +1,10 @@
 import { ArrowRight, ChevronDown, Menu, Search, X } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import logo from "../../assets/senzoft-wordmark-transparent.png";
-import symbol from "../../assets/senzoft-symbol.png";
 import { contentRepository } from "../../content/repository";
 import { featuredServices, technologyAreas } from "../../content/presentation";
+
+const logo = "/media/senzoftweblogo-transparent.png";
 
 const MENU_TIMING = { open: 80, close: 190 } as const;
 type MenuKey = "services" | "industries" | "technology";
@@ -118,7 +118,7 @@ export function Header() {
     <a className="skip-link pointer-events-auto" href="#main">Skip to content</a>
     <div className={`navigation-shell container-shell relative pt-3 md:pt-4 ${activeMenu ? "menu-open" : ""} ${intentMenu ? "menu-intent" : ""}`} ref={navigationShell} onPointerEnter={cancelClose} onPointerLeave={(event) => { if (event.pointerType === "mouse" && !(keyboardNavigation.current && navigationShell.current?.contains(document.activeElement))) requestClose(); }} onPointerDown={() => { keyboardNavigation.current = false; }} onKeyDownCapture={() => { keyboardNavigation.current = true; }} onBlurCapture={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) requestClose(); }}>
       <div className="responsive-header pointer-events-auto flex min-h-12 items-center gap-2 rounded-[1.1rem] border border-black/8 bg-white/92 px-2.5 shadow-[0_16px_45px_rgba(21,27,33,.14)] backdrop-blur-xl md:rounded-full md:px-3">
-        <Link to="/" aria-label="SENZOFT home" className="header-brand flex shrink-0 items-center gap-2" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><img src={symbol} alt="" className="header-symbol" width="32" height="32" aria-hidden="true" /><img src={logo} alt="SENZOFT" className="header-logo" width="142" height="32" /></Link>
+        <Link to="/" aria-label="SENZOFT home" className="header-brand flex shrink-0 items-center" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}><img src={logo} alt="SENZOFT Software Solutions Private Limited" className="header-logo" width="2171" height="724" /></Link>
         <nav className="header-primary mx-auto flex items-center rounded-full bg-brand-cream px-2 py-1.5" aria-label="Primary" onKeyDown={(event) => {
           if (!activeMenu || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
           event.preventDefault(); const menus: MenuKey[] = ["services", "industries", "technology"];
@@ -144,7 +144,7 @@ export function Header() {
     </div>
     <button className={`desktop-menu-backdrop ${activeMenu ? "is-open" : ""}`} type="button" aria-label="Close menu" tabIndex={activeMenu ? 0 : -1} onClick={() => closeNavigation()} />
     <div ref={mobileLayer} className={`mobile-nav-layer ${drawerOpen ? "is-open" : ""}`} aria-hidden={!drawerOpen} onPointerDown={(event) => event.stopPropagation()}><button className="mobile-nav-backdrop" aria-label="Close navigation" tabIndex={drawerOpen ? 0 : -1} onClick={() => closeNavigation(true)} /><aside ref={drawer} id="mobile-navigation" className="mobile-nav-drawer" aria-label="Mobile navigation" aria-modal="true" role="dialog">
-      <div className="mobile-nav-head"><Link to="/" className="mobile-nav-brand" aria-label="SENZOFT home" tabIndex={drawerOpen ? 0 : -1}><img className="mobile-nav-symbol" src={symbol} alt="" width="36" height="36" aria-hidden="true" /><img className="mobile-nav-wordmark" src={logo} alt="SENZOFT" width="176" height="36" /></Link><button type="button" aria-label="Close navigation" onClick={() => closeNavigation(true)}><X size={22}/></button></div>
+      <div className="mobile-nav-head"><Link to="/" className="mobile-nav-brand" aria-label="SENZOFT home" tabIndex={drawerOpen ? 0 : -1}><img className="mobile-nav-logo" src={logo} alt="SENZOFT Software Solutions Private Limited" width="2171" height="724" /></Link><button type="button" aria-label="Close navigation" onClick={() => closeNavigation(true)}><X size={22}/></button></div>
       <nav aria-label="Mobile primary">{navigation.map((item) => {
         if (!item.menu) return <NavLink key={item.path} to={item.path} tabIndex={drawerOpen ? 0 : -1}>{item.label}<ArrowRight size={16} aria-hidden="true" /></NavLink>;
         const expanded = expandedMobileMenu === item.menu;

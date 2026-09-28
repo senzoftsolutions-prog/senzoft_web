@@ -9,9 +9,12 @@ class TransactionalEmailTests(TestCase):
     def test_sends_plain_text_and_html_versions(self):
         sent = send_transactional_email(
             recipient="candidate@example.com",
+            recipient_name="Ada Lovelace",
             subject="Test subject",
             heading="Test heading",
             message="First line\nSecond line",
+            highlight="123456",
+            notice="Never share this code.",
         )
 
         self.assertEqual(sent, 1)
@@ -19,3 +22,10 @@ class TransactionalEmailTests(TestCase):
         self.assertEqual(mail.outbox[0].to, ["candidate@example.com"])
         self.assertEqual(mail.outbox[0].subject, "Test subject")
         self.assertEqual(mail.outbox[0].alternatives[0][1], "text/html")
+        html = mail.outbox[0].alternatives[0][0]
+        self.assertIn("Hello Ada Lovelace,", html)
+        self.assertIn("Senzoft Software Solutions", html)
+        self.assertIn("senzoftweblogo-transparent.png", html)
+        self.assertIn("123456", html)
+        self.assertIn("Never share this code.", html)
+        self.assertIn("First line<br>Second line", html)

@@ -3,6 +3,7 @@ import hashlib
 import hmac
 import json
 import os
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from urllib.error import HTTPError
 from urllib.parse import quote, urlencode, urlsplit
@@ -29,6 +30,38 @@ def missing_storage_configuration():
 
 def bucket_name():
     return settings.CANDIDATE_DOCUMENTS_BUCKET
+
+
+def is_local_key(key):
+    return str(key).startswith("local:")
+
+
+def local_storage_path(key):
+    relative = str(key).removeprefix("local:").lstrip("/\\")
+    root = Path(settings.PRIVATE_UPLOAD_ROOT).resolve()
+    path = (root / relative).resolve()
+    if root != path and root not in path.parents:
+        raise ValueError("Invalid private storage key.")
+    return path
+
+
+def save_local_file(key, uploaded_file):
+    path = local_storage_path(key)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("wb") as destination:
+        for chunk in uploaded_file.chunks():
+            destination.write(chunk)
+    return path.stat().st_size
+
+
+def local_file_size(key):
+    return local_storage_path(key).stat().st_size
+
+
+def delete_local_file(key):
+    path = local_storage_path(key)
+    if path.exists():
+        path.unlink()
 
 
 class NeonStorageClient:

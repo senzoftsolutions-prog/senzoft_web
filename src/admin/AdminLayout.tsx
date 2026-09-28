@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { NavLink, Navigate, Outlet, useNavigate } from "react-router-dom";
-import { BriefcaseBusiness, ChartNoAxesCombined, ClipboardList, Cookie, FileCheck2, FileText, LogOut, Menu, MessageSquareText, ShieldCheck, UserRoundCog, UsersRound, Video, X } from "lucide-react";
+import { BriefcaseBusiness, ChartNoAxesCombined, ClipboardList, Cookie, FileText, LogOut, Menu, MessageSquareText, UserRoundCog, UsersRound, Video, X } from "lucide-react";
 import { useAdminAuth } from "./AdminAuth";
 import { PortalBrand } from "../components/ui/PortalBrand";
 
@@ -11,13 +11,9 @@ const navigation = [
   { to: "/admin/applications", label: "Applications", icon: ClipboardList, roles: ["SUPER_ADMIN"] },
   { to: "/admin/interviews", label: "Interviews", icon: Video, roles: ["SUPER_ADMIN"] },
   { to: "/admin/documents", label: "Documents", icon: FileText, roles: ["SUPER_ADMIN"] },
-  { to: "/admin/bgv", label: "BGV", icon: ShieldCheck, roles: ["SUPER_ADMIN"] },
-  { to: "/admin/offers", label: "Offers", icon: FileCheck2, roles: ["SUPER_ADMIN"] },
-  { to: "/admin/joining", label: "Joining", icon: UsersRound, roles: ["SUPER_ADMIN"] },
   { to: "/admin/blog", label: "Blog", icon: MessageSquareText, roles: ["SUPER_ADMIN"] },
   { to: "/admin/cookies", label: "Cookies", icon: Cookie, roles: ["SUPER_ADMIN"] },
   { to: "/admin/users", label: "Users", icon: UserRoundCog, roles: ["SUPER_ADMIN"] },
-  { to: "/admin/audit-logs", label: "Audit Logs", icon: ShieldCheck, roles: ["SUPER_ADMIN"] },
 ];
 
 export function ProtectedAdmin() {
