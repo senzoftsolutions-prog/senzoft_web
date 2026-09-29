@@ -22,6 +22,12 @@ Import the GitHub repository into Vercel and use:
 
 The checked-in `vercel.json`, root `requirements.txt`, and `api/index.py` provide the remaining build and Python-function configuration.
 
+The Django function has an `excludeFiles` rule that keeps frontend source,
+compiled static assets, videos, documentation, and tests out of the Python
+bundle. These files remain available to the Vite deployment; the exclusion
+only applies to `api/index.py`. Keep this rule when adding large public media,
+otherwise the Python function can exceed Vercel's bundle-size limit.
+
 ## 2. Production environment variables
 
 Add these variables to the appropriate Vercel Production and Preview environments. Secrets must never use a `VITE_` prefix.

@@ -2,6 +2,11 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{node_modules/**,dist/**,public/**,src/**,tests/**,docs/**,.agents/**,.git/**,coverage/**,playwright-report/**,test-results/**,**/*.test.js,**/*.test.ts,**/*.spec.ts,backend/**/tests.py,backend/**/__pycache__/**,backend/db.sqlite3,backend/media/**,backend/private_uploads/**}"
+    }
+  },
   "rewrites": [
     { "source": "/api/v1/(.*)", "destination": "/api/index.py" },
     { "source": "/health/", "destination": "/api/index.py" },
