@@ -4,7 +4,7 @@
   "outputDirectory": "dist",
   "functions": {
     "api/index.py": {
-      "excludeFiles": "{node_modules/**,dist/**,public/**,src/**,tests/**,docs/**,.agents/**,.git/**,coverage/**,playwright-report/**,test-results/**,**/*.test.js,**/*.test.ts,**/*.spec.ts,backend/**/tests.py,backend/**/__pycache__/**,backend/db.sqlite3,backend/media/**,backend/private_uploads/**}"
+      "excludeFiles": "{public/**,src/**,dist/**,tests/**,docs/**,.agents/**,node_modules/**,coverage/**,playwright-report/**,test-results/**,backend/**/tests.py,backend/**/__pycache__/**,backend/db.sqlite3,backend/media/**,backend/private_uploads/**}"
     }
   },
   "rewrites": [
