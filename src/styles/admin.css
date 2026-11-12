@@ -81,6 +81,13 @@
 .admin-spin { animation: admin-spin .8s linear infinite; }
 @keyframes admin-spin { to { transform: rotate(360deg); } }
 .admin-empty-inline { margin: 1.5rem 0 0; color: #7a8395; }
+.admin-document-list, .admin-application-list { display: grid; gap: .75rem; margin-top: 1rem; }
+.admin-document-row, .admin-application-card { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1rem; background: #f7f8fa; border: 1px solid #edf0f4; border-radius: .75rem; }
+.admin-document-row > div, .admin-application-card > div { display: grid; gap: .35rem; min-width: 0; }
+.admin-document-row span, .admin-application-card span, .admin-application-meta { color: #737c8f; font-size: .78rem; }
+.admin-document-row > div:last-child, .admin-application-card .admin-action-grid { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: .55rem; }
+.admin-application-card { display: grid; align-items: stretch; }
+.admin-application-meta { display: flex; flex-wrap: wrap; gap: 1rem; }
 .admin-form { display: grid; gap: 1rem; }
 .admin-form-section { display: grid; grid-template-columns: minmax(12rem, .38fr) 1fr; gap: 2rem; padding: 1.5rem; background: #fff; border: 1px solid #e3e7ee; border-radius: 1rem; }
 .admin-form-section h2 { margin: 0 0 .4rem; font-size: 1.1rem; }

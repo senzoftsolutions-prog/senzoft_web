@@ -15,7 +15,6 @@ const privateRoutePatterns = [
   /^\/documents(?:\/|$)/,
   /^\/admin(?:\/|$)/,
   /^\/careers\/apply(?:\/|$)/,
-  /^\/careers\/openings\/[^/]+$/,
 ];
 
 export type BreadcrumbItem = {

@@ -99,6 +99,21 @@ export type AdminCandidate = {
   latest_status: string | null;
   created_at: string;
   updated_at: string;
+  resume_metadata: Record<string, unknown>;
+};
+export type AdminDocument = {
+  id: string;
+  candidate_id: string;
+  candidate_name: string;
+  application_id: string | null;
+  document_type: string;
+  file_name: string;
+  file_size: number;
+  mime_type: string;
+  upload_status: string;
+  uploaded_at: string | null;
+  reviewed_at: string | null;
+  reviewed_by_name: string | null;
 };
 export type AdminInterview = {
   id: string;
@@ -188,4 +203,8 @@ export const deleteApplicationAttachment = (
   apiRequest<void>(
     `admin/applications/${encodeURIComponent(applicationId)}/attachments/${encodeURIComponent(attachmentId)}/`,
     { method: "DELETE" },
+  );
+export const getAdminDocumentDownload = (id: string) =>
+  apiRequest<{ download_url: string; expires_in: number }>(
+    `admin/documents/${encodeURIComponent(id)}/download/`,
   );

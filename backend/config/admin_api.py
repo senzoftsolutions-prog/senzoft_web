@@ -25,7 +25,8 @@ from careers.serializers import CandidateAdminSerializer, JobAdminSerializer
 from core.permissions import HasModuleRole, IsAdminPanelUser, IsSuperAdminRole
 from notifications.models import Notification
 from notifications.serializers import NotificationSerializer
-from notifications.email import send_application_attachment_notice, send_application_update, send_interview_update
+from notifications.email import send_application_attachment_notice, send_application_update, send_interview_update, send_transactional_email
+from applications.storage import bucket_name, storage_client
 
 
 def model_serializer(model, excluded=()):
@@ -44,7 +45,7 @@ class ProtectedModelViewSet(viewsets.ModelViewSet):
     lookup_field = "public_id"
 
 
-class CandidateAdminViewSet(viewsets.ReadOnlyModelViewSet):
+class CandidateAdminViewSet(viewsets.ModelViewSet):
     serializer_class = CandidateAdminSerializer
     permission_classes = [HasModuleRole]
     allowed_roles = INTERVIEW_ROLES
@@ -59,6 +60,10 @@ class CandidateAdminViewSet(viewsets.ReadOnlyModelViewSet):
             latest_application_at=Max("applications__applied_at"),
             latest_status=Subquery(latest.values("current_status")[:1]),
         ).order_by("-created_at")
+
+    def perform_update(self, serializer):
+        candidate = serializer.save()
+        write_audit(actor=self.request.user, action="CANDIDATE_PROFILE_UPDATED", entity="Candidate", entity_id=candidate.public_id)
 
 
 class ApplicationAdminViewSet(ProtectedModelViewSet):
@@ -125,6 +130,8 @@ class ApplicationAdminViewSet(ProtectedModelViewSet):
                         "human_review_required": True,
                         "microphone_only": True,
                     }
+                elif submitted.validated_data.get("meeting_link"):
+                    configuration = {"meeting_link": submitted.validated_data["meeting_link"]}
                 interview = Interview.objects.create(
                     application=application,
                     interview_type=interview_type,
@@ -212,6 +219,21 @@ class ApplicationAdminViewSet(ProtectedModelViewSet):
         write_audit(actor=request.user, action="APPLICATION_ATTACHMENT_REMOVED", entity="Application", entity_id=application.public_id, metadata={"attachment_id": str(attachment_id)})
         return Response(status=204)
 
+    @action(detail=True, methods=("post",), url_path="share-hr")
+    def share_hr(self, request, public_id=None):
+        application = self.get_object()
+        recipient = str(request.data.get("recipient", "")).strip()
+        if not recipient or "@" not in recipient:
+            raise serializers.ValidationError({"recipient": "Enter a valid HR email address."})
+        message = (
+            f"Candidate: {application.candidate.name}\nEmail: {application.candidate.email}\nPhone: {application.candidate.phone}\n"
+            f"Role: {application.job.title}\nApplication: {application.public_id}\nStatus: {application.get_current_status_display()}\n\n"
+            f"Recruitment note: {str(request.data.get('note', '')).strip()}"
+        )
+        sent = send_transactional_email(recipient=recipient, subject=f"Candidate review: {application.candidate.name} – {application.job.title}", heading="Candidate shared for HR review", message=message)
+        write_audit(actor=request.user, action="CANDIDATE_SHARED_WITH_HR", entity="Application", entity_id=application.public_id, metadata={"recipient": recipient})
+        return Response({"sent": bool(sent), "recipient": recipient})
+
 
 class InterviewAdminViewSet(ProtectedModelViewSet):
     queryset = Interview.objects.select_related("application__candidate", "application__job", "interviewer").prefetch_related("questions", "responses", "integrity_events").all().order_by("-created_at")
@@ -247,6 +269,25 @@ class DocumentAdminViewSet(ProtectedModelViewSet):
     filterset_fields = ("document_type", "upload_status", "candidate__public_id", "application__public_id")
     search_fields = ("public_id", "candidate__name", "file_name")
     ordering_fields = ("created_at", "uploaded_at", "reviewed_at")
+
+    @action(detail=True, methods=("get",), url_path="download")
+    def download(self, request, public_id=None):
+        document = self.get_object()
+        if document.upload_status not in (Document.UploadStatus.UPLOADED, Document.UploadStatus.REVIEWED):
+            raise serializers.ValidationError({"document": "This document is not available for download."})
+        try:
+            url = storage_client().generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": bucket_name(),
+                    "Key": document.storage_key,
+                    "ResponseContentDisposition": f'attachment; filename="{document.file_name}"',
+                },
+                ExpiresIn=300,
+            )
+        except Exception as exc:
+            raise serializers.ValidationError({"document": "The document download is temporarily unavailable."}) from exc
+        return Response({"download_url": url, "expires_in": 300})
 
 
 class BGVAdminViewSet(ProtectedModelViewSet):

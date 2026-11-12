@@ -217,7 +217,9 @@ def send_interview_update(*, interview) -> int:
             "Sign in to your candidate portal, open Events, and select the interview when you are ready."
         )
     else:
-        message = f"Your {type_label} interview for {interview.application.job.title} is {status_label.lower()}.\n\nScheduled time: {schedule}.\n\nSign in to your candidate portal to see the latest status."
+        meeting_link = interview.configuration.get("meeting_link", "") if isinstance(interview.configuration, dict) else ""
+        link_line = f"\n\nMeeting link: {meeting_link}" if meeting_link else ""
+        message = f"Your {type_label} interview for {interview.application.job.title} is {status_label.lower()}.\n\nScheduled time: {schedule}.{link_line}\n\nSign in to your candidate portal to see the latest status."
     notification = Notification.objects.create(candidate=candidate, application=interview.application, notification_type="INTERVIEW_STATUS_CHANGED", channel=Notification.Channel.EMAIL, recipient=candidate.email, payload={"title": f"Interview update: {interview.application.job.title}", "message": message, "interview_id": interview.public_id, "status": interview.status})
     try:
         sent = send_transactional_email(

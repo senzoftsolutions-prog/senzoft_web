@@ -23,7 +23,6 @@ describe("SEO route helpers", () => {
     [
       "/search",
       "/careers/apply/frontend-01",
-      "/careers/openings/frontend-01",
       "/login",
       "/register",
       "/account/settings",
@@ -76,7 +75,6 @@ describe("SEO route helpers", () => {
     [
       "/search",
       "/careers/apply/",
-      "/careers/openings/frontend-01",
       "/login",
       "/register",
       "/account",

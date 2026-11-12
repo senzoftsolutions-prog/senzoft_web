@@ -33,6 +33,7 @@ const AdminApp = lazy(() => import("../admin/AdminApp"));
 const CandidateApp = lazy(() => import("../candidate/CandidateApp"));
 const PublicJobOpeningsPage = lazy(() => import("../pages/PublicCareersPages").then(module => ({ default: module.PublicJobOpeningsPage })));
 const PublicJobDetailPage = lazy(() => import("../pages/PublicCareersPages").then(module => ({ default: module.PublicJobDetailPage })));
+const PublicJobApplyPage = lazy(() => import("../pages/PublicCareersPages").then(module => ({ default: module.PublicJobApplyPage })));
 function Loading() {
   const [show, setShow] = useState(false);
 
@@ -87,7 +88,7 @@ export default function App() {
           <Route path="careers/benefits" element={<CareerBenefitsPage />} />
           <Route path="careers/openings" element={<PublicJobOpeningsPage />} />
           <Route path="careers/openings/:jobId" element={<PublicJobDetailPage />} />
-          <Route path="careers/apply/:jobId" element={<Navigate to="/careers/openings" replace />} />
+          <Route path="careers/apply/:jobId" element={<PublicJobApplyPage />} />
           <Route
             path="careers/pathways/:pathSlug"
             element={<CareerPathPage />}

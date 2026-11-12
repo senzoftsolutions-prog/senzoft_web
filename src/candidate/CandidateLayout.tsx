@@ -23,8 +23,9 @@ function CandidateLayout() {
   const navigate = useNavigate();
   return <div className="candidate-shell candidate-portal-shell">
     <header className="candidate-topbar candidate-portal-topbar">
-      <PortalBrand to="/candidate/dashboard" label="SENZOFT Careers" />
+      <PortalBrand to="/candidate/dashboard" label="SENZOFT" />
       <div className="candidate-user">
+        <NavLink className="candidate-careers-link" to="/careers/openings">Careers</NavLink>
         <NavLink className="candidate-notification-link" to="/candidate/notifications" aria-label="Notifications"><Bell /></NavLink>
         <span>{user?.first_name || user?.email}</span>
         <button className="candidate-icon" aria-label="Sign out" onClick={() => { logout(); navigate("/candidate/login", { replace: true }); }}><LogOut /></button>

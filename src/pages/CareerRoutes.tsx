@@ -15,6 +15,11 @@ export function LegacyCareerRedirect() {
   return job ? <Navigate to={`/careers/openings/${job.id}`} replace /> : <MissingJob />;
 }
 
+export function LegacyCareerApplyRedirect() {
+  const { jobId } = useParams();
+  return <Navigate to={`/candidate/apply/${jobId ?? ""}`} replace />;
+}
+
 export function CareerOpeningsPage() {
   const [category, setCategory] = useState<"all" | JobCategory>("all");
   const [search, setSearch] = useState("");

@@ -27,6 +27,46 @@ const staticRoutes = [
   "/accessibility",
 ];
 
+async function fetchJobRoutes() {
+  const ids = new Set();
+  const addJobs = (rows) => {
+    if (!Array.isArray(rows)) return;
+    for (const job of rows) if (typeof job?.id === "string" && job.id.trim()) ids.add(job.id.trim());
+  };
+  const apiBase = (process.env.VITE_API_BASE_URL || `${origin}/api/v1`).replace(/\/$/, "");
+  try {
+    let next = `${apiBase}/jobs/?page=1`;
+    for (let page = 0; next && page < 250; page += 1) {
+      const response = await fetch(next, { signal: AbortSignal.timeout(8000) });
+      if (!response.ok) break;
+      const result = await response.json();
+      addJobs(result.results);
+      if (!result.next) break;
+      const candidate = new URL(result.next, next);
+      if (candidate.origin !== new URL(apiBase).origin) break;
+      next = candidate.href;
+    }
+  } catch {
+    console.warn("Could not read published careers from the website API; continuing with repository-backed pages.");
+  }
+
+  const integrationBase = process.env.HRMS_INTEGRATION_API_URL?.replace(/\/$/, "");
+  const integrationToken = process.env.HRMS_INTEGRATION_TOKEN;
+  if (integrationBase && integrationToken) {
+    try {
+      const response = await fetch(`${integrationBase}/jobs/`, {
+        headers: { Authorization: `Bearer ${integrationToken}`, Accept: "application/json" },
+        signal: AbortSignal.timeout(8000),
+      });
+      if (response.ok) addJobs((await response.json()).jobs);
+      else console.warn(`Could not read HRMS jobs for the sitemap (HTTP ${response.status}).`);
+    } catch {
+      console.warn("Could not reach the HRMS careers API while generating the sitemap.");
+    }
+  }
+  return [...ids].map((id) => `/careers/openings/${encodeURIComponent(id)}`);
+}
+
 const routes = [
   ...staticRoutes,
   ...services.map(({ slug }) => `/services/${slug}`),
@@ -35,6 +75,7 @@ const routes = [
   ...insights.map(({ slug }) => `/insights/${slug}`),
   ...technologies.map(({ slug }) => `/technology/${slug}`),
   ...caseStudies.map(({ slug }) => `/case-studies/${slug}`),
+  ...await fetchJobRoutes(),
 ];
 
 const uniqueRoutes = [...new Set(routes)].sort((a, b) =>
