@@ -4,10 +4,14 @@ from .models import CandidateProfile, Job
 
 class PublicJobSerializer(serializers.ModelSerializer):
     id = serializers.CharField(source="public_id", read_only=True)
+    source = serializers.SerializerMethodField()
+
+    def get_source(self, obj):
+        return "WEBSITE"
 
     class Meta:
         model = Job
-        fields = ("id", "title", "slug", "department", "business_unit", "location", "additional_locations", "work_mode", "employment_type", "experience_level", "minimum_experience", "maximum_experience", "description", "responsibilities", "required_skills", "preferred_skills", "qualifications", "benefits", "reporting_to", "travel_requirement", "hiring_eligibility", "relocation_assistance", "about_company", "number_of_openings", "application_deadline", "published_at")
+        fields = ("id", "title", "slug", "department", "business_unit", "location", "additional_locations", "work_mode", "employment_type", "experience_level", "minimum_experience", "maximum_experience", "description", "responsibilities", "required_skills", "preferred_skills", "qualifications", "benefits", "reporting_to", "travel_requirement", "hiring_eligibility", "relocation_assistance", "about_company", "number_of_openings", "application_deadline", "published_at", "source")
 
 
 class JobAdminSerializer(serializers.ModelSerializer):

@@ -1,11 +1,14 @@
 from django.conf import settings
 from django.db.models import Count
 from django.utils import timezone
-from rest_framework import generics, permissions, viewsets
+from rest_framework import generics, permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
 from rest_framework.views import APIView
+from rest_framework.throttling import ScopedRateThrottle
+
+from .hrms_bridge import HRMSBridgeError, list_hrms_jobs, submit_hrms_application
 
 from core.permissions import IsCandidate, IsRecruitmentStaff
 from audit.services import write_audit
@@ -14,25 +17,157 @@ from .models import CandidateProfile, Job
 from .serializers import CandidateProfileSerializer, JobAdminSerializer, PublicJobSerializer
 
 
-class PublicJobListView(generics.ListAPIView):
-    serializer_class = PublicJobSerializer
+def public_hrms_job(job):
+    minimum = int(job.get("experienceMinYears") or 0)
+    maximum = job.get("experienceMaxYears")
+    skills = job.get("skills") or []
+    requirements = str(job.get("requirements") or "")
+    responsibilities = job.get("responsibilities") or []
+    if isinstance(responsibilities, str):
+        responsibilities = [item.strip() for item in responsibilities.splitlines() if item.strip()]
+    work_mode = {"OFFICE": "ONSITE", "REMOTE": "REMOTE", "HYBRID": "HYBRID"}.get(job.get("workMode"), "ONSITE")
+    return {
+        "id": str(job["id"]),
+        "title": job["title"],
+        "slug": str(job.get("code") or job["id"]).lower(),
+        "department": job.get("department") or "SENZOFT",
+        "business_unit": "",
+        "location": job.get("location") or "India",
+        "additional_locations": [],
+        "work_mode": work_mode,
+        "employment_type": job.get("type") or "FULL_TIME",
+        "experience_level": f"{minimum}+ years" if maximum is None else f"{minimum}-{maximum} years",
+        "minimum_experience": minimum,
+        "maximum_experience": maximum,
+        "description": str(job.get("description") or ""),
+        "responsibilities": responsibilities if isinstance(responsibilities, list) else [],
+        "required_skills": skills if isinstance(skills, list) else [],
+        "preferred_skills": [],
+        "qualifications": [item.strip() for item in requirements.splitlines() if item.strip()],
+        "benefits": [],
+        "reporting_to": "",
+        "travel_requirement": "",
+        "hiring_eligibility": "",
+        "relocation_assistance": "",
+        "about_company": "",
+        "number_of_openings": int(job.get("openings") or 1),
+        "application_deadline": None,
+        "published_at": job.get("publishedAt"),
+    }
+
+
+class PublicJobListView(APIView):
     permission_classes = [permissions.AllowAny]
-    filterset_fields = ("location", "department", "employment_type", "work_mode", "experience_level")
-    search_fields = ("title", "description", "required_skills")
-    ordering_fields = ("published_at", "title", "application_deadline")
 
-    def get_queryset(self):
-        return Job.objects.filter(status=Job.Status.PUBLISHED).order_by("-published_at")
+    def get(self, request):
+        local_jobs = list(PublicJobSerializer(Job.objects.filter(status=Job.Status.PUBLISHED).order_by("-published_at"), many=True).data)
+        try:
+            remote_jobs = [public_hrms_job(job) for job in list_hrms_jobs()]
+        except HRMSBridgeError:
+            remote_jobs = []
+        jobs = remote_jobs + local_jobs
+        query = request.query_params.get("search", "").strip().casefold()
+        location = request.query_params.get("location", "").strip().casefold()
+        experience = request.query_params.get("experience", "").strip().casefold()
+        if query:
+            jobs = [job for job in jobs if query in f"{job['title']} {job['description']} {' '.join(job['required_skills'])}".casefold()]
+        if location:
+            jobs = [job for job in jobs if location in job["location"].casefold()]
+        if experience:
+            jobs = [job for job in jobs if experience in job["experience_level"].casefold()]
+        ordering = request.query_params.get("ordering", "-published_at")
+        if ordering in ("title", "-title"):
+            jobs.sort(key=lambda job: str(job.get("title", "")).casefold(), reverse=ordering.startswith("-"))
+        else:
+            jobs.sort(key=lambda job: str(job.get("published_at") or ""), reverse=ordering.startswith("-"))
+        try:
+            page = max(int(request.query_params.get("page", "1")), 1)
+        except ValueError:
+            page = 1
+        page_size = 20
+        start = (page - 1) * page_size
+        page_jobs = jobs[start:start + page_size]
+        next_url = request.build_absolute_uri(f"?page={page + 1}") if start + page_size < len(jobs) else None
+        previous_url = request.build_absolute_uri(f"?page={page - 1}") if page > 1 else None
+        return Response({"count": len(jobs), "next": next_url, "previous": previous_url, "results": page_jobs})
 
 
-class PublicJobDetailView(generics.RetrieveAPIView):
-    serializer_class = PublicJobSerializer
+class PublicJobDetailView(APIView):
     permission_classes = [permissions.AllowAny]
-    lookup_field = "public_id"
-    lookup_url_kwarg = "job_id"
 
-    def get_queryset(self):
-        return Job.objects.filter(status=Job.Status.PUBLISHED)
+    def get(self, request, job_id):
+        try:
+            jobs = list_hrms_jobs()
+        except HRMSBridgeError:
+            jobs = []
+        job = next((item for item in jobs if str(item.get("id")) == job_id), None)
+        if job:
+            return Response(public_hrms_job(job))
+        local_job = Job.objects.filter(status=Job.Status.PUBLISHED, public_id=job_id).first()
+        if local_job:
+            return Response(PublicJobSerializer(local_job).data)
+        return Response({"detail": "Position not found."}, status=status.HTTP_404_NOT_FOUND)
+
+
+class PublicHRMSApplicationSerializer(serializers.Serializer):
+    source_reference = serializers.UUIDField()
+    job_id = serializers.UUIDField()
+    candidate_name = serializers.CharField(min_length=2, max_length=200, trim_whitespace=True)
+    candidate_email = serializers.EmailField(max_length=254)
+    candidate_phone = serializers.CharField(max_length=20, allow_blank=True, required=False)
+    cover_letter = serializers.CharField(max_length=5000, allow_blank=True, required=False)
+    linkedin_url = serializers.URLField(max_length=500, allow_blank=True, required=False)
+    portfolio_url = serializers.URLField(max_length=500, allow_blank=True, required=False)
+    current_role = serializers.CharField(max_length=200, allow_blank=True, required=False)
+    current_company = serializers.CharField(max_length=200, allow_blank=True, required=False)
+    resume_url = serializers.URLField(max_length=500, allow_blank=True, allow_null=True, required=False)
+    resume_file = serializers.FileField(required=False, allow_empty_file=False, max_length=255)
+    website = serializers.CharField(max_length=0, allow_blank=True, required=False)
+
+    def validate_resume_file(self, value):
+        if value.size > 3 * 1024 * 1024:
+            raise serializers.ValidationError("Resume files must be 3 MB or smaller.")
+        extension = value.name.rsplit(".", 1)[-1].lower() if "." in value.name else ""
+        mime_by_extension = {
+            "pdf": "application/pdf",
+            "doc": "application/msword",
+            "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        }
+        expected = mime_by_extension.get(extension)
+        if not expected or value.content_type not in (None, "", "application/octet-stream", expected):
+            raise serializers.ValidationError("Upload a PDF or Word resume.")
+        return value
+
+
+class PublicHRMSApplicationView(APIView):
+    permission_classes = [permissions.AllowAny]
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = "careers_apply"
+
+    def post(self, request):
+        serializer = PublicHRMSApplicationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+        if data.get("website"):
+            return Response({"detail": "Application could not be submitted."}, status=status.HTTP_400_BAD_REQUEST)
+        payload = {
+            "sourceReference": f"website:{data['source_reference']}",
+            "jobId": str(data["job_id"]),
+            "candidateName": data["candidate_name"],
+            "candidateEmail": data["candidate_email"],
+            "candidatePhone": data.get("candidate_phone") or None,
+            "coverLetter": data.get("cover_letter") or None,
+            "linkedinUrl": data.get("linkedin_url") or None,
+            "portfolioUrl": data.get("portfolio_url") or None,
+            "currentRole": data.get("current_role") or None,
+            "currentCompany": data.get("current_company") or None,
+            "resumeUrl": data.get("resume_url") or None,
+        }
+        try:
+            result, response_status = submit_hrms_application(payload, data.get("resume_file"))
+        except HRMSBridgeError as exc:
+            return Response({"detail": str(exc)}, status=exc.status)
+        return Response(result, status=response_status)
 
 
 class CandidateMeView(generics.RetrieveUpdateAPIView):

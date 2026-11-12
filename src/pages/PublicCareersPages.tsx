@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState, type ReactNode } from "react";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { Link, Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,13 +16,15 @@ import {
   X,
 } from "lucide-react";
 import { Seo } from "../components/ui/Seo";
+import { absoluteUrl, SITE_NAME } from "../seo/seo";
+import { tokenStore } from "../services/api/client";
 import {
   getPublishedJob,
+  submitPublicApplication,
   getPublishedJobs,
   type ApiJob,
   type Paginated,
 } from "../services/api/jobs";
-import { tokenStore } from "../services/api/client";
 import "../styles/candidate.css";
 
 const show = (value: string) =>
@@ -33,6 +35,58 @@ const date = (value: string | null) =>
         new Date(value),
       )
     : "—";
+
+const COUNTRY_CODES: Record<string, string> = {
+  india: "IN", "united states": "US", usa: "US", canada: "CA", "united kingdom": "GB", uk: "GB",
+  australia: "AU", singapore: "SG", germany: "DE", france: "FR", "united arab emirates": "AE",
+};
+
+function jobPostingStructuredData(job: ApiJob): Record<string, unknown> | undefined {
+  const datePosted = job.published_at ? new Date(job.published_at) : null;
+  if (!datePosted || Number.isNaN(datePosted.getTime())) return undefined;
+  const locationParts = job.location.split(",").map((part) => part.trim()).filter(Boolean);
+  const countryName = locationParts.at(-1)?.toLowerCase() || "";
+  const countryCode = COUNTRY_CODES[countryName];
+  const isRemote = job.work_mode === "REMOTE";
+  if (!countryCode || (!isRemote && locationParts.length < 2)) return undefined;
+
+  const safe = (value: string) => value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#39;");
+  const descriptionParts = [
+    `<p>${safe(job.description)}</p>`,
+    job.responsibilities.length ? `<p>Responsibilities</p><ul>${job.responsibilities.map((item) => `<li>${safe(item)}</li>`).join("")}</ul>` : "",
+    job.required_skills.length ? `<p>Required skills</p><ul>${job.required_skills.map((item) => `<li>${safe(item)}</li>`).join("")}</ul>` : "",
+    job.qualifications.length ? `<p>Qualifications</p><ul>${job.qualifications.map((item) => `<li>${safe(item)}</li>`).join("")}</ul>` : "",
+  ].filter(Boolean).join("");
+  const employmentTypes: Record<string, string> = { CONTRACT: "CONTRACTOR", INTERNSHIP: "INTERN", INTERN: "INTERN" };
+  const schema: Record<string, unknown> = {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: descriptionParts,
+    datePosted: datePosted.toISOString(),
+    employmentType: employmentTypes[job.employment_type] || job.employment_type,
+    hiringOrganization: { "@type": "Organization", name: SITE_NAME, sameAs: "https://www.senzoft.com", logo: absoluteUrl("/favicon.png") },
+    identifier: { "@type": "PropertyValue", name: SITE_NAME, value: job.id },
+    url: absoluteUrl(`/careers/openings/${job.id}`),
+    directApply: true,
+  };
+  if (job.application_deadline) schema.validThrough = `${job.application_deadline}T23:59:59+05:30`;
+  if (isRemote) {
+    schema.jobLocationType = "TELECOMMUTE";
+    schema.applicantLocationRequirements = { "@type": "Country", name: countryCode };
+  } else {
+    schema.jobLocation = {
+      "@type": "Place",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: locationParts.slice(0, -1).join(", "),
+        addressCountry: countryCode,
+      },
+    };
+  }
+  return schema;
+}
+
 
 export function PublicJobOpeningsPage() {
   const location = useLocation();
@@ -65,7 +119,7 @@ export function PublicJobOpeningsPage() {
     const api = new URLSearchParams();
     if (debounced) api.set("search", debounced);
     if (filters.location) api.set("location", filters.location);
-    if (filters.experience_level) api.set("experience_level", filters.experience_level);
+    if (filters.experience_level) api.set("experience", filters.experience_level);
     api.set("ordering", filters.ordering);
     api.set("page", String(page));
     setLoading(true);
@@ -307,12 +361,6 @@ export function PublicJobDetailPage() {
       )
       .catch(() => setSimilar([]));
   }, [job]);
-  const apply = () => {
-    const target = "/candidate/apply/" + jobId;
-    if (!tokenStore.access()) {
-      sessionStorage.setItem("candidate-return-to", target);
-    }
-  };
   const share = async () => {
     const details = {
       title: job?.title || "SENZOFT career opportunity",
@@ -331,9 +379,8 @@ export function PublicJobDetailPage() {
         <Link to="/careers/openings">View open positions</Link>
       </div>
     );
-  const applyTo = tokenStore.access()
-    ? "/candidate/apply/" + job.id
-    : "/candidate/login";
+  const applyTo = job.source === "HRMS" ? "/careers/apply/" + job.id : tokenStore.access() ? "/candidate/apply/" + job.id : "/candidate/login";
+  const apply = () => { if (job.source !== "HRMS" && !tokenStore.access()) sessionStorage.setItem("candidate-return-to", "/candidate/apply/" + job.id); };
   const locations = [job.location, ...job.additional_locations];
   const experience =
     job.minimum_experience +
@@ -345,7 +392,7 @@ export function PublicJobDetailPage() {
     "SENZOFT builds practical digital solutions that help organizations modernize operations, use data effectively, and deliver better experiences. Our teams work across software engineering, cloud, data, automation, and applied AI with a focus on responsible, measurable outcomes.";
   return (
     <>
-      <Seo title={job.title} description={job.description.slice(0, 155)} />
+      <Seo title={`${job.title} | SENZOFT Careers`} description={job.description.slice(0, 155)} structuredData={jobPostingStructuredData(job)} />
       <header className="career-api-detail-hero">
         <div className="container-shell career-detail-hero-inner">
           <div className="career-detail-toolbar">
@@ -576,4 +623,67 @@ function JobList({
       </ul>
     </section>
   );
+}
+
+
+export function PublicJobApplyPage() {
+  const { jobId = "" } = useParams();
+  const [job, setJob] = useState<ApiJob | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [applicationId, setApplicationId] = useState("");
+  useEffect(() => {
+    getPublishedJob(jobId).then(setJob)
+      .catch((reason) => setError(reason instanceof Error ? reason.message : "Position unavailable."))
+      .finally(() => setLoading(false));
+  }, [jobId]);
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (saving) return;
+    const values = new FormData(event.currentTarget);
+    setSaving(true); setError("");
+    try {
+      const result = await submitPublicApplication({
+        job_id: jobId,
+        candidate_name: String(values.get("candidate_name") || ""),
+        candidate_email: String(values.get("candidate_email") || ""),
+        candidate_phone: String(values.get("candidate_phone") || ""),
+        cover_letter: String(values.get("cover_letter") || ""),
+        linkedin_url: String(values.get("linkedin_url") || ""),
+        portfolio_url: String(values.get("portfolio_url") || ""),
+        current_role: String(values.get("current_role") || ""),
+        current_company: String(values.get("current_company") || ""),
+        resume_url: String(values.get("resume_url") || ""),
+        website: String(values.get("website") || ""),
+      });
+      setApplicationId(result.id);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Your application could not be submitted.");
+    } finally { setSaving(false); }
+  };
+  if (loading) return <div className="career-api-state">Loading position?</div>;
+  if (!job) return <div className="career-api-state error"><h1>Position unavailable</h1><p>{error || "This job is no longer accepting applications."}</p><Link to="/careers/openings">View open positions</Link></div>;
+  if (job.source !== "HRMS") {
+    const destination = tokenStore.access() ? `/candidate/apply/${job.id}` : "/candidate/login";
+    if (!tokenStore.access()) sessionStorage.setItem("candidate-return-to", `/candidate/apply/${job.id}`);
+    return <Navigate to={destination} replace />;
+  }
+  return <main className="career-detail-main"><div className="container-shell max-w-3xl py-12"><Seo title={`Apply: ${job.title} | SENZOFT Careers`} description={`Apply for ${job.title} at SENZOFT.`} />
+    <Link to={`/careers/openings/${job.id}`} className="inline-flex items-center gap-2"><ArrowLeft /> Back to job</Link>
+    <h1 className="mt-8 text-4xl font-bold">Apply for {job.title}</h1><p className="mt-3 text-brand-muted">Your application will be recorded in SENZOFT HRMS.</p>
+    {applicationId ? <section className="career-api-state mt-8"><h2>Application submitted</h2><p>Your application reference is {applicationId}. The recruitment team will contact you by email.</p><Link to="/careers/openings">Browse other positions</Link></section> : <form onSubmit={(event) => void submit(event)} className="career-info-card mt-8 grid gap-5">
+      <label className="font-bold">Full name<input name="candidate_name" required minLength={2} maxLength={200} autoComplete="name" className="field mt-2 w-full" /></label>
+      <div className="grid gap-5 sm:grid-cols-2"><label className="font-bold">Email<input name="candidate_email" required type="email" maxLength={254} autoComplete="email" className="field mt-2 w-full" /></label><label className="font-bold">Phone<input name="candidate_phone" type="tel" maxLength={32} autoComplete="tel" className="field mt-2 w-full" /></label></div>
+      <div className="grid gap-5 sm:grid-cols-2"><label className="font-bold">Current role<input name="current_role" maxLength={200} className="field mt-2 w-full" /></label><label className="font-bold">Current company<input name="current_company" maxLength={200} className="field mt-2 w-full" /></label></div>
+      <label className="font-bold">LinkedIn profile<input name="linkedin_url" type="url" maxLength={500} className="field mt-2 w-full" /></label>
+      <label className="font-bold">Portfolio or website<input name="portfolio_url" type="url" maxLength={500} className="field mt-2 w-full" /></label>
+      <label className="font-bold">Resume or CV (optional)<input name="resume_file" type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className="field mt-2 w-full" /><span className="mt-2 block text-xs font-normal text-brand-muted">PDF or Word document, up to 10 MB. You can also provide an accessible link below.</span></label>
+      <label className="font-bold">Resume link (optional)<input name="resume_url" type="url" maxLength={500} className="field mt-2 w-full" placeholder="https://..." /></label>
+      <label className="font-bold">Cover note<textarea name="cover_letter" rows={5} maxLength={5000} className="field mt-2 w-full" /></label>
+      <label className="hidden" aria-hidden="true">Website<input name="website" tabIndex={-1} autoComplete="off" /></label>
+      {error && <p className="text-sm text-red-700" role="alert">{error}</p>}
+      <button type="submit" disabled={saving} className="btn btn-primary justify-self-start">{saving ? "Submitting?" : "Submit application"} <ArrowRight size={17} /></button>
+    </form>}
+  </div></main>;
 }

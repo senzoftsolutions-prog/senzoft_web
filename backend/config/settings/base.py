@@ -99,6 +99,8 @@ FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
 CORS_ALLOWED_ORIGINS = [item.strip() for item in os.getenv("CORS_ALLOWED_ORIGINS", FRONTEND_URL).split(",") if item.strip()]
 CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 CORS_ALLOW_CREDENTIALS = True
+HRMS_INTEGRATION_API_URL = os.getenv("HRMS_INTEGRATION_API_URL", "").strip().rstrip("/")
+HRMS_INTEGRATION_TOKEN = os.getenv("HRMS_INTEGRATION_TOKEN", "").strip()
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("rest_framework_simplejwt.authentication.JWTAuthentication",),
@@ -108,7 +110,7 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 20,
     "EXCEPTION_HANDLER": "core.exceptions.api_exception_handler",
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.AnonRateThrottle", "rest_framework.throttling.UserRateThrottle", "rest_framework.throttling.ScopedRateThrottle"),
-    "DEFAULT_THROTTLE_RATES": {"anon": "100/hour", "user": "1000/hour", "auth": "30/hour", "consent": "120/hour", "interview": "120/hour", "interview_events": "300/hour"},
+    "DEFAULT_THROTTLE_RATES": {"anon": "100/hour", "user": "1000/hour", "auth": "30/hour", "consent": "120/hour", "interview": "120/hour", "interview_events": "300/hour", "careers_apply": "20/hour"},
 }
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
