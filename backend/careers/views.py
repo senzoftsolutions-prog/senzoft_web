@@ -14,6 +14,9 @@ from core.permissions import IsCandidate, IsRecruitmentStaff
 from audit.services import write_audit
 from applications.serializers import ApplicationSerializer
 from .models import CandidateProfile, Job
+from applications.models import Application, Document
+from applications.storage import bucket_name, storage_client
+import hmac
 from .serializers import CandidateProfileSerializer, JobAdminSerializer, PublicJobSerializer
 
 
@@ -169,6 +172,101 @@ class PublicHRMSApplicationView(APIView):
             return Response({"detail": str(exc)}, status=exc.status)
         return Response(result, status=response_status)
 
+
+def hrms_integration_authorized(request):
+    expected = settings.HRMS_INTEGRATION_TOKEN
+    authorization = request.headers.get("Authorization", "")
+    supplied = authorization[7:].strip() if authorization.lower().startswith("bearer ") else ""
+    return bool(expected and supplied and hmac.compare_digest(expected, supplied))
+
+
+class HRMSLegacySnapshotView(APIView):
+    """Private, paginated read-only export of website jobs and applications."""
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        if not hrms_integration_authorized(request):
+            return Response({"detail": "Integration credentials are missing or invalid."}, status=status.HTTP_403_FORBIDDEN)
+
+        resource = request.query_params.get("resource", "jobs")
+        if resource not in {"jobs", "applications"}:
+            return Response({"detail": "Unknown snapshot resource."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            page = max(int(request.query_params.get("page", "1")), 1)
+        except ValueError:
+            page = 1
+        page_size = 100
+        queryset = Job.objects.all().order_by("pk") if resource == "jobs" else Application.objects.select_related("candidate", "job").prefetch_related("status_history").order_by("pk")
+        total = queryset.count()
+        rows = queryset[(page - 1) * page_size:page * page_size]
+        if resource == "jobs":
+            results = [{
+                "id": str(job.public_id), "title": job.title, "code": job.slug,
+                "department": job.department, "location": job.location,
+                "type": job.employment_type, "workMode": job.work_mode,
+                "status": job.status, "description": job.description,
+                "requirements": "\n".join(job.qualifications or []),
+                "responsibilities": "\n".join(job.responsibilities or []),
+                "skills": job.required_skills or [], "growthOpportunities": [],
+                "benefits": "\n".join(job.benefits or []), "openings": job.number_of_openings,
+                "experienceMinYears": job.minimum_experience,
+                "experienceMaxYears": job.maximum_experience,
+                "publishedAt": job.published_at, "updatedAt": job.updated_at,
+            } for job in rows]
+        else:
+            results = [{
+                "id": str(app.public_id), "jobId": str(app.job.public_id),
+                "candidateName": app.candidate.name, "candidateEmail": app.candidate.email,
+                "candidatePhone": app.candidate.phone, "status": app.current_status,
+                "source": app.source, "appliedAt": app.applied_at,
+                "resumeVersion": app.resume_version, "profileSnapshot": app.profile_snapshot,
+                "candidateProfile": {
+                    "location": app.candidate.location, "addressLine1": app.candidate.address_line1,
+                    "addressLine2": app.candidate.address_line2, "city": app.candidate.city,
+                    "state": app.candidate.state, "postalCode": app.candidate.postal_code,
+                    "country": app.candidate.country, "professionalSummary": app.candidate.professional_summary,
+                    "currentRole": app.candidate.current_role, "yearsOfExperience": app.candidate.years_of_experience,
+                    "skills": app.candidate.skills, "experience": app.candidate.experience,
+                    "education": app.candidate.education, "certifications": app.candidate.certifications,
+                    "resumeMetadata": app.candidate.resume_metadata, "linkedinUrl": app.candidate.linkedin_url,
+                    "portfolioUrl": app.candidate.portfolio_url,
+                },
+                "statusHistory": [{
+                    "previousStatus": row.previous_status, "status": row.new_status,
+                    "changedAt": row.timestamp, "reason": row.reason,
+                } for row in app.status_history.all()],
+            } for app in rows]
+        return Response(
+            {"results": results, "page": page, "nextPage": page + 1 if page * page_size < total else None, "total": total},
+            headers={"Cache-Control": "private, no-store"},
+        )
+
+
+class HRMSLegacyResumeView(APIView):
+    authentication_classes = []
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request):
+        if not hrms_integration_authorized(request):
+            return Response({"detail": "Integration credentials are missing or invalid."}, status=status.HTTP_403_FORBIDDEN)
+        document_id = request.query_params.get("documentId", "")[:20]
+        document = Document.objects.filter(public_id=document_id, document_type=Document.Type.RESUME).first()
+        if not document or document.upload_status not in (Document.UploadStatus.UPLOADED, Document.UploadStatus.REVIEWED):
+            return Response({"detail": "Resume not found."}, status=status.HTTP_404_NOT_FOUND)
+        try:
+            url = storage_client().generate_presigned_url(
+                "get_object",
+                Params={
+                    "Bucket": bucket_name(),
+                    "Key": document.storage_key,
+                    "ResponseContentDisposition": f'attachment; filename="{document.file_name}"',
+                },
+                ExpiresIn=300,
+            )
+        except Exception:
+            return Response({"detail": "Resume storage is temporarily unavailable."}, status=status.HTTP_503_SERVICE_UNAVAILABLE)
+        return Response({"url": url}, headers={"Cache-Control": "private, no-store"})
 
 class CandidateMeView(generics.RetrieveUpdateAPIView):
     serializer_class = CandidateProfileSerializer
